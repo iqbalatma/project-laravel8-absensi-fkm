@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\RegistrationCredential;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,30 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
+Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
+
+
+Route::name('x')->middleware(['auth:sanctum', 'role:admin,superadmin'])->group(function () {
+    Route::prefix('registration-credentials')
+        ->controller(RegistrationCredential::class)->group(function () {
+            Route::post('/', 'store');
+        });
+});
+/**
+ * 
+ * Tabel credential
+ * 
+ * id 1
+ * token sfsegs
+ * role_id 3 anak hima
+ * is_active 1
+ * 
+ * 
+ * https://admin.com/register/sfsegs
+ * https://admin.com/register/alumni
+ * https://admin.com/register/guest
+ * 
+ * a, b, c
+ */
