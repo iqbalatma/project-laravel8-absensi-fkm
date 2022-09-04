@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\RegistrationCredentialController;
 use App\Models\RegistrationCredential;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,8 +26,11 @@ Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login'])
 
 Route::name('x')->middleware(['auth:sanctum', 'role:admin,superadmin'])->group(function () {
     Route::prefix('registration-credentials')
-        ->controller(RegistrationCredential::class)->group(function () {
+        ->controller(RegistrationCredentialController::class)->group(function () {
             Route::post('/', 'store');
+            Route::get('/{id}', 'show');
+            Route::get('/', 'index');
+            Route::post('/{id}', 'update');
         });
 });
 /**

@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class RegistrationCredential extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['token', 'is_active', 'role_id', 'organization_id', 'limit' ];
 }

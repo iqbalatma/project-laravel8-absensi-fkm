@@ -18,6 +18,8 @@ class CreateRegistrationCredentialsTable extends Migration
             $table->string('token');
             $table->boolean('is_active');
             $table->bigInteger('role_id');
+            $table->bigInteger('organization_id')->nullable();
+            $table->bigInteger('limit')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });
