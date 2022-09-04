@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Organization extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['name', 'shortname', 'link_instagram', 'link_website'];
 }
