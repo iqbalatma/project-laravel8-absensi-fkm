@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CheckinController;
 use App\Http\Controllers\API\CheckinStatusController;
 use App\Http\Controllers\API\CongressDayController;
 use App\Http\Controllers\API\RegistrationCredentialController;

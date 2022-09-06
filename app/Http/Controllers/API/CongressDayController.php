@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\EmptyDataException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CongressDayStoreRequest;
 use App\Http\Requests\CongressDayUpdateRequest;
@@ -40,6 +41,8 @@ class CongressDayController extends Controller
     public function show(int $id):JsonResponse
     {
         $data = CongressDay::find($id);
+
+        if (empty($data)) throw new EmptyDataException();
         
         return (new CongressDayResource($data))->additional([
             'status'=> 200,
@@ -71,6 +74,7 @@ class CongressDayController extends Controller
         $validated = $request->validated();
         CongressDay::where('id',$id)->update($validated);
         $updated = CongressDay::find($id);
+        if (empty($updated)) throw new EmptyDataException();
 
         return response()->json(['data'=> $updated]);
     }
