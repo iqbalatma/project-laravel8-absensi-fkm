@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\EmptyDataException;
+use App\Exceptions\EmtpyDataException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegistrationCredentialStoreRequest;
 use App\Http\Requests\RegistrationCredentialUpdateRequest;
@@ -48,6 +50,8 @@ class RegistrationCredentialController extends Controller
     {
         $data = RegistrationCredential::find($id);
 
+        if (empty($data)) throw new EmptyDataException();
+
         return (new RegistrationCredentialResource($data))
             ->additional([
                 'status' => 200,
@@ -59,8 +63,10 @@ class RegistrationCredentialController extends Controller
 
     public function update(RegistrationCredentialUpdateRequest $request, $id): JsonResponse
     {
-        RegistrationCredential::where(['id' => $id])
+        $updated = RegistrationCredential::where(['id' => $id])
             ->update($request->validated());
+
+        if (!$updated) throw new EmptyDataException();
 
         $data = RegistrationCredential::find($id);
 

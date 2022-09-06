@@ -2,29 +2,52 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\InvalidRegistrationCredential;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
+use App\Models\RegistrationCredential;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request)
+    public function register(RegisterRequest $request, string $registrationCredential): JsonResponse
     {
+        /**
+         * ORGANIZATION ID problem
+         */
+        $dataRegistrationCredential = RegistrationCredential::where([
+            'token' => $registrationCredential,
+            'is_active' => 1
+        ])
+            ->where('limit', '>', 0)
+            ->first();
+
+        if(empty($dataRegistrationCredential)) throw new InvalidRegistrationCredential();
+
         $validated = $request->validated();
         $validated['password'] = Hash::make($validated['password']);
-        $validated['role_id'] = 2;
+        $validated['role_id'] = $dataRegistrationCredential->role_id;
+        $validated['personal_token'] = Str::random(16);
+        $validated['organization_id'] =  $dataRegistrationCredential->organization_id ?? $validated['organization_id'];
         $user = User::create($validated);
+        $dataRegistrationCredential->decrement('limit');
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()
-            ->json(['data' => $user, 'access_token' => $token, 'token_type' => 'Bearer',]);
+            ->json([
+                'data' => $user,
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+            ]);
     }
 
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()
