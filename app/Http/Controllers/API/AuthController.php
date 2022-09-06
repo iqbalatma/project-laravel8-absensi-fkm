@@ -62,6 +62,6 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()
-            ->json(['status'=>200,'message' => 'Hi ' . $user->name . ', welcome to home', 'data'=>['access_token' => $token, 'token_type' => 'Bearer'],])->setStatusCode(200);
+            ->json(['status'=>200,'message' => 'Login successfully', 'data'=>['access_token' => $token, 'token_type' => 'Bearer'],])->setStatusCode(200);
     }
 }
