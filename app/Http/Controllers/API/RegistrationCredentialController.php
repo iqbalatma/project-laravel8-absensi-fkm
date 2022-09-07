@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 
 class RegistrationCredentialController extends Controller
 {
-    public function index()
+    public function index():JsonResponse
     {
         $totalPerPage =   request()->get('total_per_page') ?? 5;
         $data = RegistrationCredential::paginate($totalPerPage);
