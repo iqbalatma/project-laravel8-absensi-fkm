@@ -11,9 +11,10 @@ class EmptyDataException extends Exception
     public function render(Request $request): JsonResponse
     {
         return response()->json([
-            'status'=> 404,
+            'success' => false,
+            'name' => 'Empty Data Exception',
             'message'=> 'The data you requested not found',
-            'error' => 1,
+            'error_code' => 404,
         ])->setStatusCode(404);
     }
 }

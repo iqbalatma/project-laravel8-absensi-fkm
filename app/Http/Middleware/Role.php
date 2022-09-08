@@ -4,8 +4,10 @@ namespace App\Http\Middleware;
 
 use App\Exceptions\UnauthorizedException;
 use Closure;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class Role
 {
@@ -21,10 +23,7 @@ class Role
         $user = Auth::user();
         if(!in_array($user->role->name, $roles)){
             throw new UnauthorizedException();
-            // return response()->json(['data'=>'rer']);
         }
-
-
         return $next($request);
     }
 }

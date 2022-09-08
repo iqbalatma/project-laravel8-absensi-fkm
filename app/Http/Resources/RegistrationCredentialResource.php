@@ -23,11 +23,4 @@ class RegistrationCredentialResource extends JsonResource
             'limit' => $this->limit,
         ];
     }
-
-    public function with($request)
-    {
-        return [
-            'error' => 0
-        ];
-    }
 }

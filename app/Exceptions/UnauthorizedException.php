@@ -8,12 +8,16 @@ use Illuminate\Http\Request;
 
 class UnauthorizedException extends Exception
 {
+    protected $message;
+    public function __construct($message ='You are unauthorized to do this request') {
+        $this->message = $message;
+    }
     public function render(Request $request): JsonResponse
     {
         return response()->json([
-            'error' => 1,
-            'message'=> 'You are unauthorized to do this action',
+            'message'=> $this->message,
             'status'=> 401,
+            'error' => true,
         ])->setStatusCode(401);
     }
 }

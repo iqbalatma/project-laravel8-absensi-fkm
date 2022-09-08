@@ -8,7 +8,7 @@ use App\Models\Checkin;
 use App\Models\CheckinStatus;
 use Illuminate\Http\JsonResponse;
 
-class CheckinStatusController extends Controller
+class CheckinStatusController extends ApiController
 {
     public function checkin(CheckinStatusStoreRequest $request, string $personalToken): JsonResponse
     {

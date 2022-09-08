@@ -11,7 +11,7 @@ use App\Http\Resources\CongressDayResourceCollection;
 use App\Models\CongressDay;
 use Illuminate\Http\JsonResponse;
 
-class CongressDayController extends Controller
+class CongressDayController extends ApiController
 {
 
     /**

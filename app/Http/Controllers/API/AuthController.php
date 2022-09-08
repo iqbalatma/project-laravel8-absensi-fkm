@@ -12,8 +12,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Ramsey\Uuid\Type\Integer;
 
-class AuthController extends Controller
+class AuthController extends ApiController
 {
     public function register(RegisterRequest $request, string $registrationCredential): JsonResponse
     {
