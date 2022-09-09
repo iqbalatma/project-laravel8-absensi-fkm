@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use App\Traits\ApiResponseTrait;
+use ErrorException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
@@ -82,7 +83,19 @@ class Handler extends ExceptionHandler
                         'message'   => 'The method that you requested is not allowed on this route',
                         'error_code'=> 403,
                         'exception' =>$exception
-                    ],404
+                    ],403
+                );
+            }
+
+            if($exception instanceof ErrorException){
+                return $this->apiResponse(
+                    [
+                        'success'   => false,
+                        'name'      => 'Error Exception',
+                        'message'   => 'There is internal error',
+                        'error_code'=> 500,
+                        'exception' =>$exception
+                    ],500
                 );
             }
 
