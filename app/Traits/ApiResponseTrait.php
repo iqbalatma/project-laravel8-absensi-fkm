@@ -318,6 +318,14 @@ trait ApiResponseTrait {
             $statusCode = $data['status'];
         }
 
+        /** when response failed */
+        if ($data['success'] === false) {
+            if (isset($data['error_code'])) {
+                $responseStructure['error_code'] = $data['error_code'];
+            } else {
+                $responseStructure['error_code'] = 1;
+            }
+        }
 
         /**to throw exception */
         if (
@@ -339,15 +347,7 @@ trait ApiResponseTrait {
                 $statusCode = 500;
             }
         }
-
-        /** when response failed */
-        if ($data['success'] === false) {
-            if (isset($data['error_code'])) {
-                $responseStructure['error_code'] = $data['error_code'];
-            } else {
-                $responseStructure['error_code'] = 1;
-            }
-        }
+        
         return ["content" => $responseStructure, "statusCode" => $statusCode, "headers" => $headers];
     }
     

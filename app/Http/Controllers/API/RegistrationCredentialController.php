@@ -14,14 +14,15 @@ use Illuminate\Http\JsonResponse;
 
 class RegistrationCredentialController extends ApiController
 {
-    private $responseName = 'Registration Credential';
-    private $responseMessage = [
+    private RegistrationCredentialService $registrationCredentialService;
+    private string $responseName = 'Registration Credential';
+    private array $responseMessage = [
         'index'  => 'Get list registration credential successfully',
         'show'  => 'Get single registration credential successfully',
         'store' => 'Store registration credential successfuly',
         'update' => 'Update registration credential successfuly',
     ];
-    
+
     public function __construct(RegistrationCredentialService $registrationCredentialService)
     {
         $this->registrationCredentialService = $registrationCredentialService;

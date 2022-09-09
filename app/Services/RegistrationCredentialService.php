@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 
 class RegistrationCredentialService{
 
+  private RegistrationCredential $registrationCredentialModel;
   public function __construct()
   {
     $this->registrationCredentialModel = new RegistrationCredential();
@@ -19,7 +20,7 @@ class RegistrationCredentialService{
    * 
    * @return RegistrationCredential of eloquent instance
    */
-  public function getAll():RegistrationCredential
+  public function getAll():object
   {
     $totalPerPage = request()->get('total_per_page') ?? 5;
     return $this->registrationCredentialModel->paginate($totalPerPage);
@@ -32,7 +33,7 @@ class RegistrationCredentialService{
    * @param integer $id of registration credential
    * @return RegistrationCredential
    */
-  public function show(int $id): RegistrationCredential
+  public function show(int $id): object
   {
     $data = RegistrationCredential::find($id);
 
@@ -49,7 +50,7 @@ class RegistrationCredentialService{
    * @param array $requestedData to arleady validated
    * @return RegistrationCredential Eloquent instance
    */
-  public function store(array $requestedData):RegistrationCredential
+  public function store(array $requestedData):object
   {
     $requestedData['is_active'] = 1;
     $requestedData['token'] = Str::random(8);
@@ -65,7 +66,7 @@ class RegistrationCredentialService{
    * @param array $requestedData is validated request from user
    * @return RegistrationCredential Eloquent instance
    */
-  public function update(int $id, array $requestedData):RegistrationCredential
+  public function update(int $id, array $requestedData):object
   {
     $updated = RegistrationCredential::where('id',$id)->update($requestedData);
 

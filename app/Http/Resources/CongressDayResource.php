@@ -18,13 +18,8 @@ class CongressDayResource extends JsonResource
             'id' => $this->id,
             'h_day' => $this->h_day,
             'location' => $this->location,
-        ];
-    }
-
-    public function with($request)
-    {
-        return [
-            'error' => 0
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

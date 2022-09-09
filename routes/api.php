@@ -32,7 +32,7 @@ Route::name('x')->middleware(['auth:sanctum', 'role:admin,superadmin'])->group(f
             Route::post('/', 'store');
             Route::get('/{id}', 'show');
             Route::get('/', 'index');
-            Route::post('/{id}', 'update');
+            Route::put('/{id}', 'update');
         });
 
     Route::prefix('checkin')

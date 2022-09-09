@@ -9,10 +9,50 @@ use App\Http\Requests\CongressDayUpdateRequest;
 use App\Http\Resources\CongressDayResource;
 use App\Http\Resources\CongressDayResourceCollection;
 use App\Models\CongressDay;
+use App\Services\CongressDayService;
 use Illuminate\Http\JsonResponse;
 
 class CongressDayController extends ApiController
 {
+    private CongressDayService $congressDaySerivce;
+    private string $responseName = 'Congress Day';
+    private array $responseMessage = [
+        'index'=>'Get list data congress day successfully',
+        'show'=>'Get single congress day successfully',
+        'store' => 'Store new congress day successfully',
+        'update'=> 'Update congress day successfully'
+    ];
+
+    public function __construct(CongressDayService $congressDayService) {
+        $this->congressDaySerivce = $congressDayService;
+    }
+
+
+    /**
+     * Description : for get data list of congress day
+     * 
+     * @param JsonResponse for api response
+     */
+    public function index():JsonResponse
+    {
+        $data = $this->congressDaySerivce->index();
+
+        return $this->responseWithResourceCollection(new CongressDayResourceCollection($data), $this->responseName, $this->responseMessage['index'], 200);
+    }
+
+
+    /**
+     * Description : to get single congress day
+     * 
+     * @param integer $id of the congress day
+     * @return JsonResponse resource for response
+     */
+    public function show(int $id):JsonResponse
+    {
+        $data = $this->congressDaySerivce->show($id);
+
+        return $this->responseWithResource(new CongressDayResource($data),$this->responseName, $this->responseMessage['show'],200);
+    }
 
     /**
      * Description : to store data congress day
@@ -22,45 +62,11 @@ class CongressDayController extends ApiController
      */
     public function store(CongressDayStoreRequest $request):JsonResponse
     {
-        $validated = $request->validated();
-        $data = CongressDay::create($validated);
+        $stored = $this->congressDaySerivce->store($request->validated());
 
-        return (new CongressDayResource($data))->additional([
-            'status'=> 201,
-            'message'=> 'Store congress day successfully'
-        ])->response()->setStatusCode(201);
+        return $this->responseWithResource(new CongressDayResource($stored),$this->responseName, $this->responseMessage['show'],201);
     }
 
-
-    /**
-     * Description : to get single congress day
-     * 
-     * @param integer $id of the congress
-     * @return JsonResponse resource for response
-     */
-    public function show(int $id):JsonResponse
-    {
-        $data = CongressDay::find($id);
-
-        if (empty($data)) throw new EmptyDataException();
-        
-        return (new CongressDayResource($data))->additional([
-            'status'=> 200,
-            'message'=> 'Get congress day successfully'
-        ])->response()->setStatusCode(200);
-    }
-
-    public function index():JsonResponse
-    {
-        $totalPerPage =   request()->get('total_per_page') ?? 5;
-        $data = CongressDay::paginate($totalPerPage);
-        return (new CongressDayResourceCollection($data))->additional([
-            'status' => 200,
-            'message' => 'Get all congress day successfully'
-        ])
-            ->response()
-            ->setStatusCode(200);
-    }
 
     /**
      * Description : for update the congress day 
@@ -71,11 +77,8 @@ class CongressDayController extends ApiController
      */
     public function update(CongressDayUpdateRequest $request, $id):JsonResponse
     {
-        $validated = $request->validated();
-        CongressDay::where('id',$id)->update($validated);
-        $updated = CongressDay::find($id);
-        if (empty($updated)) throw new EmptyDataException();
+        $updated = $this->congressDaySerivce->update($id, $request->validated());
 
-        return response()->json(['data'=> $updated]);
+        return $this->responseWithResource(new CongressDayResource($updated),$this->responseName, $this->responseMessage['update'],200);
     }
 }

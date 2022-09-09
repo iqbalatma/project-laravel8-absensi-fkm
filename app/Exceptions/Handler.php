@@ -10,6 +10,8 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\PostTooLargeException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -60,6 +62,31 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if ($request->expectsJson()) {
+            if($exception instanceof NotFoundHttpException){
+                return $this->apiResponse(
+                    [
+                        'success'   => false,
+                        'name'      => 'Not Found HTTP Exception',
+                        'message'   => 'The resource that you requested not found',
+                        'error_code'=> 404,
+                        'exception' =>$exception
+                    ],404
+                );
+            }
+
+            if($exception instanceof MethodNotAllowedHttpException){
+                return $this->apiResponse(
+                    [
+                        'success'   => false,
+                        'name'      => 'Method Not Allowed HTTP Exception',
+                        'message'   => 'The method that you requested is not allowed on this route',
+                        'error_code'=> 403,
+                        'exception' =>$exception
+                    ],404
+                );
+            }
+
+
             // if ($exception instanceof PostTooLargeException) {
             //     return $this->apiResponse(
             //         [
