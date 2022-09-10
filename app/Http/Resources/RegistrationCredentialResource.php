@@ -21,6 +21,8 @@ class RegistrationCredentialResource extends JsonResource
             'role_id' => $this->role_id,
             'organization_id' => $this->organization_id,
             'limit' => $this->limit,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

@@ -25,7 +25,7 @@ class RegistrationCredentialUpdateRequest extends FormRequest
     {
         return [
             'role_id' => 'numeric',
-            'limit' => 'numeric',
+            'limit' => 'required',
             'organization_id' => '',
             'is_active' => '',
             'limit' => 'numeric',

@@ -24,9 +24,9 @@ class RegistrationCredentialStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'role_id' => 'required|numeric',
+            'role_id' => 'required|numeric|not_in:1,2',
             'limit' => 'required|numeric',
-            'organization_id' => ''
+            'organization_id' => 'required'
         ];
     }
 }

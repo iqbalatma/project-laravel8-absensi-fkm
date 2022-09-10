@@ -2,59 +2,42 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\RequestErrorException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckinStatusStoreRequest;
 use App\Models\Checkin;
 use App\Models\CheckinStatus;
+use App\Models\User;
+use App\Services\CheckinService;
 use Illuminate\Http\JsonResponse;
 
 class CheckinStatusController extends ApiController
 {
+    private CheckinService $checkinService;
+    public function __construct(CheckinService $checkinService) {
+        $this->checkinService = $checkinService;
+    }
     public function checkin(CheckinStatusStoreRequest $request, string $personalToken): JsonResponse
     {
-        $data = Checkin::where('personal_token', $personalToken)->first();
-        if(empty($data)){
-            return response()->json([
-                'status'=> 404,
-                'error' => 1,
-                'message' => 'Your personal token is invalid !'
-            ])->setStatusCode(404);
+        $checkinStatus = $this->checkinService->checkin($personalToken, $request->validated());
+        if($checkinStatus==='token invalid'){
+            throw new RequestErrorException("Your personal token is invalid", 404);
+        }
+        if($checkinStatus ==='congress day doest exist'){
+            throw new RequestErrorException("Congress day does not exists", 404);
+        }
+        if($checkinStatus==='checkin success'){
+            return $this->apiResponse( [
+                'success'   => true,
+                'name'      => 'Checkin',
+                'message'   => 'Checkin user successfully',
+            ], 200);
         }
 
-        $validated = $request->validated();
-        $validated['user_id'] = $data->id;
-        $validated['checkin_status'] = true;
-
-        $checkinStatus = CheckinStatus::where(['user_id' => $data->id, 'congress_day_id' => $validated['congress_day_id']])->first();
-
-        if (empty($checkinStatus)) {
-            CheckinStatus::create($validated);
-            return response()->json([
-                'status'=> 200,
-                'error' => 0,
-                'message' => 'Checkin successfully!'
-            ])->setStatusCode(200);
-        } else {
-            if($checkinStatus->checkin_status){
-                $checkinStatus->checkin_status = 0;
-                $checkinStatus->save();
-
-                return response()->json([
-                    'status'=> 200,
-                    'error' => 0,
-                    'message' => 'Checkout successfully!'
-                ])->setStatusCode(200);
-            }else{
-                $checkinStatus->checkin_status = 1;
-                $checkinStatus->save();
-
-                return response()->json([
-                    'status'=> 200,
-                    'error' => 0,
-                    'message' => 'Checkin successfully!'
-                ])->setStatusCode(200);
-            }
-           
-        }
+        return $this->apiResponse( [
+            'success'   => true,
+            'name'      => 'Checkout',
+            'message'   => 'Checkout user successfully',
+        ], 200);
     }
 }

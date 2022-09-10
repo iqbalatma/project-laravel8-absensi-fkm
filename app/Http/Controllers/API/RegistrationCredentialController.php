@@ -76,7 +76,7 @@ class RegistrationCredentialController extends ApiController
      * @param int $id of the credential update request
      * @return JsonResponse for the user response
      */
-    public function update(RegistrationCredentialUpdateRequest $request,int $id): JsonResponse
+    public function update(RegistrationCredentialUpdateRequest $request, int $id): JsonResponse
     {
         $updated = $this->registrationCredentialService->update($id, $request->validated());
 
