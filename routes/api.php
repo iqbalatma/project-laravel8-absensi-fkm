@@ -38,6 +38,7 @@ Route::name('x')->middleware(['auth:sanctum', 'role:admin,superadmin'])->group(f
     Route::prefix('checkin')
         ->controller(CheckinStatusController::class)->group(function () {
             Route::post('/{personal_token}', 'checkin');
+            Route::get('/', 'index');
         });
 
     Route::prefix('congress-day')

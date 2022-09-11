@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Exceptions\RequestErrorException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckinStatusStoreRequest;
+use App\Http\Resources\CheckinStatusResourceCollection;
 use App\Models\Checkin;
 use App\Models\CheckinStatus;
 use App\Models\User;
@@ -14,6 +15,10 @@ use Illuminate\Http\JsonResponse;
 class CheckinStatusController extends ApiController
 {
     private CheckinService $checkinService;
+    private string $responseName = 'Checkin Status';
+    private array $responseMessage = [
+        'index' => 'Get list checkin status successfully'
+    ];
     public function __construct(CheckinService $checkinService) {
         $this->checkinService = $checkinService;
     }
@@ -40,4 +45,12 @@ class CheckinStatusController extends ApiController
             'message'   => 'Checkout user successfully',
         ], 200);
     }
+
+    // public function index():JsonResponse
+    // {
+    //     $checkinStatus = $this->checkinService->index();
+    //     return response()->json(['data'=>$checkinStatus]);
+
+    //     return $this->responseWithResourceCollection(new CheckinStatusResourceCollection($checkinStatus), $this->responseName, );
+    // }
 }

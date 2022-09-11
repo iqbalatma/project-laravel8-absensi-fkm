@@ -35,7 +35,7 @@ class RegistrationCredentialService{
    */
   public function show(int $id): object
   {
-    $data = RegistrationCredential::find($id);
+    $data = RegistrationCredential::with('organization')->find($id);
 
     if(empty($data)) 
       throw new EmptyDataException();

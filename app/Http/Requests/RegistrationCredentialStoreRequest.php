@@ -26,7 +26,7 @@ class RegistrationCredentialStoreRequest extends FormRequest
         return [
             'role_id' => 'required|numeric|not_in:1,2',
             'limit' => 'required|numeric',
-            'organization_id' => 'required'
+            'organization_id' => ''
         ];
     }
 }

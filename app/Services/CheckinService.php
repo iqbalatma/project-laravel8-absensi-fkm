@@ -18,6 +18,12 @@ class CheckinService{
     $this->congressDayModel = $congressDayModel;
   }
 
+
+  public function index():object
+  {
+    return $this->checkinStatusModel->all();
+  }
+
   /**
    * Description : use for checkin the user
    * 
