@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Models\RegistrationCredential;
 use App\Models\User;
+use App\Services\RegistrationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,36 +17,27 @@ use Ramsey\Uuid\Type\Integer;
 
 class AuthController extends ApiController
 {
+    private RegistrationService $registrationService;
+    public function __construct(RegistrationService $registrationService) {
+        $this->registrationService = $registrationService; 
+    }
     public function register(RegisterRequest $request, string $registrationCredential): JsonResponse
     {
-        /**
-         * ORGANIZATION ID problem
-         */
-        $dataRegistrationCredential = RegistrationCredential::where([
-            'token' => $registrationCredential,
-            'is_active' => 1
-        ])
-            ->where('limit', '>', 0)
-            ->first();
+        $registeredUser = $this->registrationService->register($registrationCredential,$request->validated());
 
-        if(empty($dataRegistrationCredential)) throw new InvalidRegistrationCredential();
+        if($registeredUser===404){
+            throw new InvalidRegistrationCredential();
+        }
 
-        $validated = $request->validated();
-        $validated['password'] = Hash::make($validated['password']);
-        $validated['role_id'] = $dataRegistrationCredential->role_id;
-        $validated['personal_token'] = Str::random(16);
-        $validated['organization_id'] =  $dataRegistrationCredential->organization_id ?? $validated['organization_id'];
-        $user = User::create($validated);
-        $dataRegistrationCredential->decrement('limit');
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()
-            ->json([
-                'data' => $user,
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-            ]);
+        return $this->apiResponse([
+            'success' => true,
+            'name' => "Registration",
+            'message' => "Registration user successfully",
+            'result' => [
+                'user'=> $registeredUser[0],
+                'acess_token'=> $registeredUser[1]
+            ],
+        ],200);
     }
 
     public function login(Request $request): JsonResponse
