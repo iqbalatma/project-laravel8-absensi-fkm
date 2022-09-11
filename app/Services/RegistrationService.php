@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Exceptions\InvalidRegistrationCredential;
 use App\Models\RegistrationCredential;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -12,11 +11,18 @@ use Illuminate\Support\Str;
 class RegistrationService {
   const INVALID_TOKEN = 404;
   private object $registrationCredential;
+
+  /**
+   * Description : Use to register the user with registration credential
+   * 
+   * @param string $registrationCredentialToken for validate is register is allowed
+   * @param array $requestedData that already validated
+   */
   public function register(string $registrationCredentialToken, array $requestedData)
   {
-    if(!$this->checkRegistrationCredential($registrationCredentialToken)){
+    if(!$this->checkRegistrationCredential($registrationCredentialToken))
       return self::INVALID_TOKEN;
-    }
+    
 
     $requestedData['password'] = Hash::make($requestedData['password']);
     $requestedData['role_id'] = $this->getRoleId();
@@ -35,6 +41,13 @@ class RegistrationService {
 
   }
 
+
+  /**
+   * Description : Use to check is token valid or not
+   * 
+   * @param string $registrationCredentialToken 
+   * @return bool status of of credential registration token valid or not
+   */
   private function checkRegistrationCredential(string $registrationCredentialToken)
   {
     $dataRegistrationCredential = RegistrationCredential::where([
@@ -50,21 +63,46 @@ class RegistrationService {
     return false;
   }
 
+
+  /**
+   * Description : setter for registration credential
+   * 
+   * @param object that wan to set
+   */
   private function setRegistrationCredential(object $registrationCredential):void
   {
     $this->registrationCredential = $registrationCredential;
   }
 
+
+  /**
+   * Description : to get role id from registration credential
+   * 
+   * @return int id of 
+   */
   private function getRoleId():int
   {
-    return $this->registrationCredential->id;
+    return $this->registrationCredential->role_id;
   }
 
+
+  /**
+   * Description : use to decrease limit after registration
+   * 
+   */
   private function decreaseLimitRegistration():void
   {
     $this->registrationCredential->decrement('limit');
+    $this->registrationCredential->save();
   }
 
+
+  /**
+   * Description : use to get organization id, from registration credential/form request or null
+   * 
+   * @param array $requestedData to get data request from api
+   * @return int|null 
+   */
   private function getOrganizationId($requestedData)
   {
     $organizationId = null;
