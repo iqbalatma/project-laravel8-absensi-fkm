@@ -2,74 +2,84 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\EmptyDataException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegistrationCredentialStoreRequest;
 use App\Http\Requests\RegistrationCredentialUpdateRequest;
 use App\Http\Resources\RegistrationCredentialResource;
 use App\Http\Resources\RegistrationCredentialResourceCollection;
 use App\Models\RegistrationCredential;
+use App\Services\RegistrationCredentialService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Str;
 
-class RegistrationCredentialController extends Controller
+class RegistrationCredentialController extends ApiController
 {
-    public function index()
+    private RegistrationCredentialService $registrationCredentialService;
+    private string $responseName = 'Registration Credential';
+    private array $responseMessage = [
+        'index'  => 'Get list registration credential successfully',
+        'show'  => 'Get single registration credential successfully',
+        'store' => 'Store registration credential successfuly',
+        'update' => 'Update registration credential successfuly',
+    ];
+
+    public function __construct(RegistrationCredentialService $registrationCredentialService)
     {
-        $totalPerPage =   request()->get('total_per_page') ?? 5;
-        $data = RegistrationCredential::paginate($totalPerPage);
-        return (new RegistrationCredentialResourceCollection($data))->additional([
-            'status' => 200,
-            'message' => 'Get all registration credential successfuly'
-        ])
-            ->response()
-            ->setStatusCode(200);
+        $this->registrationCredentialService = $registrationCredentialService;
+    }
+
+    /**
+     * Description : get all registration credential service
+     * 
+     * @return JsonResponse for response api
+     */
+    public function index():JsonResponse
+    {
+        $allData =  $this->registrationCredentialService->getAll();
+
+        return $this->responseWithResourceCollection(new RegistrationCredentialResourceCollection($allData), $this->responseName, $this->responseMessage['index'], 200);
     }
 
 
+    /**
+     * Description : to add new registration credential
+     * 
+     * @param RegistrationCredentialStoreRequest $request for validate request
+     * @return JsonResponse for response api
+     */
     public function store(RegistrationCredentialStoreRequest $request): JsonResponse
     {
-        $validated = $request->validated();
-        $validated['is_active'] = 1;
-        $validated['token'] = Str::random(8);
+        $storedData = $this->registrationCredentialService->store($request->validated());
 
-        $registrationController =  RegistrationCredential::create($validated);
-
-
-        return (new RegistrationCredentialResource($registrationController))
-            ->additional([
-                'status' => 201,
-                'message' => 'Store registration credential successfuly'
-            ])
-            ->response()
-            ->setStatusCode(201);
+        return $this->responseWithResource(new RegistrationCredentialResource($storedData), $this->responseName, $this->responseMessage['store'], 201);
     }
 
-    public function show(int $id): JsonResponse
-    {
-        $data = RegistrationCredential::find($id);
 
-        return (new RegistrationCredentialResource($data))
-            ->additional([
-                'status' => 200,
-                'message' => 'Get registration credential successfuly'
-            ])
-            ->response()
-            ->setStatusCode(200);
+    /**
+     * Description : use to get registration credential by id
+     * 
+     * @param int $id of registration credential
+     * @return JsonResponse for user
+     */
+    public function show(int $id):JsonResponse
+    {
+        $data = $this->registrationCredentialService->show($id);
+                
+        return $this->responseWithResource(new RegistrationCredentialResource($data), $this->responseName,$this->responseMessage['show'] , 200);
     }
 
-    public function update(RegistrationCredentialUpdateRequest $request, $id): JsonResponse
+
+    /**
+     * Description : update the registration credential 
+     * 
+     * @param RegistrationCredentialUpdateRequest $request for validate user
+     * @param int $id of the credential update request
+     * @return JsonResponse for the user response
+     */
+    public function update(RegistrationCredentialUpdateRequest $request, int $id): JsonResponse
     {
-        RegistrationCredential::where(['id' => $id])
-            ->update($request->validated());
+        $updated = $this->registrationCredentialService->update($id, $request->validated());
 
-        $data = RegistrationCredential::find($id);
-
-        return (new RegistrationCredentialResource($data))
-            ->additional([
-                'status' => 200,
-                'message' => 'Update registration credential successfuly'
-            ])
-            ->response()
-            ->setStatusCode(200);
+        return $this->responseWithResource(new RegistrationCredentialResource($updated),$this->responseName, $this->responseMessage['update'], 200);
     }
 }

@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class CheckinStatus extends Model
 {
     use HasFactory;
+    protected $fillable = ['checkin_status', 'user_id', 'congress_day_id'];
 }

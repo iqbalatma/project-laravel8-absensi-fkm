@@ -2,14 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use App\Exceptions\UnauthorizedException;
 use Closure;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
-class Role
+class JsonMiddleware
 {
     /**
      * Handle an incoming request.
@@ -18,12 +14,9 @@ class Role
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next, ...$roles)
+    public function handle(Request $request, Closure $next)
     {
-        $user = Auth::user();
-        if(!in_array($user->role->name, $roles)){
-            throw new UnauthorizedException();
-        }
+        $request->headers->set("Accept", "application/json");
         return $next($request);
     }
 }

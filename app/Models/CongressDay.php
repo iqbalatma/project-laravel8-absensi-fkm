@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class CongressDay extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['h_day', 'location'];
 }
