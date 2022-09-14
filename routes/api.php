@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\CheckinController;
 use App\Http\Controllers\API\CheckinStatusController;
 use App\Http\Controllers\API\CongressDayController;
@@ -22,11 +23,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register/{token}', [App\Http\Controllers\API\AuthController::class, 'register']);
-Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
+// Route::post('/register/{token}', [App\Http\Controllers\API\AuthController::class, 'register']);
+// Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
 
 
-Route::name('x')->middleware(['auth:sanctum', 'role:admin,superadmin'])->group(function () {
+Route::controller(AuthController::class)->group(function (){
+    Route::post('/register/{registration_credential}', 'register');
+    Route::post('/login', 'login')->name('auth.login');
+    Route::post('/logout', 'logout');
+});
+
+
+
+Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {
     Route::prefix('registration-credentials')
         ->controller(RegistrationCredentialController::class)->group(function () {
             Route::post('/', 'store');
@@ -40,7 +49,6 @@ Route::name('x')->middleware(['auth:sanctum', 'role:admin,superadmin'])->group(f
             Route::post('/{personal_token}', 'checkin');
             Route::get('/', 'index');
         });
-
     Route::prefix('congress-day')
         ->controller(CongressDayController::class)->group(function () {
             Route::post('/', 'store');

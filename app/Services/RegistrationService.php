@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\RegistrationCredential;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -32,13 +33,15 @@ class RegistrationService {
     $requestedData['organization_id'] = $this->getOrganizationId($requestedData);
     
     $user = User::create($requestedData);
-    $token = $user->createToken('auth_token')->plainTextToken;
     $this->decreaseLimitRegistration();
+    $token = Auth::login($user);
     
     return [
-      $user,$token
-    ];
-
+      'user'=>$user,
+      'authorization'=>[
+        'token'=>$token,
+        'type'=> 'bearer'
+    ]];
   }
 
 

@@ -16,10 +16,11 @@ class InvalidRegistrationCredential extends Exception
     public function render(Request $request): JsonResponse
     {
         return response()->json([
-            'success'=> false,
+            'success'   => false,
             'name' => 'Invalid RegistrationCredential',
-            'message'=> $this->message,
+            'message'   => $this->message,
             'error_code' => $this->status,
+            'error' => true,
         ])->setStatusCode($this->status);
     }
 }

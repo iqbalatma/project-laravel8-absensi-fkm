@@ -15,8 +15,10 @@ class UnauthorizedException extends Exception
     public function render(Request $request): JsonResponse
     {
         return response()->json([
-            'message'=> $this->message,
-            'status'=> 401,
+            'success'   => false,
+            'name'      => 'Unauthorized',
+            'message'   => $this->message,
+            'error_code'=> 404,
             'error' => true,
         ])->setStatusCode(401);
     }
