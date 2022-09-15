@@ -308,12 +308,16 @@ trait ApiResponseTrait {
             'success' => $data['success'],
             'name' => $data['name']??null,
             'message' => $data['message'] ?? null,
-            'result' => $data['result'] ?? null,
         ];
+
+        if(isset($data['result'])){
+           $responseStructure['result'] = $data['result'] ?? null;
+        }
 
         if (isset($data['errors'])) {
             $responseStructure['errors'] = $data['errors'];
         }
+
         if (isset($data['status'])) {
             $statusCode = $data['status'];
         }

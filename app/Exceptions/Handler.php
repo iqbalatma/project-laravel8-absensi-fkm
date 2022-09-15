@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use App\Traits\ApiResponseTrait;
+use BadMethodCallException;
 use ErrorException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -11,6 +12,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\PostTooLargeException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Validation\ValidationException;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
@@ -70,6 +72,7 @@ class Handler extends ExceptionHandler
                         'name'      => 'Not Found HTTP Exception',
                         'message'   => 'The resource that you requested not found',
                         'error_code'=> 404,
+                        'error' => true,
                         'exception' =>$exception
                     ],404
                 );
@@ -82,6 +85,7 @@ class Handler extends ExceptionHandler
                         'name'      => 'Method Not Allowed HTTP Exception',
                         'message'   => 'The method that you requested is not allowed on this route',
                         'error_code'=> 403,
+                        'error' => true,
                         'exception' =>$exception
                     ],403
                 );
@@ -99,6 +103,18 @@ class Handler extends ExceptionHandler
                 );
             }
 
+            if($exception instanceof BadMethodCallException){
+                return $this->apiResponse(
+                    [
+                        'success'   => false,
+                        'name'      => 'Bad Method Call Exception',
+                        'message'   => 'There is internal error',
+                        'error_code'=> 500,
+                        'error' => true,
+                        'exception' =>$exception
+                    ],500
+                );
+            }
 
             // if ($exception instanceof PostTooLargeException) {
             //     return $this->apiResponse(
@@ -110,15 +126,19 @@ class Handler extends ExceptionHandler
             //     );
             // }
 
-            // if ($exception instanceof AuthenticationException) {
-            //     return $this->apiResponse(
-            //         [
-            //             'success' => false,
-            //             'message' => 'Unauthenticated or Token Expired, Please Login'
-            //         ],
-            //         401
-            //     );
-            // }
+            if ($exception instanceof AuthenticationException) {
+                return $this->apiResponse(
+                    [
+                        'success'   => false,
+                        'name'      => 'Authentication Exception',
+                        'message'   => 'Unauthenticated or Token Expired, Please Login',
+                        'error_code'=> 401,
+                        'error' => true,
+                        'exception' =>$exception
+                    ],
+                    401
+                );
+            }
 
             // if ($exception instanceof ThrottleRequestsException) {
             //     return $this->apiResponse(
@@ -174,17 +194,19 @@ class Handler extends ExceptionHandler
             // //         500
             // //     );
             // // }
-            // if ($exception instanceof \Error) {
-            //     // $exception = $exception->getResponse();
-            //     return $this->apiResponse(
-            //         [
-            //             'success' => false,
-            //             'message' => "There was some internal error",
-            //             'exception' => $exception
-            //         ],
-            //         500
-            //     );
-            // }
+            if ($exception instanceof \Error) {
+                return $this->apiResponse(
+                    [
+                        'success'   => false,
+                        'name'      => 'Authentication Exception',
+                        'message' => "There was some internal error",
+                        'error_code'=> 500,
+                        'error' => true,
+                        'exception' =>$exception
+                    ],
+                    500
+                );
+            }
         }
 
 

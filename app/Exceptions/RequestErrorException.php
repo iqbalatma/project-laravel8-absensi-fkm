@@ -16,10 +16,11 @@ class RequestErrorException extends Exception
     public function render(Request $request): JsonResponse
     {
         return response()->json([
-            'success'=> false,
+            'success'   => false,
             'name' => 'Request error exception',
-            'message'=> $this->message,
+            'message'   => $this->message,
             'error_code' => $this->status,
+            'error' => true,
         ])->setStatusCode($this->status);
     }
 }
