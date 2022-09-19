@@ -33,6 +33,11 @@ Route::controller(AuthController::class)->group(function (){
     Route::post('/logout', 'logout');
 });
 
+// https:localhost:8000/api/registration-credentials post
+// https:localhost:8000/api/registration-credentials/5 get
+// https:localhost:8000/api/registration-credentials get
+// https:localhost:8000/api/registration-credentials get
+// https:localhost:8000/api/registration-credentials put
 
 
 Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {
@@ -42,6 +47,7 @@ Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {
             Route::get('/{id}', 'show');
             Route::get('/', 'index');
             Route::put('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
         });
 
     Route::prefix('checkin')

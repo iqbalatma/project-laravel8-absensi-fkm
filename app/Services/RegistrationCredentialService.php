@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace App\Services;
 
 use App\Exceptions\EmptyDataException;
@@ -6,7 +7,8 @@ use App\Models\RegistrationCredential;
 use Illuminate\Support\Str;
 
 
-class RegistrationCredentialService{
+class RegistrationCredentialService
+{
 
   private RegistrationCredential $registrationCredentialModel;
   public function __construct()
@@ -20,7 +22,7 @@ class RegistrationCredentialService{
    * 
    * @return RegistrationCredential of eloquent instance
    */
-  public function getAll():object
+  public function getAll(): object
   {
     $totalPerPage = request()->get('total_per_page') ?? 5;
     return $this->registrationCredentialModel->paginate($totalPerPage);
@@ -37,7 +39,7 @@ class RegistrationCredentialService{
   {
     $data = RegistrationCredential::with('organization')->find($id);
 
-    if(empty($data)) 
+    if (empty($data))
       throw new EmptyDataException();
 
     return $data;
@@ -50,7 +52,7 @@ class RegistrationCredentialService{
    * @param array $requestedData to arleady validated
    * @return RegistrationCredential Eloquent instance
    */
-  public function store(array $requestedData):object
+  public function store(array $requestedData): object
   {
     $requestedData['is_active'] = 1;
     $requestedData['token'] = Str::random(8);
@@ -66,13 +68,29 @@ class RegistrationCredentialService{
    * @param array $requestedData is validated request from user
    * @return RegistrationCredential Eloquent instance
    */
-  public function update(int $id, array $requestedData):object
+  public function update(int $id, array $requestedData): object
   {
-    $updated = RegistrationCredential::where('id',$id)->update($requestedData);
+    $updated = RegistrationCredential::where('id', $id)->update($requestedData);
 
     if (!$updated) throw new EmptyDataException();
 
     $data = RegistrationCredential::find($id);
     return $data;
+  }
+
+
+  /**
+   * Description : service for destroy the registration credential
+   * 
+   * @param int $id of registration credential
+   * @return bool if delete is success
+   */
+  public function destroy(int $id): bool
+  {
+    $registrationCredential = RegistrationCredential::find($id);
+    if($registrationCredential)
+      return $registrationCredential->delete();
+
+    return false;
   }
 }

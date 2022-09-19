@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Exceptions\EmptyDataException;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\RegistrationCredentialStoreRequest;
 use App\Http\Requests\RegistrationCredentialUpdateRequest;
 use App\Http\Resources\RegistrationCredentialResource;
 use App\Http\Resources\RegistrationCredentialResourceCollection;
-use App\Models\RegistrationCredential;
 use App\Services\RegistrationCredentialService;
 use Illuminate\Http\JsonResponse;
 
@@ -39,6 +36,8 @@ class RegistrationCredentialController extends ApiController
 
         return $this->responseWithResourceCollection(new RegistrationCredentialResourceCollection($allData), $this->responseName, $this->responseMessage['index'], 200);
     }
+
+
 
 
     /**
@@ -81,5 +80,34 @@ class RegistrationCredentialController extends ApiController
         $updated = $this->registrationCredentialService->update($id, $request->validated());
 
         return $this->responseWithResource(new RegistrationCredentialResource($updated),$this->responseName, $this->responseMessage['update'], 200);
+    }
+
+
+    /**
+     * Description : use to delete the registration credential by id
+     * 
+     * @param int $id of registration credential
+     * @return JsonResponse for api response
+     */
+    public function destroy(int $id):JsonResponse
+    {
+        $name = 'Delete registration credential';
+        $deleted = $this->registrationCredentialService->destroy($id);
+        
+        if($deleted){
+            return $this->apiResponse([
+                'success'=> true,
+                'name' => $name,
+                'message' => 'Delete registration credential successfully',
+            ],200);
+        }
+
+        return $this->apiResponse([
+            'success'=> false,
+            'name' => $name,
+            'message' => 'Delete registration credential failed, the data is not exists',
+            'error_code' => 404
+        ],404);
+
     }
 }
