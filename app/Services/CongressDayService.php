@@ -69,5 +69,22 @@ class CongressDayService{
 
     return $updated;
   }
+
+
+  /**
+   * Description : Service for soft delete congress day
+   * 
+   * @param int $id of congress day
+   * @return bool status of deletion
+   */
+  public function destroy(int $id):bool
+  {
+    $congressDay = CongressDay::find($id);
+    if($congressDay)
+      return $congressDay->delete();
+
+    return false;
+
+  }
 }
 ?>

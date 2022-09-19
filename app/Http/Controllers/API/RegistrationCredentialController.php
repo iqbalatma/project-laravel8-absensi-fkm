@@ -91,23 +91,21 @@ class RegistrationCredentialController extends ApiController
      */
     public function destroy(int $id):JsonResponse
     {
-        $name = 'Delete registration credential';
         $deleted = $this->registrationCredentialService->destroy($id);
         
         if($deleted){
             return $this->apiResponse([
                 'success'=> true,
-                'name' => $name,
+                'name' => $this->responseName,
                 'message' => 'Delete registration credential successfully',
             ],200);
         }
 
         return $this->apiResponse([
             'success'=> false,
-            'name' => $name,
+            'name' => $this->responseName,
             'message' => 'Delete registration credential failed, the data is not exists',
             'error_code' => 404
         ],404);
-
     }
 }

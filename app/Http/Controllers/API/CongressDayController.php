@@ -81,4 +81,31 @@ class CongressDayController extends ApiController
 
         return $this->responseWithResource(new CongressDayResource($updated),$this->responseName, $this->responseMessage['update'],200);
     }
+
+
+    /**
+     * Descriptopm : use for delete congress day data
+     * 
+     * @param int $id of the congress day
+     * @return JsonResposne for api response
+     */
+    public function destroy(int $id):JsonResponse
+    {
+        $deleted = $this->congressDaySerivce->destroy($id);
+        
+        if($deleted){
+            return $this->apiResponse([
+                'success'=> true,
+                'name' => $this->responseName,
+                'message' => 'Delete congress day successfully',
+            ],200);
+        }
+
+        return $this->apiResponse([
+            'success'=> false,
+            'name' => $this->responseName,
+            'message' => 'Delete congress day failed, the data is not exists',
+            'error_code' => 404
+        ],404);
+    }
 }
