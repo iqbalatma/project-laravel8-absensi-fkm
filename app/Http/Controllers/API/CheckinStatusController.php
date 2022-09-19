@@ -3,12 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Exceptions\RequestErrorException;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckinStatusStoreRequest;
-use App\Http\Resources\CheckinStatusResourceCollection;
-use App\Models\Checkin;
-use App\Models\CheckinStatus;
-use App\Models\User;
+use App\Http\Status;
 use App\Services\CheckinService;
 use Illuminate\Http\JsonResponse;
 
@@ -25,13 +21,15 @@ class CheckinStatusController extends ApiController
     public function checkin(CheckinStatusStoreRequest $request, string $personalToken): JsonResponse
     {
         $checkinStatus = $this->checkinService->checkin($personalToken, $request->validated());
-        if($checkinStatus==='token invalid'){
+
+        if($checkinStatus==Status::INVALID_TOKEN)
             throw new RequestErrorException("Your personal token is invalid", 404);
-        }
-        if($checkinStatus ==='congress day doest exist'){
+        
+
+        if($checkinStatus == Status::EMTPY_DATA)
             throw new RequestErrorException("Congress day does not exists", 404);
-        }
-        if($checkinStatus==='checkin success'){
+        
+        if($checkinStatus==Status::CHECKIN_SUCCESS){
             return $this->apiResponse( [
                 'success'   => true,
                 'name'      => 'Checkin',

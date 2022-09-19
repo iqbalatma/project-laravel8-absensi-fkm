@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Status;
 use App\Models\CheckinStatus;
 use App\Models\CongressDay;
 use App\Models\User;
@@ -31,14 +32,14 @@ class CheckinService{
    * @param array $requestedData of checkin user
    * @return string status of checkin
    */
-  public function checkin(string $personalToken, array $requestedData):string
+  public function checkin(string $personalToken, array $requestedData):int
   {
     if(!$this->isPersonalTokenValid($personalToken)){
-      return "token invalid";
+      return Status::INVALID_TOKEN;
     }
 
     if(!$this->isCongressDayExist($requestedData['congress_day_id'])){
-      return "congress day doest exist";
+      return Status::EMTPY_DATA;
     }
     
     $dataUser = $this->getDataUser();
@@ -53,18 +54,18 @@ class CheckinService{
 
     if (empty($checkinStatus)) { //for the user that not checkin yet
       CheckinStatus::create($requestedData);
-      return "checkin success";
+      return Status::CHECKIN_SUCCESS;
     } else {
       if($checkinStatus->checkin_status){ //for checkout the user that already checkin
           $checkinStatus->checkin_status = 0;
           $checkinStatus->save();
 
-          return "checkout success";
+          return Status::CHECKOUT_SUCCESS;
       }else{ //for checkin user that status is checkout
           $checkinStatus->checkin_status = 1;
           $checkinStatus->save();
 
-          return "checkin success";
+          return Status::CHECKIN_SUCCESS;
       }
     }
   }

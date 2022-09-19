@@ -84,7 +84,6 @@ class CongressDayService{
       return $congressDay->delete();
 
     return false;
-
   }
 }
 ?>
