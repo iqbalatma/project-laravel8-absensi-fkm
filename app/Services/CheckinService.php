@@ -91,7 +91,7 @@ class CheckinService{
    * @param string $personalToken of the user that try to checkin
    * @return bool status of validation personal token
    */
-  public function isPersonalTokenValid(string $personalToken):bool
+  private function isPersonalTokenValid(string $personalToken):bool
   {
     $user = $this->userModel->where('personal_token', $personalToken)->first();
 
@@ -107,7 +107,7 @@ class CheckinService{
    * 
    * 
    */
-  public function isCongressDayExist(int $congressDayId):bool
+  private function isCongressDayExist(int $congressDayId):bool
   {
     $congressDay = $this->congressDayModel->where('id', $congressDayId)->first();
     if($congressDay){
@@ -116,12 +116,12 @@ class CheckinService{
     return false;
   }
 
-  public function setDataUser(object $dataUser):void
+  private function setDataUser(object $dataUser):void
   {
     $this->dataUser = $dataUser;
   }
 
-  public function getDataUser()
+  private function getDataUser()
   {
     return $this->dataUser;
   }
