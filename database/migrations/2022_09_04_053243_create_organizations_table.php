@@ -16,7 +16,7 @@ class CreateOrganizationsTable extends Migration
         Schema::create('organizations', function (Blueprint $table) {
             $table->id();
             $table->string('name', 128);
-            $table->string('shortname', 16);
+            $table->string('shortname', 8)->nullable(true);
             $table->string('link_instagram', 128)->nullable(true);
             $table->string('link_website', 128)->nullable(true);
             $table->timestamps();

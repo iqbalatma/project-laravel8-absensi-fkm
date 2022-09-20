@@ -18,8 +18,8 @@ class CongressDayResource extends JsonResource
             'id' => $this->id,
             'h_day' => $this->h_day,
             'location' => $this->location,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => $this->created_at->format(config('app.datetime_format')),
+            'updated_at' => $this->updated_at->format(config('app.datetime_format'))
         ];
     }
 }

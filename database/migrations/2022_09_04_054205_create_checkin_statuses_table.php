@@ -15,7 +15,7 @@ class CreateCheckinStatusesTable extends Migration
     {
         Schema::create('checkin_statuses', function (Blueprint $table) {
             $table->id();
-            $table->boolean('checkin_status');
+            $table->boolean('checkin_status')->default(1);
             $table->bigInteger('user_id');
             $table->bigInteger('congress_day_id');
             $table->timestamps();

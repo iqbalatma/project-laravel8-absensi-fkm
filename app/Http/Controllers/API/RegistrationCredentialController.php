@@ -49,7 +49,7 @@ class RegistrationCredentialController extends ApiController
     public function store(RegistrationCredentialStoreRequest $request): JsonResponse
     {
         $storedData = $this->registrationCredentialService->store($request->validated());
-
+        
         return $this->responseWithResource(new RegistrationCredentialResource($storedData), $this->responseName, $this->responseMessage['store'], 201);
     }
 

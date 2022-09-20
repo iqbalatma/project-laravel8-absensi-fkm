@@ -82,6 +82,9 @@ return [
 
     'locale' => 'en',
 
+
+    'datetime_format' => 'Y-m-d H:i:s',
+
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale

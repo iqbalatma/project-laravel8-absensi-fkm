@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateCongressDaysTable extends Migration
@@ -15,8 +16,8 @@ class CreateCongressDaysTable extends Migration
     {
         Schema::create('congress_days', function (Blueprint $table) {
             $table->id();
-            $table->string('h_day');
-            $table->string('location');
+            $table->string('location')->nullable(true);
+            $table->timestamp('h_day')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
             $table->softDeletes();
         });
