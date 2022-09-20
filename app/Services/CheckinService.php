@@ -20,9 +20,23 @@ class CheckinService{
   }
 
 
-  public function index():object
+  /**
+   * Description : get all data checkin status
+   * 
+   * @param array $requestedData for query param
+   * @return object of eloquent model
+   */
+  public function getAll(array $requestedData)
   {
-    return $this->checkinStatusModel->all();
+    
+    $whereClause = [];
+    if(isset($requestedData['congress_day']))
+      $whereClause['congress_day_id'] = $requestedData['congress_day'];
+    
+    if(isset($requestedData['checkin_status']))
+      $whereClause['checkin_status'] = $requestedData['checkin_status'];
+
+    return CheckinStatus::with('user')->where($whereClause)->get();
   }
 
   /**

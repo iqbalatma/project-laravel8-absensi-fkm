@@ -9,4 +9,10 @@ class CheckinStatus extends Model
 {
     use HasFactory;
     protected $fillable = ['checkin_status', 'user_id', 'congress_day_id'];
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
