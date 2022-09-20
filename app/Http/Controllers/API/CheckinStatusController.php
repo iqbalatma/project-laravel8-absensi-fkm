@@ -52,7 +52,6 @@ class CheckinStatusController extends ApiController
         // validation
         $data = $checkinService->getAll($request->only('checkin_status', 'congress_day'));
 
-        // return response()->json(['data' => $data]);
         return $this->responseWithResourceCollection(new CheckinStatusResourceCollection($data), $this->responseName, $this->responseMessage['index'], 200);
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\API\CheckinController;
 use App\Http\Controllers\API\CheckinStatusController;
 use App\Http\Controllers\API\CongressDayController;
 use App\Http\Controllers\API\RegistrationCredentialController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -56,4 +57,14 @@ Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {
             Route::patch('/{id}', 'update');
             Route::delete('/{id}', 'destroy');
         });
+
+  
+});
+
+Route::middleware(['auth:api', 'role:superadmin'])->group(function () {
+    Route::prefix('users')
+    ->controller(UserController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
 });
