@@ -66,5 +66,6 @@ Route::middleware(['auth:api', 'role:superadmin'])->group(function () {
     ->controller(UserController::class)->group(function () {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
+        Route::patch('/{id}', 'update');
     });
 });

@@ -42,5 +42,19 @@ class UserService{
       throw new EmptyDataException(); 
     return $data;
   }
+
+  /**
+   * Description : use to update the requested data by id
+   * 
+   * @param int $id of user
+   * @param array $requestedData that want to update
+   */
+  public function update(int $id,array $requestedData)
+  {
+    
+  }
+  
+
+
 }
 ?>

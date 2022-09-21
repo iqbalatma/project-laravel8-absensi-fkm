@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserResourceCollection;
 use App\Services\UserService;
@@ -50,5 +51,11 @@ class UserController extends ApiController
             $this->responseName,
             $this->responseMessage['show'],
             200);
+    }
+
+    public function update(UserService $service,UserUpdateRequest $request, int $id):JsonResponse
+    {
+        $updated = $service->update($id, $request->validated());
+        return response()->json(['data'=>$request->validated()]);
     }
 }
