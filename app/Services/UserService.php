@@ -23,8 +23,7 @@ class UserService{
       $whereClause['generation'] = $requestedData['generation'];
 
     $data = User::where($whereClause)->get();
-    if ($data->isEmpty())
-      throw new EmptyDataException(); 
+    
 
     return $data; 
   }
@@ -38,7 +37,10 @@ class UserService{
    */
   public function show(int $id):object
   {
-    return User::find($id);
+    $data = User::find($id);
+    if (empty($data))
+      throw new EmptyDataException(); 
+    return $data;
   }
 }
 ?>
