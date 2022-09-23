@@ -93,13 +93,13 @@ class RegistrationCredentialController extends ApiController
     {
         $deleted = $this->registrationCredentialService->destroy($id);
         
-        if($deleted){
+        if($deleted)
             return $this->apiResponse([
                 'success'=> true,
                 'name' => $this->responseName,
                 'message' => 'Delete registration credential successfully',
             ],200);
-        }
+        
 
         return $this->apiResponse([
             'success'=> false,

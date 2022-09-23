@@ -56,6 +56,7 @@ class UserController extends ApiController
     public function update(UserService $service,UserUpdateRequest $request, int $id):JsonResponse
     {
         $updated = $service->update($id, $request->validated());
+        return response()->json(['data'=>$updated]);
         return response()->json(['data'=>$request->validated()]);
     }
 }

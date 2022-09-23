@@ -32,6 +32,8 @@ Route::controller(AuthController::class)->group(function (){
     Route::post('/register/{registration_credential}', 'register');
     Route::post('/login', 'login')->name('auth.login');
     Route::post('/logout', 'logout');
+    Route::post('/refresh', 'refresh');
+    Route::post('/me', 'me');
 });
 
 Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {

@@ -8,8 +8,12 @@ use App\Http\Controllers\API\ApiController;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Services\RegistrationService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthController extends ApiController
 {
@@ -17,7 +21,7 @@ class AuthController extends ApiController
     public function __construct(RegistrationService $registrationService)
     {
         $this->registrationService = $registrationService;
-        $this->middleware('auth:api', ['except' => ['login','register']]);
+        $this->middleware('auth:api', ['except' => ['login','register','refresh']]);
     }
 
 
@@ -106,5 +110,10 @@ class AuthController extends ApiController
                 ]
             ]
         ],200);
+    }
+
+    public function me()
+    {
+        return response()->json(auth()->user());
     }
 }

@@ -51,10 +51,8 @@ class UserService{
    */
   public function update(int $id,array $requestedData)
   {
-    
+    User::where('id', $id)->update($requestedData);
+    return User::find($id);
   }
-  
-
-
 }
 ?>
