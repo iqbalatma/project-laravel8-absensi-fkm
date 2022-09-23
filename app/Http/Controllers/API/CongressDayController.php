@@ -14,7 +14,6 @@ use Illuminate\Http\JsonResponse;
 
 class CongressDayController extends ApiController
 {
-    private CongressDayService $congressDaySerivce;
     private string $responseName = 'Congress Day';
     private array $responseMessage = [
         'index'=>'Get list data congress day successfully',
@@ -23,21 +22,20 @@ class CongressDayController extends ApiController
         'update'=> 'Update congress day successfully'
     ];
 
-    public function __construct(CongressDayService $congressDayService) {
-        $this->congressDaySerivce = $congressDayService;
-    }
-
-
     /**
      * Description : for get data list of congress day
      * 
      * @param JsonResponse for api response
      */
-    public function index():JsonResponse
+    public function index(CongressDayService $service):JsonResponse
     {
-        $data = $this->congressDaySerivce->index();
+        $data = $service->index();
 
-        return $this->responseWithResourceCollection(new CongressDayResourceCollection($data), $this->responseName, $this->responseMessage['index'], 200);
+        return $this->responseWithResourceCollection(
+            new CongressDayResourceCollection($data),
+            $this->responseName,
+            $this->responseMessage['index'],
+            200);
     }
 
 
@@ -47,11 +45,15 @@ class CongressDayController extends ApiController
      * @param integer $id of the congress day
      * @return JsonResponse resource for response
      */
-    public function show(int $id):JsonResponse
+    public function show(CongressDayService $service,int $id):JsonResponse
     {
-        $data = $this->congressDaySerivce->show($id);
+        $data = $service->show($id);
 
-        return $this->responseWithResource(new CongressDayResource($data),$this->responseName, $this->responseMessage['show'],200);
+        return $this->responseWithResource(
+            new CongressDayResource($data),
+            $this->responseName, 
+            $this->responseMessage['show'],
+            200);
     }
 
     /**
@@ -60,11 +62,15 @@ class CongressDayController extends ApiController
      * @param CongressDayStoreRequest $request for validate the request
      * @return JsonResponse for response 
      */
-    public function store(CongressDayStoreRequest $request):JsonResponse
+    public function store(CongressDayService $service, CongressDayStoreRequest $request):JsonResponse
     {
-        $stored = $this->congressDaySerivce->store($request->validated());
+        $stored = $service->store($request->validated());
 
-        return $this->responseWithResource(new CongressDayResource($stored),$this->responseName, $this->responseMessage['show'],201);
+        return $this->responseWithResource(
+            new CongressDayResource($stored),
+            $this->responseName, 
+            $this->responseMessage['show'],
+            201);
     }
 
 
@@ -75,9 +81,9 @@ class CongressDayController extends ApiController
      * @param integer $id the id that want to update
      * @return JsonResponse for response
      */
-    public function update(CongressDayUpdateRequest $request, $id):JsonResponse
+    public function update(CongressDayService $service, CongressDayUpdateRequest $request, $id):JsonResponse
     {
-        $updated = $this->congressDaySerivce->update($id, $request->validated());
+        $updated = $service->update($id, $request->validated());
 
         return $this->responseWithResource(new CongressDayResource($updated),$this->responseName, $this->responseMessage['update'],200);
     }
@@ -89,9 +95,9 @@ class CongressDayController extends ApiController
      * @param int $id of the congress day
      * @return JsonResposne for api response
      */
-    public function destroy(int $id):JsonResponse
+    public function destroy(CongressDayService $service, int $id):JsonResponse
     {
-        $deleted = $this->congressDaySerivce->destroy($id);
+        $deleted = $service->destroy($id);
         
         if($deleted){
             return $this->apiResponse([
