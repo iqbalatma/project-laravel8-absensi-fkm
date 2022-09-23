@@ -19,6 +19,7 @@ class RegistrationCredentialResource extends JsonResource
             'token' => $this->token,
             'is_active' => $this->is_active,
             'role_id' => $this->role_id,
+            'role_name' => $this->role->name,
             'limit' => $this->limit,
             'created_at' => $this->created_at->format(config('app.datetime_format')),
             'updated_at' =>  $this->updated_at->format(config('app.datetime_format')),

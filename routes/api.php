@@ -44,6 +44,7 @@ Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {
             Route::get('/', 'index');
             Route::patch('/{id}', 'update');
             Route::delete('/{id}', 'destroy');
+            Route::get('/token/{token}', 'showByToken');
         });
 
     Route::prefix('checkin')
