@@ -20,12 +20,16 @@ class RegistrationCredentialService
   /**
    * Description : Use to get all data of credential service
    * 
+   * @param int $totalPerPage is 
    * @return RegistrationCredential of eloquent instance
    */
-  public function getAll(): object
+  public function getAll(?int $totalPerPage): object
   {
-    $totalPerPage = request()->get('total_per_page') ?? 5;
-    return $this->registrationCredentialModel->paginate($totalPerPage);
+    $data = empty($totalPerPage) ? 
+      $this->registrationCredentialModel->all():
+      $this->registrationCredentialModel->paginate();
+
+    return $data;
   }
 
 

@@ -32,9 +32,14 @@ class RegistrationCredentialController extends ApiController
      */
     public function index():JsonResponse
     {
-        $allData =  $this->registrationCredentialService->getAll();
+        $totalPerPage = request()->get('total_per_page') ?? null;
+        $allData =  $this->registrationCredentialService->getAll($totalPerPage);
 
-        return $this->responseWithResourceCollection(new RegistrationCredentialResourceCollection($allData), $this->responseName, $this->responseMessage['index'], 200);
+        return $this->responseWithResourceCollection(
+            new RegistrationCredentialResourceCollection($allData), 
+            $this->responseName, 
+            $this->responseMessage['index'],
+            200);
     }
 
 
