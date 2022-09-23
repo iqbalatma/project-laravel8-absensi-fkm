@@ -49,7 +49,6 @@ class CheckinStatusController extends ApiController
 
     public function index(Request $request, CheckinService $checkinService): JsonResponse
     {
-        // validation
         $data = $checkinService->getAll($request->only('checkin_status', 'congress_day'));
 
         return $this->responseWithResourceCollection(new CheckinStatusResourceCollection($data), $this->responseName, $this->responseMessage['index'], 200);
