@@ -20,20 +20,16 @@ class RegistrationCredentialController extends ApiController
         'update' => 'Update registration credential successfuly',
     ];
 
-    public function __construct(RegistrationCredentialService $registrationCredentialService)
-    {
-        $this->registrationCredentialService = $registrationCredentialService;
-    }
 
     /**
      * Description : get all registration credential service
      * 
      * @return JsonResponse for response api
      */
-    public function index():JsonResponse
+    public function index(RegistrationCredentialService $service):JsonResponse
     {
         $totalPerPage = request()->get('total_per_page') ?? null;
-        $allData =  $this->registrationCredentialService->getAll($totalPerPage);
+        $allData =  $service->getAll($totalPerPage);
 
         return $this->responseWithResourceCollection(
             new RegistrationCredentialResourceCollection($allData), 
@@ -43,19 +39,21 @@ class RegistrationCredentialController extends ApiController
     }
 
 
-
-
     /**
      * Description : to add new registration credential
      * 
      * @param RegistrationCredentialStoreRequest $request for validate request
      * @return JsonResponse for response api
      */
-    public function store(RegistrationCredentialStoreRequest $request): JsonResponse
+    public function store(RegistrationCredentialStoreRequest $request,RegistrationCredentialService $service): JsonResponse
     {
-        $storedData = $this->registrationCredentialService->store($request->validated());
+        $storedData = $service->store($request->validated());
         
-        return $this->responseWithResource(new RegistrationCredentialResource($storedData), $this->responseName, $this->responseMessage['store'], 201);
+        return $this->responseWithResource(
+            new RegistrationCredentialResource($storedData), 
+            $this->responseName, 
+            $this->responseMessage['store'],
+            201);
     }
 
 
@@ -65,9 +63,9 @@ class RegistrationCredentialController extends ApiController
      * @param int $id of registration credential
      * @return JsonResponse for user
      */
-    public function show(int $id):JsonResponse
+    public function show(RegistrationCredentialService $service,int $id):JsonResponse
     {
-        $data = $this->registrationCredentialService->show($id);
+        $data = $service->show($id);
                 
         return $this->responseWithResource(new RegistrationCredentialResource($data), $this->responseName,$this->responseMessage['show'] , 200);
     }
@@ -80,9 +78,9 @@ class RegistrationCredentialController extends ApiController
      * @param int $id of the credential update request
      * @return JsonResponse for the user response
      */
-    public function update(RegistrationCredentialUpdateRequest $request, int $id): JsonResponse
+    public function update(RegistrationCredentialUpdateRequest $request, RegistrationCredentialService $service, int $id): JsonResponse
     {
-        $updated = $this->registrationCredentialService->update($id, $request->validated());
+        $updated = $service->update($id, $request->validated());
 
         return $this->responseWithResource(new RegistrationCredentialResource($updated),$this->responseName, $this->responseMessage['update'], 200);
     }
@@ -94,9 +92,9 @@ class RegistrationCredentialController extends ApiController
      * @param int $id of registration credential
      * @return JsonResponse for api response
      */
-    public function destroy(int $id):JsonResponse
+    public function destroy(RegistrationCredentialService $service, int $id):JsonResponse
     {
-        $deleted = $this->registrationCredentialService->destroy($id);
+        $deleted = $service->destroy($id);
         
         if($deleted)
             return $this->apiResponse([
@@ -104,7 +102,6 @@ class RegistrationCredentialController extends ApiController
                 'name' => $this->responseName,
                 'message' => 'Delete registration credential successfully',
             ],200);
-        
 
         return $this->apiResponse([
             'success'=> false,
