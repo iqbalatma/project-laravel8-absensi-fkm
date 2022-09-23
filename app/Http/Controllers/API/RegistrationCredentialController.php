@@ -70,6 +70,23 @@ class RegistrationCredentialController extends ApiController
         return $this->responseWithResource(new RegistrationCredentialResource($data), $this->responseName,$this->responseMessage['show'] , 200);
     }
 
+    /**
+     * Description : use to get registration credential by id
+     * 
+     * @param int $id of registration credential
+     * @return JsonResponse for user
+     */
+    public function showByToken(RegistrationCredentialService $service, string $token):JsonResponse
+    {
+        $data = $service->showByToken($token);
+                
+        return $this->responseWithResource(
+            new RegistrationCredentialResource($data),
+            $this->responseName,
+            $this->responseMessage['show'],
+            200);
+    }
+
 
     /**
      * Description : update the registration credential 

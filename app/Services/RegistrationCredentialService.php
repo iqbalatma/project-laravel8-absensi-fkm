@@ -27,7 +27,7 @@ class RegistrationCredentialService
   {
     $data = empty($totalPerPage) ? 
       $this->registrationCredentialModel->all():
-      $this->registrationCredentialModel->paginate();
+      $this->registrationCredentialModel->paginate($totalPerPage);
 
     return $data;
   }
@@ -41,7 +41,25 @@ class RegistrationCredentialService
    */
   public function show(int $id): object
   {
-    $data = RegistrationCredential::with('organization')->find($id);
+    $data = RegistrationCredential::with('organization', 'role')->find($id);
+
+    if (empty($data))
+      throw new EmptyDataException();
+
+    return $data;
+  }
+
+  /**
+   * Description : for get registration credential by id
+   * 
+   * @param integer $id of registration credential
+   * @return RegistrationCredential
+   */
+  public function showByToken(string $token): object
+  {
+    $data = RegistrationCredential::with('organization', 'role')
+      ->where('token',$token)
+      ->first();
 
     if (empty($data))
       throw new EmptyDataException();
