@@ -28,6 +28,7 @@ class UserController extends ApiController
     public function index(UserService $service, Request $request):JsonResponse
     {
         $data = $service->getAll($request->only('role_id','generation'));
+        // return response()->json(['data'=> $data]);
         return $this->responseWithResource(
             new UserResourceCollection($data),
             $this->responseName,

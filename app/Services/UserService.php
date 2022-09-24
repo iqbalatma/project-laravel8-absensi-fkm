@@ -16,13 +16,14 @@ class UserService{
   public function getAll(array $requestedData):object
   {
     $whereClause = [];
-    if(isset($requestedData['role_id'])) 
+    if(isset($requestedData['role_id']))
       $whereClause['role_id'] = $requestedData['role_id'];
+    
 
     if(isset($requestedData['generation'])) 
       $whereClause['generation'] = $requestedData['generation'];
 
-    $data = User::where($whereClause)->get();
+    $data = User::where($whereClause)->where('role_id', '!=', 1)->where('role_id', '!=', 2)->get();
     
 
     return $data; 

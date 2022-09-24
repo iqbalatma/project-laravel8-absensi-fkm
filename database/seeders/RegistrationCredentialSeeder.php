@@ -20,7 +20,7 @@ class RegistrationCredentialSeeder extends Seeder
  
     	for($i = 1; $i <= 100; $i++){
     		DB::table('registration_credentials')->insert([
-                'token' => Str::random(16),
+                'token' => Str::random(8),
                 'is_active' => $faker->numberBetween(0, 1),
                 'role_id' =>$faker->numberBetween(1,5),
                 'organization_id'=>$faker->numberBetween(1,9),
