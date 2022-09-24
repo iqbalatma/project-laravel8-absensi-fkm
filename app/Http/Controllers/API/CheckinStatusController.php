@@ -12,18 +12,14 @@ use Illuminate\Http\Request;
 
 class CheckinStatusController extends ApiController
 {
-    private CheckinService $checkinService;
     private string $responseName = 'Checkin Status';
     private array $responseMessage = [
         'index' => 'Get list checkin status successfully'
     ];
-    public function __construct(CheckinService $checkinService)
+
+    public function checkin(CheckinService $service, CheckinStatusStoreRequest $request, string $personalToken): JsonResponse
     {
-        $this->checkinService = $checkinService;
-    }
-    public function checkin(CheckinStatusStoreRequest $request, string $personalToken): JsonResponse
-    {
-        $checkinStatus = $this->checkinService->checkin($personalToken, $request->validated());
+        $checkinStatus = $service->checkin($personalToken, $request->validated());
 
         if ($checkinStatus == Status::INVALID_TOKEN)
             throw new RequestErrorException("Your personal token is invalid", 404);
@@ -49,8 +45,14 @@ class CheckinStatusController extends ApiController
 
     public function index(Request $request, CheckinService $checkinService): JsonResponse
     {
-        $data = $checkinService->getAll($request->only('checkin_status', 'congress_day'));
+        $totalPerpage = request()->get('total_per_page')??null;
+        $data = $checkinService->getAll($totalPerpage, $request->only('checkin_status', 'congress_day','role_id', 'generation','organization_id'));
 
-        return $this->responseWithResourceCollection(new CheckinStatusResourceCollection($data), $this->responseName, $this->responseMessage['index'], 200);
+        // return response()->json($data);
+        return $this->responseWithResourceCollection(
+            new CheckinStatusResourceCollection($data),
+            $this->responseName,
+            $this->responseMessage['index'],
+            200);
     }
 }

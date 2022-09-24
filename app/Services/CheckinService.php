@@ -26,17 +26,38 @@ class CheckinService{
    * @param array $requestedData for query param
    * @return object of eloquent model
    */
-  public function getAll(array $requestedData)
+  public function getAll(?int $totalPerPage, array $requestedData)
   {
     
     $whereClause = [];
+    $whereClauseUser = [];
     if(isset($requestedData['congress_day']))
       $whereClause['congress_day_id'] = $requestedData['congress_day'];
     
     if(isset($requestedData['checkin_status']))
       $whereClause['checkin_status'] = $requestedData['checkin_status'];
+    
+    if(isset($requestedData['role_id']))
+      $whereClauseUser['role_id'] = $requestedData['role_id'];
 
-    return CheckinStatus::with('user')->where($whereClause)->get();
+    if(isset($requestedData['generation']))
+      $whereClauseUser['generation'] = $requestedData['generation'];
+
+    if(isset($requestedData['organization_id']))
+      $whereClauseUser['organization_id'] = $requestedData['organization_id'];
+
+    $data = CheckinStatus::whereHas('user', function($q) use ($whereClauseUser){
+        $q->where($whereClauseUser);
+      })
+      ->with(['user.role', 'user.organization'])
+      ->where($whereClause);
+      
+    $data = empty($totalPerPage) ? 
+      $data->get():
+      $data->paginate($totalPerPage);
+
+
+    return $data;
   }
 
   /**
