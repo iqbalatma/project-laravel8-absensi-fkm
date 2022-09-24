@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\CheckinController;
 use App\Http\Controllers\API\CheckinStatusController;
+use App\Http\Controllers\API\CheckinStatusMonitoringController;
 use App\Http\Controllers\API\CongressDayController;
 use App\Http\Controllers\API\RegistrationCredentialController;
 use App\Http\Controllers\API\UserController;
@@ -52,6 +53,10 @@ Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {
             Route::post('/{personal_token}', 'checkin');
             Route::get('/', 'index');
         });
+    Route::prefix('checkin')
+        ->controller(CheckinStatusMonitoringController::class)->group(function () {
+            Route::get('/monitoring', 'index');
+        });
     Route::prefix('congress-day')
         ->controller(CongressDayController::class)->group(function () {
             Route::post('/', 'store');
@@ -60,8 +65,6 @@ Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {
             Route::patch('/{id}', 'update');
             Route::delete('/{id}', 'destroy');
         });
-
-  
 });
 
 Route::middleware(['auth:api', 'role:superadmin'])->group(function () {
