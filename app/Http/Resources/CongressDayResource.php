@@ -14,12 +14,17 @@ class CongressDayResource extends JsonResource
      */
     public function toArray($request)
     {
+        if(!empty($this->created_at))
+            $this->created_at = $this->created_at->format(config('app.datetime_format'));
+        
+        if(!empty($this->updated_at))
+            $this->updated_at = $this->updated_at->format(config('app.datetime_format'));
         return [
             'id' => $this->id,
             'h_day' => $this->h_day,
             'location' => $this->location,
-            'created_at' => $this->created_at->format(config('app.datetime_format')),
-            'updated_at' => $this->updated_at->format(config('app.datetime_format'))
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
         ];
     }
 }
