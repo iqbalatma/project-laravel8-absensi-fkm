@@ -39,14 +39,19 @@ class CheckinService{
     
     if(isset($requestedData['role_id']))
       $whereClauseUser['role_id'] = $requestedData['role_id'];
-      
+
     if(isset($requestedData['generation']))
       $whereClauseUser['generation'] = $requestedData['generation'];
 
-    
+    if(isset($requestedData['organization_id']))
+      $whereClauseUser['organization_id'] = $requestedData['organization_id'];
 
-    $data = CheckinStatus::with('user', 'user.role', 'user.organization')
+    $data = CheckinStatus::whereHas('user', function($q) use ($whereClauseUser){
+        $q->where($whereClauseUser);
+      })
+      ->with(['user.role', 'user.organization'])
       ->where($whereClause);
+      
     $data = empty($totalPerPage) ? 
       $data->get():
       $data->paginate($totalPerPage);
