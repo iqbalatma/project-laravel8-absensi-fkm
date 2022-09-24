@@ -72,3 +72,5 @@ Route::middleware(['auth:api', 'role:superadmin'])->group(function () {
         Route::patch('/{id}', 'update');
     });
 });
+
+Route::get('registration-credentials/token/{token}', [RegistrationCredentialController::class, 'showByToken']);
