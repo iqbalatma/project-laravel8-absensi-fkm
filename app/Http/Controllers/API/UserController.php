@@ -27,8 +27,8 @@ class UserController extends ApiController
      */
     public function index(UserService $service, Request $request):JsonResponse
     {
-        $data = $service->getAll($request->only('role_id','generation'));
-        // return response()->json(['data'=> $data]);
+        $totalPerPage = request()->get('total_per_page') ?? null;
+        $data = $service->getAll($request->only('role_id','generation','organization_id'), $totalPerPage);
         return $this->responseWithResource(
             new UserResourceCollection($data),
             $this->responseName,

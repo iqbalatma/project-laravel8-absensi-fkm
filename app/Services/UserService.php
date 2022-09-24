@@ -2,9 +2,7 @@
 namespace App\Services;
 
 use App\Exceptions\EmptyDataException;
-use App\Models\CongressDay;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 class UserService{
 
@@ -13,7 +11,7 @@ class UserService{
    * 
    * @return object eloquent model
    */
-  public function getAll(array $requestedData):object
+  public function getAll(array $requestedData, ?int $totalPerPage):object
   {
     $whereClause = [];
     if(isset($requestedData['role_id']))
@@ -23,8 +21,17 @@ class UserService{
     if(isset($requestedData['generation'])) 
       $whereClause['generation'] = $requestedData['generation'];
 
-    $data = User::where($whereClause)->where('role_id', '!=', 1)->where('role_id', '!=', 2)->get();
-    
+    if(isset($requestedData['organization_id'])) 
+      $whereClause['organization_id'] = $requestedData['organization_id'];
+
+    $data = User::with('organization')
+      ->where($whereClause)
+      ->where('role_id', '!=', 1)
+      ->where('role_id', '!=', 2);
+      
+    $data = empty($totalPerPage) ? 
+      $data->get():
+      $data->paginate($totalPerPage);
 
     return $data; 
   }
