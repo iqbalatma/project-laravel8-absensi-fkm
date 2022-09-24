@@ -23,6 +23,7 @@ class CheckinStatusSeeder extends Seeder
                 'user_id' => $faker->unique()->numberBetween(1,100),
                 'congress_day_id' => $faker->numberBetween(1,100),
                 'created_at' => $faker->dateTime(),
+                'last_checkin_time' => $faker->dateTime(),
     		]);
     	}
     }
