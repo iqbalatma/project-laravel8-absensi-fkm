@@ -18,6 +18,7 @@ class CreateCheckinStatusesTable extends Migration
             $table->boolean('checkin_status')->default(1);
             $table->bigInteger('user_id');
             $table->bigInteger('congress_day_id');
+            $table->timestamp('last_checkin_time');
             $table->timestamps();
             $table->softDeletes();
         });

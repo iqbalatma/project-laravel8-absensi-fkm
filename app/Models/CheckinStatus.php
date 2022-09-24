@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class CheckinStatus extends Model
 {
     use HasFactory;
-    protected $fillable = ['checkin_status', 'user_id', 'congress_day_id'];
+    protected $fillable = ['checkin_status', 'user_id', 'congress_day_id', 'last_checkin_time'];
 
 
     public function user()

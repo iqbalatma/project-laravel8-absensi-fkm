@@ -9,7 +9,7 @@ class CheckinStatusMonitoringService{
   /**
    * Description : Use for get all data monitoring summary on checkin status
    * 
-   * @param 
+   * @param array summary of data checkin status
    */
   public function getAllMonitoringData():array
   {
@@ -29,6 +29,19 @@ class CheckinStatusMonitoringService{
       'all_user_have_checked_in' => $dataCheckinStatus->count(),
       'all_active_guest_non_organization' => $dataCheckinStatus->where('user.organization_id', null)->count(),
     ];
+
+    return $data;
+  }
+
+
+  /**
+   * Description : use to get all data latest checkin user
+   * 
+   * @return object eloquent object model
+   */
+  public function getLatestCheckinUser():object
+  {
+    $data = CheckinStatus::with('user')->orderBy('last_checkin_time', 'desc')->get();
 
     return $data;
   }

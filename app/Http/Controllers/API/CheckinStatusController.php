@@ -48,7 +48,6 @@ class CheckinStatusController extends ApiController
         $totalPerpage = request()->get('total_per_page')??null;
         $data = $checkinService->getAll($totalPerpage, $request->only('checkin_status', 'congress_day','role_id', 'generation','organization_id'));
 
-        // return response()->json($data);
         return $this->responseWithResourceCollection(
             new CheckinStatusResourceCollection($data),
             $this->responseName,

@@ -55,7 +55,8 @@ Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {
         });
     Route::prefix('checkin')
         ->controller(CheckinStatusMonitoringController::class)->group(function () {
-            Route::get('/monitoring', 'index');
+            Route::get('/monitoring', 'getSummary');
+            Route::get('/latest', 'getLatest');
         });
     Route::prefix('congress-day')
         ->controller(CongressDayController::class)->group(function () {
