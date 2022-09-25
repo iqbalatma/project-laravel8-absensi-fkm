@@ -20,6 +20,7 @@ class CreateCheckinStatusesTable extends Migration
             $table->bigInteger('user_id');
             $table->bigInteger('congress_day_id');
             $table->timestamp('last_checkin_time')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('last_checkout_time')->nullable(true);
             $table->timestamps();
             $table->softDeletes();
         });
