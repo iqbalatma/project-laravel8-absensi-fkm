@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Exceptions\EmptyDataException;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\CongressDayStoreRequest;
 use App\Http\Requests\CongressDayUpdateRequest;
 use App\Http\Resources\CongressDayResource;
 use App\Http\Resources\CongressDayResourceCollection;
-use App\Models\CongressDay;
 use App\Services\CongressDayService;
 use Illuminate\Http\JsonResponse;
 
@@ -25,35 +22,38 @@ class CongressDayController extends ApiController
     /**
      * Description : for get data list of congress day
      * 
-     * @param JsonResponse for api response
+     * @param CongressDayService $service for execute logic
+     * @return JsonResponse for api response
      */
     public function index(CongressDayService $service):JsonResponse
     {
-        $data = $service->index();
+        $totalPerPage = request()->get('total_per_page') ?? null;
+        $data = $service->getAllData($totalPerPage);
 
         return $this->responseWithResourceCollection(
             new CongressDayResourceCollection($data),
             $this->responseName,
             $this->responseMessage['index'],
-            200);
+            JsonResponse::HTTP_OK);
     }
 
 
     /**
      * Description : to get single congress day
      * 
+     * @param CongressDayService $service for execute logic
      * @param integer $id of the congress day
      * @return JsonResponse resource for response
      */
     public function show(CongressDayService $service,int $id):JsonResponse
     {
-        $data = $service->show($id);
+        $data = $service->getById($id);
 
         return $this->responseWithResource(
             new CongressDayResource($data),
             $this->responseName, 
             $this->responseMessage['show'],
-            200);
+            JsonResponse::HTTP_OK);
     }
 
     /**
@@ -70,7 +70,7 @@ class CongressDayController extends ApiController
             new CongressDayResource($stored),
             $this->responseName, 
             $this->responseMessage['show'],
-            201);
+            JsonResponse::HTTP_CREATED);
     }
 
 
@@ -85,7 +85,11 @@ class CongressDayController extends ApiController
     {
         $updated = $service->update($id, $request->validated());
 
-        return $this->responseWithResource(new CongressDayResource($updated),$this->responseName, $this->responseMessage['update'],200);
+        return $this->responseWithResource(
+            new CongressDayResource($updated),
+            $this->responseName,
+            $this->responseMessage['update'],
+            JsonResponse::HTTP_OK);
     }
 
 
@@ -98,20 +102,20 @@ class CongressDayController extends ApiController
     public function destroy(CongressDayService $service, int $id):JsonResponse
     {
         $deleted = $service->destroy($id);
-        
+
         if($deleted){
             return $this->apiResponse([
                 'success'=> true,
                 'name' => $this->responseName,
                 'message' => 'Delete congress day successfully',
-            ],200);
+            ],JsonResponse::HTTP_OK);
         }
 
         return $this->apiResponse([
             'success'=> false,
             'name' => $this->responseName,
             'message' => 'Delete congress day failed, the data is not exists',
-            'error_code' => 404
-        ],404);
+            'error_code' => JsonResponse::HTTP_NOT_FOUND
+        ],JsonResponse::HTTP_NOT_FOUND);
     }
 }

@@ -6,22 +6,14 @@ use App\Models\CongressDay;
 use Illuminate\Support\Facades\DB;
 
 class CongressDayService{
-  private CongressDay $congressDay;
-  public function __construct(CongressDay $congressDay) {
-    $this->congressDay = $congressDay;
-  }
-
-
   /**
    * Description : use to get list data of congress day
    * 
    * @return object
    */
-  public function index():object
+  public function getAllData(?int $totalPerPage):object
   {
-    $totalPerPage = request()->get('total_per_page') ?? 5;
-    $data = $this->congressDay->paginate($totalPerPage);
-
+    $data = empty($totalPerPage) ? CongressDay::all(): CongressDay::paginate($totalPerPage);
     return $data;
   }
 
@@ -32,9 +24,9 @@ class CongressDayService{
    * @param int $id of congress day
    * @return object
    */
-  public function show(int $id):object
+  public function getById(int $id):object
   {
-    $data =$this->congressDay->find($id);
+    $data = CongressDay::find($id);
     if (empty($data)) throw new EmptyDataException();
     
     return $data;
@@ -49,7 +41,7 @@ class CongressDayService{
    */
   public function store(array $requestedData): object
   {
-    return  CongressDay::create($requestedData);
+    return CongressDay::create($requestedData);
   }
 
 
@@ -59,12 +51,13 @@ class CongressDayService{
    * @param int $id of congress day
    * @param array $reuqestedData that already validated
    */
-  public function update(int $id, array $requestedData):object
+  public function update(int $id, array $requestedData)
   {
     DB::beginTransaction();
-    CongressDay::where('id',$id)->update($requestedData);
-    $updated = CongressDay::find($id);
+      CongressDay::where('id',$id)->update($requestedData);
+      $updated = CongressDay::find($id);
     DB::commit();
+    
     if (empty($updated)) throw new EmptyDataException();
 
     return $updated;
