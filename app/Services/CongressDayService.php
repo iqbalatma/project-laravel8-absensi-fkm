@@ -57,8 +57,8 @@ class CongressDayService{
       CongressDay::where('id',$id)->update($requestedData);
       $updated = CongressDay::find($id);
     DB::commit();
-    
-    if (empty($updated)) throw new EmptyDataException();
+
+    if (!$updated) throw new EmptyDataException();
 
     return $updated;
   }

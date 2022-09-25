@@ -4,19 +4,12 @@ namespace App\Services;
 
 use App\Exceptions\EmptyDataException;
 use App\Models\RegistrationCredential;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 
 class RegistrationCredentialService
 {
-
-  private RegistrationCredential $registrationCredentialModel;
-  public function __construct()
-  {
-    $this->registrationCredentialModel = new RegistrationCredential();
-  }
-
-
   /**
    * Description : Use to get all data of credential service
    * 
@@ -26,8 +19,8 @@ class RegistrationCredentialService
   public function getAll(?int $totalPerPage): object
   {
     $data = empty($totalPerPage) ? 
-      $this->registrationCredentialModel->all():
-      $this->registrationCredentialModel->paginate($totalPerPage);
+      RegistrationCredential::all():
+      RegistrationCredential::paginate($totalPerPage);
 
     return $data;
   }
@@ -39,12 +32,11 @@ class RegistrationCredentialService
    * @param integer $id of registration credential
    * @return RegistrationCredential
    */
-  public function show(int $id): object
+  public function showById(int $id): object
   {
     $data = RegistrationCredential::with('organization', 'role')->find($id);
 
-    if (empty($data))
-      throw new EmptyDataException();
+    if (empty($data)) throw new EmptyDataException();
 
     return $data;
   }
@@ -61,8 +53,7 @@ class RegistrationCredentialService
       ->where('token',$token)
       ->first();
 
-    if (empty($data))
-      throw new EmptyDataException();
+    if (empty($data)) throw new EmptyDataException();
 
     return $data;
   }
@@ -79,7 +70,7 @@ class RegistrationCredentialService
     $requestedData['is_active'] = 1;
     $requestedData['token'] = Str::random(8);
 
-    return  $this->registrationCredentialModel->create($requestedData);
+    return  RegistrationCredential::create($requestedData);
   }
 
 
@@ -92,11 +83,12 @@ class RegistrationCredentialService
    */
   public function update(int $id, array $requestedData): object
   {
-    $updated = RegistrationCredential::where('id', $id)->update($requestedData);
+    DB::beginTransaction();
+      $updated = RegistrationCredential::where('id', $id)->update($requestedData);
+      $data = RegistrationCredential::find($id);
+    DB::commit();
 
     if (!$updated) throw new EmptyDataException();
-
-    $data = RegistrationCredential::find($id);
     return $data;
   }
 
