@@ -31,22 +31,27 @@ class CheckinStatusController extends ApiController
         if ($checkinStatus == Status::CHECKIN_SUCCESS) {
             return $this->apiResponse([
                 'success'   => true,
-                'name'      => 'Checkin',
+                'name'      => $this->responseName,
                 'message'   => 'Checkin user successfully',
             ], 200);
         }
 
         return $this->apiResponse([
             'success'   => true,
-            'name'      => 'Checkout',
+            'name'      => $this->responseName,
             'message'   => 'Checkout user successfully',
         ], 200);
     }
 
-    public function index(Request $request, CheckinService $checkinService): JsonResponse
+    public function index(CheckinService $service): JsonResponse
     {
         $totalPerpage = request()->get('total_per_page')??null;
-        $data = $checkinService->getAll($totalPerpage, $request->only('checkin_status', 'congress_day','role_id', 'generation','organization_id'));
+        $data = $service->getAll($totalPerpage, request()->only(
+            'checkin_status',
+            'congress_day',
+            'role_id',
+            'generation',
+            'organization_id'));
 
         return $this->responseWithResourceCollection(
             new CheckinStatusResourceCollection($data),

@@ -41,7 +41,13 @@ class CheckinStatusMonitoringService{
    */
   public function getLatestCheckinUser():object
   {
-    $data = CheckinStatus::with('user')->orderBy('last_checkin_time', 'desc')->get();
+    $data = CheckinStatus::with(['user'=> function($q){
+      $q->select('id', 'name','role_id', 'organization_id');
+    }])
+      ->select('id','last_checkin_time', 'user_id')
+      ->limit(4)
+      ->orderBy('last_checkin_time', 'desc')
+      ->get();
 
     return $data;
   }

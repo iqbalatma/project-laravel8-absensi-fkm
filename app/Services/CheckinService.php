@@ -9,14 +9,11 @@ use App\Models\User;
 
 class CheckinService{
 
-  private CheckinStatus $checkinStatusModel;
-  private CongressDay $congressDayModel;
   private object $dataUser;
   private User $userModel;
-  public function __construct(CheckinStatus $checkinStatusModel, User $userModel, CongressDay $congressDayModel) {
+  public function __construct(CheckinStatus $checkinStatusModel, User $userModel) {
     $this->checkinStatusModel = $checkinStatusModel;
     $this->userModel = $userModel;
-    $this->congressDayModel = $congressDayModel;
   }
 
 
@@ -131,7 +128,7 @@ class CheckinService{
    */
   private function isCongressDayExist(int $congressDayId):bool
   {
-    $congressDay = $this->congressDayModel->where('id', $congressDayId)->first();
+    $congressDay = CongressDay::where('id', $congressDayId)->first();
     if($congressDay){
       return true;
     }
