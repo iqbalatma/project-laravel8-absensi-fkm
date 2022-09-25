@@ -5,6 +5,7 @@ use App\Http\Controllers\API\CheckinController;
 use App\Http\Controllers\API\CheckinStatusController;
 use App\Http\Controllers\API\CheckinStatusMonitoringController;
 use App\Http\Controllers\API\CongressDayController;
+use App\Http\Controllers\API\DocumentDownloadController;
 use App\Http\Controllers\API\RegistrationCredentialController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
@@ -65,6 +66,12 @@ Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {
             Route::get('/', 'index');
             Route::patch('/{id}', 'update');
             Route::delete('/{id}', 'destroy');
+        });
+
+    Route::prefix('download')
+        ->controller(DocumentDownloadController::class)->group(function () {
+            Route::get('/congress-draft', 'congressDraft');
+            Route::get('/manual-book', 'manualBook');
         });
 });
 
