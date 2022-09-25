@@ -10,12 +10,6 @@ use App\Models\User;
 class CheckinService{
 
   private object $dataUser;
-  private User $userModel;
-  public function __construct(CheckinStatus $checkinStatusModel, User $userModel) {
-    $this->checkinStatusModel = $checkinStatusModel;
-    $this->userModel = $userModel;
-  }
-
 
   /**
    * Description : get all data checkin status
@@ -23,25 +17,14 @@ class CheckinService{
    * @param array $requestedData for query param
    * @return object of eloquent model
    */
-  public function getAll(?int $totalPerPage, array $requestedData)
+  public function getAll(?int $totalPerPage, array $requestedData):object
   {
-    
-    $whereClause = [];
-    $whereClauseUser = [];
-    if(isset($requestedData['congress_day']))
-      $whereClause['congress_day_id'] = $requestedData['congress_day'];
-    
-    if(isset($requestedData['checkin_status']))
-      $whereClause['checkin_status'] = $requestedData['checkin_status'];
-    
-    if(isset($requestedData['role_id']))
-      $whereClauseUser['role_id'] = $requestedData['role_id'];
+    #separate where clause for checkin status table
+    $whereClause = $requestedData;
+    unset($whereClause['generation'], $whereClause['role_id'], $whereClause['organization_id']);
 
-    if(isset($requestedData['generation']))
-      $whereClauseUser['generation'] = $requestedData['generation'];
-
-    if(isset($requestedData['organization_id']))
-      $whereClauseUser['organization_id'] = $requestedData['organization_id'];
+    #where clause for table user relation
+    $whereClauseUser = array_diff($requestedData, $whereClause);
 
     $data = CheckinStatus::whereHas('user', function($q) use ($whereClauseUser){
         $q->where($whereClauseUser);
@@ -66,13 +49,13 @@ class CheckinService{
    */
   public function checkin(string $personalToken, array $requestedData):int
   {
-    if(!$this->isPersonalTokenValid($personalToken)){
+    if(!$this->isPersonalTokenValid($personalToken))
       return Status::INVALID_TOKEN;
-    }
+    
 
-    if(!$this->isCongressDayExist($requestedData['congress_day_id'])){
+    if(!$this->isCongressDayExist($requestedData['congress_day_id']))
       return Status::EMTPY_DATA;
-    }
+    
     
     $dataUser = $this->getDataUser();
     $requestedData['user_id']= $dataUser->id;
@@ -91,13 +74,11 @@ class CheckinService{
       if($checkinStatus->checkin_status){ //for checkout the user that already checkin
           $checkinStatus->checkin_status = 0;
           $checkinStatus->save();
-
           return Status::CHECKOUT_SUCCESS;
       }else{ //for checkin user that status is checkout
           $checkinStatus->checkin_status = 1;
           $checkinStatus->last_time_checkin = now();
           $checkinStatus->save();
-
           return Status::CHECKIN_SUCCESS;
       }
     }
@@ -112,7 +93,7 @@ class CheckinService{
    */
   private function isPersonalTokenValid(string $personalToken):bool
   {
-    $user = $this->userModel->where('personal_token', $personalToken)->first();
+    $user = User::where('personal_token', $personalToken)->first();
 
     if($user){
       $this->setDataUser($user);

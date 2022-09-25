@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateCheckinStatusesTable extends Migration
@@ -18,7 +19,7 @@ class CreateCheckinStatusesTable extends Migration
             $table->boolean('checkin_status')->default(1);
             $table->bigInteger('user_id');
             $table->bigInteger('congress_day_id');
-            $table->timestamp('last_checkin_time');
+            $table->timestamp('last_checkin_time')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
             $table->softDeletes();
         });
