@@ -73,6 +73,7 @@ class CheckinService{
     } else {
       if($checkinStatus->checkin_status){ //for checkout the user that already checkin
           $checkinStatus->checkin_status = 0;
+          $checkinStatus->last_checkout_time = now();
           $checkinStatus->save();
           return Status::CHECKOUT_SUCCESS;
       }else{ //for checkin user that status is checkout
