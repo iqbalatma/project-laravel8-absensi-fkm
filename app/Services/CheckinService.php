@@ -87,6 +87,41 @@ class CheckinService{
 
 
   /**
+   * Description : use to checkin manual by user id and congress_day_id
+   * 
+   * @param array $requestedData that brings data for manual checkin
+   * @return int for checkin status
+   */
+  public function manualCheckin(array $requestedData):int
+  {
+    list('user_id'=> $userId, 'congress_day_id'=> $congressDayId) = $requestedData;
+    $checkinStatus = CheckinStatus::where([
+      'user_id' => $userId,
+      'congress_day_id' => $congressDayId
+    ])->first();
+
+    if (empty($checkinStatus)) { //for the user that not checkin yet
+      $requestedData['checkin_status'] = 1;
+      CheckinStatus::create($requestedData);
+      return Status::CHECKIN_SUCCESS;
+    } else {
+      if($checkinStatus->checkin_status){ //for checkout the user that already checkin
+          $checkinStatus->checkin_status = 0;
+          $checkinStatus->last_checkout_time = now();
+          $checkinStatus->save();
+          return Status::CHECKOUT_SUCCESS;
+      }else{ //for checkin user that status is checkout
+          $checkinStatus->checkin_status = 1;
+          $checkinStatus->last_checkin_time = now();
+          $checkinStatus->save();
+          return Status::CHECKIN_SUCCESS;
+      }
+    }
+
+  }
+
+
+  /**
    * Description : Use to check is personal token is valid on user
    * 
    * @param string $personalToken of the user that try to checkin

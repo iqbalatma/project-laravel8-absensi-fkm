@@ -6,6 +6,7 @@ use App\Http\Controllers\API\CheckinStatusController;
 use App\Http\Controllers\API\CheckinStatusMonitoringController;
 use App\Http\Controllers\API\CongressDayController;
 use App\Http\Controllers\API\DocumentDownloadController;
+use App\Http\Controllers\API\ManualCheckinController;
 use App\Http\Controllers\API\OrganizationController;
 use App\Http\Controllers\API\RegistrationCredentialController;
 use App\Http\Controllers\API\UserController;
@@ -51,6 +52,8 @@ Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {
             Route::post('/', 'store')->name('store');
             Route::delete('/{id}', 'destroy')->name('destroy');
         });
+
+    Route::post('/checkin/manual', [ManualCheckinController::class, 'manualCheckin'])->name('checkin.manual');    
 
     Route::prefix('registration-credentials')
         ->controller(RegistrationCredentialController::class)->group(function () {
