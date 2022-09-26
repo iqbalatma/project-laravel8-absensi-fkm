@@ -13,6 +13,21 @@ class RegistrationService {
   const INVALID_TOKEN = 404;
   private object $registrationCredential;
 
+
+  /**
+   * Description : use to register user in case they dont bring their poone
+   * 
+   * @param array $requestedData user from body request
+   * @return object of eloquent model
+   */
+  public function manualRegistration(array $requestedData):object
+  {
+    $requestedData['password'] = Hash::make($requestedData['password']);
+    $requestedData['personal_token'] = Str::random(16);
+    
+    return User::create($requestedData);
+  }
+
   /**
    * Description : Use to register the user with registration credential
    * 

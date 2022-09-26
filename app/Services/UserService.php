@@ -44,8 +44,9 @@ class UserService{
   public function show(int $id):object
   {
     $data = User::find($id);
-    if (empty($data))
+    if (empty($data)){
       throw new EmptyDataException(); 
+    }
     return $data;
   }
 

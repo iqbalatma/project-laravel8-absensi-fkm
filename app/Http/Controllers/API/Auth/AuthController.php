@@ -71,7 +71,7 @@ class AuthController extends ApiController
             'name' => "Registration",
             'message' => "Registration user successfully",
             'result' => $registeredUser
-        ],200);
+        ],JsonResponse::HTTP_OK);
     }
 
 

@@ -19,8 +19,8 @@ class CreateUsersTable extends Migration
             $table->string('personal_token')->nullable();
             $table->string('email')->unique();
             $table->string('password',512);
-            $table->string('student_id',8);
-            $table->string('generation');
+            $table->string('student_id',8)->nullable(true);
+            $table->string('generation')->nullable(true);
             $table->string('phone_number')->nullable(true);
             $table->bigInteger('organization_id')->nullable(true);
             $table->bigInteger('role_id')->nullable(true);

@@ -7,6 +7,7 @@ use App\Http\Controllers\API\CheckinStatusMonitoringController;
 use App\Http\Controllers\API\CongressDayController;
 use App\Http\Controllers\API\DocumentDownloadController;
 use App\Http\Controllers\API\ManualCheckinController;
+use App\Http\Controllers\API\ManualRegistrationController;
 use App\Http\Controllers\API\OrganizationController;
 use App\Http\Controllers\API\RegistrationCredentialController;
 use App\Http\Controllers\API\UserController;
@@ -32,13 +33,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
 
 
-Route::controller(AuthController::class)->group(function (){
-    Route::post('/register/{registration_credential}', 'register');
-    Route::post('/login', 'login')->name('auth.login');
-    Route::post('/logout', 'logout');
-    Route::post('/refresh', 'refresh');
-    Route::post('/me', 'me');
-});
+
+
 
 Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {
     Route::prefix('organizations')
@@ -53,7 +49,9 @@ Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {
             Route::delete('/{id}', 'destroy')->name('destroy');
         });
 
-    Route::post('/checkin/manual', [ManualCheckinController::class, 'manualCheckin'])->name('checkin.manual');    
+    Route::post('/checkin-manual', [ManualCheckinController::class, 'manualCheckin'])->name('checkin.manual');  
+
+    Route::post('/register-manual', [ManualRegistrationController::class, 'manualRegistration'])->name('register.manual');    
 
     Route::prefix('registration-credentials')
         ->controller(RegistrationCredentialController::class)->group(function () {
@@ -98,6 +96,14 @@ Route::middleware(['auth:api', 'role:superadmin'])->group(function () {
         Route::get('/{id}', 'show');
         Route::patch('/{id}', 'update');
     });
+});
+
+Route::controller(AuthController::class)->group(function (){
+    Route::post('/register/{registration_credential}', 'register');
+    Route::post('/login', 'login')->name('auth.login');
+    Route::post('/logout', 'logout');
+    Route::post('/refresh', 'refresh');
+    Route::post('/me', 'me');
 });
 
 Route::get('registration-credentials/token/{token}', [RegistrationCredentialController::class, 'showByToken']);
