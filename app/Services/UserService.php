@@ -13,21 +13,19 @@ class UserService{
    */
   public function getAll(array $requestedData, ?int $totalPerPage):object
   {
-    $whereClause = [];
-    if(isset($requestedData['role_id']))
-      $whereClause['role_id'] = $requestedData['role_id'];
-    
-
-    if(isset($requestedData['generation'])) 
-      $whereClause['generation'] = $requestedData['generation'];
-
-    if(isset($requestedData['organization_id'])) 
-      $whereClause['organization_id'] = $requestedData['organization_id'];
-
+    $full = 0;
+    if(isset($requestedData['full'])){
+      $full = $requestedData['full'];
+      unset($requestedData['full']);
+    }
     $data = User::with('organization')
-      ->where($whereClause)
-      ->where('role_id', '!=', 1)
-      ->where('role_id', '!=', 2);
+      ->where($requestedData);
+    
+    if(!$full){
+      $data = $data
+        ->where('role_id', '!=', 1)
+        ->where('role_id', '!=', 2);
+    }
       
     $data = empty($totalPerPage) ? 
       $data->get():
