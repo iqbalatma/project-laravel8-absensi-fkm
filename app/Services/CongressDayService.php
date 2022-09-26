@@ -27,7 +27,9 @@ class CongressDayService{
   public function getById(int $id):object
   {
     $data = CongressDay::find($id);
-    if (empty($data)) throw new EmptyDataException();
+    if (empty($data)){
+      throw new EmptyDataException();
+    } 
     
     return $data;
   }
@@ -58,7 +60,9 @@ class CongressDayService{
       $updated = CongressDay::find($id);
     DB::commit();
 
-    if (!$updated) throw new EmptyDataException();
+    if (!$updated){
+      throw new EmptyDataException();
+    } 
 
     return $updated;
   }
@@ -73,8 +77,9 @@ class CongressDayService{
   public function destroy(int $id):bool
   {
     $congressDay = CongressDay::find($id);
-    if($congressDay)
+    if($congressDay){
       return $congressDay->delete();
+    }
 
     return false;
   }
