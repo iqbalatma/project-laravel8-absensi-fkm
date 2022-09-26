@@ -6,6 +6,7 @@ use App\Http\Controllers\API\CheckinStatusController;
 use App\Http\Controllers\API\CheckinStatusMonitoringController;
 use App\Http\Controllers\API\CongressDayController;
 use App\Http\Controllers\API\DocumentDownloadController;
+use App\Http\Controllers\API\OrganizationController;
 use App\Http\Controllers\API\RegistrationCredentialController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
@@ -39,6 +40,18 @@ Route::controller(AuthController::class)->group(function (){
 });
 
 Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {
+    Route::prefix('organizations')
+        ->name('organizations.')
+        ->controller(OrganizationController::class)
+        ->group(function ()
+        {
+            Route::get('/', 'index')->name('index');
+            Route::get('/{id}', 'show')->name('show');
+            Route::patch('/{id}', 'update')->name('update');
+            Route::post('/', 'store')->name('store');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+        });
+
     Route::prefix('registration-credentials')
         ->controller(RegistrationCredentialController::class)->group(function () {
             Route::post('/', 'store');
