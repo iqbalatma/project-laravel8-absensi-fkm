@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\ManualCheckinStoreRequest;
 use App\Http\Status;
 use App\Services\CheckinService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class ManualCheckinController extends ApiController
 {
@@ -43,6 +41,5 @@ class ManualCheckinController extends ApiController
                 'message'   => $this->responseMessage['checkout']
             ], JsonResponse::HTTP_OK);
         }
-
     }
 }
