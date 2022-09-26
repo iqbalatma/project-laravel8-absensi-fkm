@@ -16,6 +16,14 @@ class ManualCheckinController extends ApiController
         'checkin' => 'Manual checkin successfully',
         'checkout' => 'Manual checkout successfully',
     ];
+
+    /**
+     * Description : use to manual checkin user in case they dont bring their phone
+     * 
+     * @param CheckinService $service for execute logic
+     * @param ManualCheckinStoreRequest $request for validate request
+     * @return JsonResponse for api response
+     */
     public function manualCheckin(CheckinService $service, ManualCheckinStoreRequest $request):JsonResponse
     {
         $checkin = $service->manualCheckin($request->validated());
