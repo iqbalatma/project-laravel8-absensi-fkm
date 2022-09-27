@@ -32,10 +32,10 @@ class AuthController extends ApiController
      */
     public function login(LoginRequest $request):JsonResponse
     {
-        $token = Auth::attempt($request->validated());
-        if (!$token) 
+        $token = JWTAuth::claims(['tes'=> 'tok'])->attempt($request->validated());
+        if (!$token) {
             throw new UnauthorizedException('Invalid username or password');
-
+        }
         $user = Auth::user();
         return $this->apiResponse([
             'success' => true,
@@ -48,7 +48,7 @@ class AuthController extends ApiController
                     'type'  => 'bearer'
                 ]
             ]
-        ],200);
+        ],JsonResponse::HTTP_OK);
     }
 
 
@@ -63,8 +63,9 @@ class AuthController extends ApiController
     {
         $registeredUser = $this->registrationService->register($registrationCredential,$request->validated());
 
-        if($registeredUser===404)
+        if($registeredUser===404){
             throw new InvalidRegistrationCredential();
+        }
 
         return $this->apiResponse([
             'success' => true,
@@ -87,7 +88,7 @@ class AuthController extends ApiController
             'success' => true,
             'name' => "Logout",
             'message' => "Logout user successfully",
-        ],200);
+        ],JsonResponse::HTTP_OK);
     }
 
 
@@ -109,11 +110,18 @@ class AuthController extends ApiController
                     'type' => 'bearer',
                 ]
             ]
-        ],200);
+        ],JsonResponse::HTTP_OK);
     }
 
     public function me()
     {
-        return response()->json(auth()->user());
+        return $this->apiResponse([
+            'success' => true,
+            'name' => "Logged in user information",
+            'message' => "Get logged in user information successfully",
+            'result'=>[
+                'data'=> auth()->user()
+            ]
+        ],JsonResponse::HTTP_OK);
     }
 }
