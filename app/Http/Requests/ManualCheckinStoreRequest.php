@@ -25,7 +25,7 @@ class ManualCheckinStoreRequest extends FormRequest
     {
         return [
             'user_id' => 'required',
-            'congress_day_id' => 'required'
+            'congress_date' => 'required'
         ];
     }
 }
