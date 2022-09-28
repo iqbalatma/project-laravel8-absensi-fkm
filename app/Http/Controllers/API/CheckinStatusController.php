@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use App\Exceptions\RequestErrorException;
+use App\Http\Requests\CheckinByCongressDateRequest;
 use App\Http\Requests\CheckinStatusStoreRequest;
 use App\Http\Resources\CheckinStatusResourceCollection;
 use App\Http\Status;
 use App\Services\CheckinService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class CheckinStatusController extends ApiController
 {
@@ -56,6 +56,40 @@ class CheckinStatusController extends ApiController
 
 
     /**
+     * Description : use for checkin or checkout user
+     * 
+     * @param CheckinService $service for execute logic
+     * @param CheckinStatusStoreRequest $request for validation request
+     * @param string $personalToken of user checkin
+     * @return JsonResponse for json response
+     */
+    public function checkinByCongressDate(CheckinService $service, CheckinByCongressDateRequest $request, string $personalToken): JsonResponse
+    {
+        $checkinStatus = $service->checkinByCongressDate($personalToken, $request->validated());
+        if ($checkinStatus == Status::INVALID_TOKEN)
+            throw new RequestErrorException("Your personal token is invalid", JsonResponse::HTTP_NOT_FOUND);
+
+
+        if ($checkinStatus == Status::EMTPY_DATA)
+            throw new RequestErrorException("Congress day does not exists", JsonResponse::HTTP_NOT_FOUND);
+
+        if ($checkinStatus == Status::CHECKIN_SUCCESS) {
+            return $this->apiResponse([
+                'success'   => true,
+                'name'      => $this->responseName,
+                'message'   => $this->responseMessage['checkin']
+            ], JsonResponse::HTTP_OK);
+        }
+
+        return $this->apiResponse([
+            'success'   => true,
+            'name'      => $this->responseName,
+            'message'   => $this->responseMessage['checkout']
+        ], JsonResponse::HTTP_OK);
+    }
+
+
+    /**
      * Description : use to get data checkin status 
      * 
      * @param CheckinService $service for execute logic
@@ -67,6 +101,7 @@ class CheckinStatusController extends ApiController
         $data = $service->getAll($totalPerpage, request()->only(
             'checkin_status',
             'congress_day_id',
+            'congress_date',
             'role_id',
             'generation',
             'organization_id'));

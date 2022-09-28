@@ -15,4 +15,9 @@ class CheckinStatus extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function congressday()
+    {
+        return $this->belongsTo(CongressDay::class,'congress_day_id');
+    }
 }

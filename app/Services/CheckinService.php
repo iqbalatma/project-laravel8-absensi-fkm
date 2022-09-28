@@ -10,6 +10,7 @@ use App\Models\User;
 class CheckinService{
 
   private object $dataUser;
+  private object $congressDay;
 
   /**
    * Description : get all data checkin status
@@ -19,6 +20,11 @@ class CheckinService{
    */
   public function getAll(?int $totalPerPage, array $requestedData):object
   {
+    $congressDate = false;
+    if(isset($requestedData['congress_date'])){
+      $congressDate = $requestedData['congress_date'];
+      unset($requestedData['congress_date']);
+    }
     #separate where clause for checkin status table
     $whereClause = $requestedData;
     unset($whereClause['generation'], $whereClause['role_id'], $whereClause['organization_id']);
@@ -31,6 +37,12 @@ class CheckinService{
       })
       ->with(['user.role', 'user.organization'])
       ->where($whereClause);
+    
+    if($congressDate){
+      $data = $data->whereHas('congressday', function ($q) use ($congressDate){
+        $q->whereDate('h_day', '=', $congressDate);
+      });
+    }
       
     $data = empty($totalPerPage) ? 
       $data->get():
@@ -38,6 +50,42 @@ class CheckinService{
 
 
     return $data;
+  }
+
+  public function checkinByCongressDate(string $personalToken, array $requestedData)
+  {
+    if(!$this->isPersonalTokenValid($personalToken)){
+      return Status::INVALID_TOKEN;
+    }
+    if(!$this->isCongressDateExists($requestedData['congress_date'])){
+      return Status::EMTPY_DATA;
+    }
+
+    $dataUser = $this->getDataUser();
+    $requestedData['user_id']= $dataUser->id;
+    $requestedData['checkin_status'] = true;
+
+    $checkinStatus = CheckinStatus::where([
+      'user_id' => $dataUser->id,
+      'congress_day_id' => $this->getDataCongressDay()->id
+    ])->first();
+
+    if (empty($checkinStatus)) { //for the user that not checkin yet
+      CheckinStatus::create($requestedData);
+      return Status::CHECKIN_SUCCESS;
+    } else {
+      if($checkinStatus->checkin_status){ //for checkout the user that already checkin
+          $checkinStatus->checkin_status = 0;
+          $checkinStatus->last_checkout_time = now();
+          $checkinStatus->save();
+          return Status::CHECKOUT_SUCCESS;
+      }else{ //for checkin user that status is checkout
+          $checkinStatus->checkin_status = 1;
+          $checkinStatus->last_checkin_time = now();
+          $checkinStatus->save();
+          return Status::CHECKIN_SUCCESS;
+      }
+    }
   }
 
   /**
@@ -150,6 +198,31 @@ class CheckinService{
       return true;
     }
     return false;
+  }
+
+  /**
+   * Description : use for check is congress day is valid
+   * 
+   * 
+   */
+  private function isCongressDateExists(string $congressDate):bool
+  {
+    $congressDay = CongressDay::whereDate('h_day', '=', $congressDate)->first();
+    if($congressDay){
+      $this->setDataCongressDay($congressDay);
+      return true;
+    }
+    return false;
+  }
+
+  public function setDataCongressDay(object $dataCongressDay):void
+  {
+    $this->congressDay = $dataCongressDay;
+  }
+
+  public function getDataCongressDay():object
+  {
+    return $this->congressDay;
   }
 
   private function setDataUser(object $dataUser):void
