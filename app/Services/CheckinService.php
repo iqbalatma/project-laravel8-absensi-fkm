@@ -64,12 +64,15 @@ class CheckinService{
     $dataUser = $this->getDataUser();
     $requestedData['user_id']= $dataUser->id;
     $requestedData['checkin_status'] = true;
+    $requestedData['congress_day_id'] = $this->getDataCongressDay()->id;
 
     $checkinStatus = CheckinStatus::where([
       'user_id' => $dataUser->id,
       'congress_day_id' => $this->getDataCongressDay()->id
     ])->first();
 
+    
+    
     if (empty($checkinStatus)) { //for the user that not checkin yet
       CheckinStatus::create($requestedData);
       return Status::CHECKIN_SUCCESS;
