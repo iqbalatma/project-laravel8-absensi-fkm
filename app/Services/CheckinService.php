@@ -18,7 +18,7 @@ class CheckinService{
    * @param array $requestedData for query param
    * @return object of eloquent model
    */
-  public function getAll(?int $totalPerPage, array $requestedData):object
+  public function getAllData(?int $totalPerPage, array $requestedData):object
   {
     $congressDate = false;
     if(isset($requestedData['congress_date'])){
@@ -35,7 +35,7 @@ class CheckinService{
     $data = CheckinStatus::whereHas('user', function($q) use ($whereClauseUser){
         $q->where($whereClauseUser);
       })
-      ->with(['user.role', 'user.organization'])
+      ->with(['user.role', 'user.organization', 'congressday'])
       ->where($whereClause);
     
     if($congressDate){

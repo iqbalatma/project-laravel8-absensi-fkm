@@ -98,7 +98,7 @@ class CheckinStatusController extends ApiController
     public function index(CheckinService $service): JsonResponse
     {
         $totalPerpage = request()->get('total_per_page')??null;
-        $data = $service->getAll($totalPerpage, request()->only(
+        $data = $service->getAllData($totalPerpage, request()->only(
             'checkin_status',
             'congress_day_id',
             'congress_date',
