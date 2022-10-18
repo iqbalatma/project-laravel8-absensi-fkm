@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentDownloadController extends Controller
 {
+    public function download(int $id)
+    {
+        return response()->json(['data'=> 'data'.$id]);
+    }
     /**
      * Description : use to download congress draft pdf
      * 
