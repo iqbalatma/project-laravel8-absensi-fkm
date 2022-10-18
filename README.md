@@ -9,8 +9,11 @@
 
 ## Asset Link
 Trello https://trello.com/b/aJ7fVctm/absensi-kongress
+
 DB diagram https://dbdiagram.io/d/631340350911f91ba52a0142
+
 REST API https://fkm-api.atma-dev.com/
+
 APP https://kongresmahasiswaunikom.vercel.app/
 
 ## About Laravel
