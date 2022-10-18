@@ -7,6 +7,12 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Asset Link
+Trello https://trello.com/b/aJ7fVctm/absensi-kongress
+DB diagram https://dbdiagram.io/d/631340350911f91ba52a0142
+REST API https://fkm-api.atma-dev.com/
+APP https://kongresmahasiswaunikom.vercel.app/
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
