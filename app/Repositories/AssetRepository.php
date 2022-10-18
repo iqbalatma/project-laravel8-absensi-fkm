@@ -14,7 +14,7 @@ class AssetRepository{
    * 
    * @return object of eloquent 
    */
-  public function getAllAsset():object
+  public function getAllAsset():?object
   {
     return Asset::paginate($this->defaultPerPage);
   }
@@ -25,7 +25,7 @@ class AssetRepository{
    * @param int $id of asset that want to get
    * @return object of eloquent
    */
-  public function getAssetById(int $id):object
+  public function getAssetById(int $id):?object
   {
     return Asset::find($id);
   }

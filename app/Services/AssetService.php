@@ -1,6 +1,7 @@
 <?php 
 namespace App\Services;
 
+use App\Exceptions\EmptyDataException;
 use App\Repositories\AssetRepository;
 
 class AssetService{
@@ -24,7 +25,21 @@ class AssetService{
    */
   public function getDataById(int $id):object
   {
-    return (new AssetRepository())->getAssetById($id);
+    $data = (new AssetRepository())->getAssetById($id);
+    if(empty($data)){
+      throw new EmptyDataException();
+    }
+    return $data;
+  }
+
+  public function downloadById(int $id):array
+  {
+    $data = $this->getDataById($id);
+    $filename =$data->filename;
+    return [
+      'path' => storage_path("app/public/document/$filename"),
+      'filename' => $filename
+    ];
   }
 }
 ?>

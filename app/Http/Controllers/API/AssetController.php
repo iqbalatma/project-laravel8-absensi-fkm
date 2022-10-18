@@ -50,7 +50,17 @@ class AssetController extends ApiController
         );
     }
     
-    public function download(int $id)
+    public function download(AssetService $service,int $id)
     {
+        $headers = [
+            'Content-Type' => 'application/pdf',
+        ];
+
+        list(
+            'path' => $path,
+            'filename'=>$filename
+        ) = $service->downloadById($id);
+        
+        return response()->download($path, $filename, $headers);
     }
 }
