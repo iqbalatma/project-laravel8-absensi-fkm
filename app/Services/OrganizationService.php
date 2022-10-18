@@ -3,6 +3,8 @@ namespace App\Services;
 
 use App\Exceptions\EmptyDataException;
 use App\Models\Organization;
+use App\Repositories\OrganizationRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class OrganizationService{
@@ -13,7 +15,7 @@ class OrganizationService{
    */
   public function getAllData():object
   {
-    return Organization::all();
+    return (new OrganizationRepository())->getAllOrganization();
   }
 
 
@@ -25,7 +27,7 @@ class OrganizationService{
    */
   public function getDataById(int $id):object
   {
-    $data =Organization::find($id);
+    $data = (new OrganizationRepository())->getOrganizationById($id);
     if (empty($data)) {
       throw new EmptyDataException();
     }
@@ -41,7 +43,7 @@ class OrganizationService{
    */
   public function store(array $requestedData):object
   {
-    return Organization::create($requestedData);
+    return (new OrganizationRepository())->addNewOrganization($requestedData);
   }
 
 
@@ -54,17 +56,22 @@ class OrganizationService{
    */
   public function update(int $id, array $requestedData):object
   {
-    DB::beginTransaction();
-      Organization::where('id', $id)->update($requestedData);
-      $updated =Organization::find($id);
-    DB::commit();
+    $updated = (new OrganizationRepository())->updateOganizationById($id, $requestedData);
 
     if (!$updated) {
       throw new EmptyDataException();
     }
+
     return $updated;
   }
 
+
+  /**
+   * Description : use to delete the organization by id
+   * 
+   * @param int $id of the organization that want to delete
+   * @return bool of status delete organization
+   */
   public function destroy(int $id):bool
   {
     $organization = $this->getDataById($id);

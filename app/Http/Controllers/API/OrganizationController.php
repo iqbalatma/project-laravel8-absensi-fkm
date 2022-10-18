@@ -27,10 +27,10 @@ class OrganizationController extends ApiController
      * @param OrganizationService $service to execute the logic
      * @return JsonResponse for api response
      */
-    public function index(OrganizationService $service):JsonResponse
+    public function index(OrganizationService $service)
     {
         $data = $service->getAllData();
-        
+
         return $this->responseWithResourceCollection(
             new OrganizationResourceCollection($data),
             $this->responseName,
@@ -50,9 +50,9 @@ class OrganizationController extends ApiController
         $data = $service->getDataById($id);
 
         return $this->responseWithResource(
-            new OrganizationResource($data), 
-            $this->responseName, 
-            $this->responseMessage['show'], 
+            new OrganizationResource($data),
+            $this->responseName,
+            $this->responseMessage['show'],
             JsonResponse::HTTP_OK);
     }
 
