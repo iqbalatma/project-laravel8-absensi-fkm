@@ -9,8 +9,10 @@ use Illuminate\Http\Request;
 class UnauthorizedException extends Exception
 {
     protected $message;
-    public function __construct($message ='You are unauthorized to do this request') {
+    
+    public function __construct($message ='You are unauthorized to do this request', $code = 403) {
         $this->message = $message;
+        $this->code = $code;
     }
     public function render(Request $request): JsonResponse
     {
@@ -18,8 +20,8 @@ class UnauthorizedException extends Exception
             'success'   => false,
             'name'      => 'Unauthorized',
             'message'   => $this->message,
-            'error_code'=> 404,
+            'error_code'=> $this->code,
             'error' => true,
-        ])->setStatusCode(401);
+        ])->setStatusCode($this->code);
     }
 }

@@ -266,9 +266,9 @@ trait ApiResponseTrait {
     {
         return $this->apiResponse(
             [
+                'success' => true,
                 'name' => $name,
                 'message' => $message,
-                'success' => true,
                 'result' => $resourceCollection->response()->getData()
             ], $statusCode, $headers
         );
