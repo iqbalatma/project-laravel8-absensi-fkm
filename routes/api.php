@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AssetController;
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\CheckinController;
 use App\Http\Controllers\API\CheckinStatusController;
@@ -42,6 +43,12 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/{id}', 'download');
             Route::get('/congress-draft', 'congressDraft');
             Route::get('/manual-book', 'manualBook');
+        });
+    Route::prefix('download')
+        ->name('download')
+        ->controller(AssetController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/{id}', 'show')->name('show');
         });
         
     Route::middleware(['role:admin,superadmin'])->group(function (){
