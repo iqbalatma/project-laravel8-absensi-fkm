@@ -44,11 +44,12 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/congress-draft', 'congressDraft');
             Route::get('/manual-book', 'manualBook');
         });
-    Route::prefix('download')
-        ->name('download')
+    Route::prefix('assets')
+        ->name('assets')
         ->controller(AssetController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/{id}', 'show')->name('show');
+            Route::get('/download/{id}', 'download')->name('download');
         });
         
     Route::middleware(['role:admin,superadmin'])->group(function (){

@@ -15,7 +15,7 @@ class OrganizationRepository{
    * 
    * @return object of eloquent 
    */
-  public function getAllOrganization():object
+  public function getAllOrganization():?object
   {
     return Organization::paginate($this->defaultPerPage);
   }
@@ -26,7 +26,7 @@ class OrganizationRepository{
    * @param int $id of organization
    * @return object of eloquent
    */
-  public function getOrganizationById(int $id):object
+  public function getOrganizationById(int $id):?object
   {
     return Organization::find($id);
   }
@@ -37,7 +37,7 @@ class OrganizationRepository{
    * @param array $requestedData from body request
    * @return object of eloquent
    */
-  public function addNewOrganization(array $requestedData):object
+  public function addNewOrganization(array $requestedData):?object
   {
     return Organization::create($requestedData);
   }
