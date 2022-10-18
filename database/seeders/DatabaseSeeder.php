@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CongressDaySeeder::class,
             RegistrationCredentialSeeder::class,
-            CheckinStatusSeeder::class
+            CheckinStatusSeeder::class,
+            AssetSeeder::class
         ]);
     }
 }
