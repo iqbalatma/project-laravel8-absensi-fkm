@@ -41,7 +41,9 @@ class CheckinStatusMonitoringService{
   public function getLatestCheckinUser():object
   {
     $data = CheckinStatus::with(['user'=> function($q){
-      $q->select('id', 'name','role_id', 'organization_id');
+      $q->select('id', 'name','role_id', 'organization_id')->with(['organization'=>function($subQ){
+        $subQ->select('id', 'name', 'shortname');
+      }]);
     }])
       ->select('id','last_checkin_time', 'user_id')
       ->limit(4)
