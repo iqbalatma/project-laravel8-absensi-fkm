@@ -25,4 +25,9 @@ class OrganizierNotificationRepository{
   {
     return OrganizierNotification::orderBy('id', 'DESC')->first();
   }
+
+  public function storeNewNotification(array $requestedData)
+  {
+    return OrganizierNotification::create($requestedData);
+  }
 }

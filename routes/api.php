@@ -78,6 +78,13 @@ Route::middleware(['auth:api'])->group(function () {
                 Route::post('/', 'store')->name('store');
                 Route::delete('/{id}', 'destroy')->name('destroy');
             });
+        
+        Route::prefix('notifications')
+            ->name('notifications.')
+            ->controller(OrganizierNotificationController::class)
+            ->group(function (){
+                Route::post('/', 'store')->name('store');
+            });
     });
     
     Route::post('/checkin-manual', [ManualCheckinController::class, 'manualCheckin'])->name('checkin.manual');  

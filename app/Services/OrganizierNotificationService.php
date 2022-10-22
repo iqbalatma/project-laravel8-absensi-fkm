@@ -28,6 +28,11 @@ class OrganizierNotificationService{
   {
     return (new OrganizierNotificationRepository())->getLatestNotification();
   }
+
+  public function store(array $requestedData)
+  {
+    return (new OrganizierNotificationRepository())->storeNewNotification($requestedData);
+  }
   
 }
 ?>
