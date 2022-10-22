@@ -5,6 +5,7 @@ use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\CheckinController;
 use App\Http\Controllers\API\CheckinStatusController;
 use App\Http\Controllers\API\CheckinStatusMonitoringController;
+use App\Http\Controllers\API\CheckoutAllUserController;
 use App\Http\Controllers\API\CongressDayController;
 use App\Http\Controllers\API\DocumentDownloadController;
 use App\Http\Controllers\API\ManualCheckinController;
@@ -85,6 +86,15 @@ Route::middleware(['auth:api'])->group(function () {
             ->group(function (){
                 Route::post('/', 'store')->name('store');
             });
+
+        Route::prefix('checkout-all-users')
+            ->name('checkoutallusers.')
+            ->controller(CheckoutAllUserController::class)
+            ->group(function (){
+                Route::post('/', 'checkoutAllUsers')->name('checkoutallusers');
+            });
+        
+
     });
     
     Route::post('/checkin-manual', [ManualCheckinController::class, 'manualCheckin'])->name('checkin.manual');  
