@@ -10,6 +10,7 @@ use App\Http\Controllers\API\DocumentDownloadController;
 use App\Http\Controllers\API\ManualCheckinController;
 use App\Http\Controllers\API\ManualRegistrationController;
 use App\Http\Controllers\API\OrganizationController;
+use App\Http\Controllers\API\OrganizierNotificationController;
 use App\Http\Controllers\API\RegistrationCredentialController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
@@ -41,6 +42,14 @@ Route::prefix('organizations')
             ->group(function (){
                 Route::get('/', 'index')->name('index');
                 Route::get('/{id}', 'show')->name('show');
+            });
+
+Route::prefix('notifications')
+            ->name('notifications.')
+            ->controller(OrganizierNotificationController::class)
+            ->group(function (){
+                Route::get('/', 'index')->name('index');
+                Route::get('/latest', 'latest')->name('latest');
             });
 
 Route::middleware(['auth:api'])->group(function () {
