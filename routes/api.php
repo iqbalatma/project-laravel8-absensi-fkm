@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AssetController;
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\CheckinController;
 use App\Http\Controllers\API\CheckinStatusController;
@@ -34,21 +35,42 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 
+Route::prefix('organizations')
+            ->name('organizations.')
+            ->controller(OrganizationController::class)
+            ->group(function (){
+                Route::get('/', 'index')->name('index');
+                Route::get('/{id}', 'show')->name('show');
+            });
 
-
-Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {
-    Route::prefix('organizations')
-        ->name('organizations.')
-        ->controller(OrganizationController::class)
-        ->group(function ()
-        {
-            Route::get('/', 'index')->name('index');
-            Route::get('/{id}', 'show')->name('show');
-            Route::patch('/{id}', 'update')->name('update');
-            Route::post('/', 'store')->name('store');
-            Route::delete('/{id}', 'destroy')->name('destroy');
+Route::middleware(['auth:api'])->group(function () {
+    Route::prefix('download')
+        ->controller(DocumentDownloadController::class)->group(function () {
+            Route::get('/{id}', 'download');
+            Route::get('/congress-draft', 'congressDraft');
+            Route::get('/manual-book', 'manualBook');
         });
 
+    Route::prefix('assets')
+        ->name('assets')
+        ->controller(AssetController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/{id}', 'show')->name('show');
+            Route::get('/download/{id}', 'download')->name('download');
+        });
+        
+    Route::middleware(['role:admin,superadmin'])->group(function (){
+        Route::prefix('organizations')
+            ->name('organizations.')
+            ->controller(OrganizationController::class)
+            ->group(function ()
+            {
+                Route::patch('/{id}', 'update')->name('update');
+                Route::post('/', 'store')->name('store');
+                Route::delete('/{id}', 'destroy')->name('destroy');
+            });
+    });
+    
     Route::post('/checkin-manual', [ManualCheckinController::class, 'manualCheckin'])->name('checkin.manual');  
 
     Route::post('/register-manual', [ManualRegistrationController::class, 'manualRegistration'])->name('register.manual');    
@@ -83,11 +105,7 @@ Route::middleware(['auth:api', 'role:admin,superadmin'])->group(function () {
             Route::delete('/{id}', 'destroy');
         });
 
-    Route::prefix('download')
-        ->controller(DocumentDownloadController::class)->group(function () {
-            Route::get('/congress-draft', 'congressDraft');
-            Route::get('/manual-book', 'manualBook');
-        });
+    
 });
 
 Route::middleware(['auth:api', 'role:superadmin'])->group(function () {
