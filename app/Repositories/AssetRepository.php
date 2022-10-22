@@ -30,8 +30,4 @@ class AssetRepository{
     return Asset::find($id);
   }
 
-
-
-
- 
 }
