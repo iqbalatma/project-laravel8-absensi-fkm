@@ -37,7 +37,10 @@ class OrganizierNotificationController extends ApiController
             JsonResponse::HTTP_OK);
     }
 
-    public function store(OrganizierNotificationService $service, OrganizierNotificationStoreRequest $request):JsonResponse
+    public function store(
+        OrganizierNotificationService $service,
+        OrganizierNotificationStoreRequest $request
+    ):JsonResponse
     {
         $data = $service->store($request->validated());
 
