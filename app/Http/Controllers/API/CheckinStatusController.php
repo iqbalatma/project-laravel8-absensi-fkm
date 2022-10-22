@@ -7,6 +7,7 @@ use App\Http\Requests\CheckinByCongressDateRequest;
 use App\Http\Requests\CheckinStatusStoreRequest;
 use App\Http\Resources\CheckinStatusResourceCollection;
 use App\Http\Status;
+use App\Models\User;
 use App\Services\CheckinService;
 use Illuminate\Http\JsonResponse;
 
@@ -23,6 +24,7 @@ class CheckinStatusController extends ApiController
     /**
      * Description : use for checkin or checkout user
      * 
+     * @deprecated
      * @param CheckinService $service for execute logic
      * @param CheckinStatusStoreRequest $request for validation request
      * @param string $personalToken of user checkin
@@ -73,18 +75,26 @@ class CheckinStatusController extends ApiController
         if ($checkinStatus == Status::EMTPY_DATA)
             throw new RequestErrorException("Congress day does not exists", JsonResponse::HTTP_NOT_FOUND);
 
+        #NOTES INI HARUS DIPERBAIKI JANGAN SIMPAN DISINI !
+        $user = User::with('organization')->where('personal_token', $personalToken)->first();
+
         if ($checkinStatus == Status::CHECKIN_SUCCESS) {
             return $this->apiResponse([
                 'success'   => true,
                 'name'      => $this->responseName,
-                'message'   => $this->responseMessage['checkin']
+                'message'   => $this->responseMessage['checkin'],
+                'result'    => [
+                    'data' => $user
+                ]
             ], JsonResponse::HTTP_OK);
         }
-
         return $this->apiResponse([
             'success'   => true,
             'name'      => $this->responseName,
-            'message'   => $this->responseMessage['checkout']
+            'message'   => $this->responseMessage['checkout'],
+            'result'    => [
+                'data' => $user
+            ]
         ], JsonResponse::HTTP_OK);
     }
 

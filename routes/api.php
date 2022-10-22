@@ -87,7 +87,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::prefix('checkin')
         ->controller(CheckinStatusController::class)->group(function () {
-            Route::post('/{personal_token}', 'checkin');
+            // Route::post('/{personal_token}', 'checkin');
             Route::post('/congress-date/{personal_token}', 'checkinByCongressDate');
             Route::get('/', 'index');
         });
