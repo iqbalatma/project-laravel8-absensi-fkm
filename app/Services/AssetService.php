@@ -32,10 +32,18 @@ class AssetService{
     return $data;
   }
 
+
+  /**
+   * Description : use to download asset
+   * 
+   * @param int $id of asset 
+   * @return array for download controller
+   */
   public function downloadById(int $id):array
   {
     $data = $this->getDataById($id);
     $filename =$data->filename;
+    
     return [
       'path' => storage_path("app/public/document/$filename"),
       'filename' => $filename
