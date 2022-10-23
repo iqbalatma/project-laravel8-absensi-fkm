@@ -84,18 +84,12 @@ class RegistrationCredentialService
    */
   public function update(int $id, array $requestedData): object
   {
-    DB::beginTransaction();
-      $updated = RegistrationCredential::where('id', $id)->update($requestedData);
-      $data = RegistrationCredential::find($id);
-    DB::commit();
-
-    if (!$updated) throw new EmptyDataException();
-    return $data;
+    return (new RegistrationCredentialRepository())->updateRegistrationCredential($id, $requestedData);
   }
 
 
   /**
-   * Description : service for destroy the registration credential
+   * Description : service for delete the registration credential
    * 
    * @param int $id of registration credential
    * @return bool if delete is success

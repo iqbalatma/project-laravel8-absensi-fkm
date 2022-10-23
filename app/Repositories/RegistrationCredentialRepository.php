@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\EmptyDataException;
 use App\Models\RegistrationCredential;
+use Illuminate\Support\Facades\DB;
 
 class RegistrationCredentialRepository{
 
@@ -15,5 +17,18 @@ class RegistrationCredentialRepository{
   public function addNewRegistrationCredential(array $requestedData):object
   {
     return RegistrationCredential::create($requestedData);
+  }
+
+  public function updateRegistrationCredential(int $id, array $requestedData):?object
+  {
+    $data = null;
+    DB::transaction(function () use ($id, $requestedData, &$data)
+    {
+      $updated = RegistrationCredential::where('id', $id)->update($requestedData);
+      if (!$updated) throw new EmptyDataException();
+      $data = RegistrationCredential::find($id);
+    });
+
+    return $data;
   }
 }
