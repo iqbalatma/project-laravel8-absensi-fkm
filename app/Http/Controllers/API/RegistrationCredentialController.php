@@ -17,6 +17,8 @@ class RegistrationCredentialController extends ApiController
         'show'  => 'Get single registration credential successfully',
         'store' => 'Store registration credential successfuly',
         'update' => 'Update registration credential successfuly',
+        'destroy_success' => 'Delete registration credential successfully',
+        'destroy_failed' => 'Delete registration credential failed, the data does not exists',
     ];
 
 
@@ -138,14 +140,14 @@ class RegistrationCredentialController extends ApiController
             return $this->apiResponse([
                 'success'=> true,
                 'name' => $this->responseName,
-                'message' => 'Delete registration credential successfully',
-            ],JsonResponse::HTTP_OK);
+                'message' => $this->responseMessage['destroy_success'],
+            ], JsonResponse::HTTP_OK);
 
         return $this->apiResponse([
             'success'=> false,
             'name' => $this->responseName,
-            'message' => 'Delete registration credential failed, the data is not exists',
+            'message' => $this->responseMessage['destroy_failed'],
             'error_code' => 404
-        ],JsonResponse::HTTP_NOT_FOUND);
+        ], JsonResponse::HTTP_NOT_FOUND);
     }
 }

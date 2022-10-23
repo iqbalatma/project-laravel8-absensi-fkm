@@ -92,14 +92,10 @@ class RegistrationCredentialService
    * Description : service for delete the registration credential
    * 
    * @param int $id of registration credential
-   * @return bool if delete is success
+   * @return bool if delete is success or not
    */
-  public function destroy(int $id): bool
+  public function destroy(int $id):bool
   {
-    $registrationCredential = RegistrationCredential::find($id);
-    if($registrationCredential)
-      return $registrationCredential->delete();
-
-    return false;
+    return (new RegistrationCredentialRepository())->deleteRegistrationCredential($id);
   }
 }
