@@ -80,21 +80,20 @@ Route::middleware(['auth:api'])->group(function () {
                 Route::delete('/{id}', 'destroy')->name('destroy');
             });
         
-        Route::prefix('notifications')
-            ->name('notifications.')
-            ->controller(OrganizierNotificationController::class)
-            ->group(function (){
-                Route::post('/', 'store')->name('store');
-            });
-
-        Route::prefix('checkout-all-users')
-            ->name('checkoutallusers.')
-            ->controller(CheckoutAllUserController::class)
-            ->group(function (){
-                Route::post('/', 'checkoutAllUsers')->name('checkoutallusers');
-            });
+        Route::post(
+            '/notifications',
+            [OrganizierNotificationController::class, 'store']
+        )->name('notifications.store');
         
+        Route::post(
+            '/checkout-all-users',
+            [CheckoutAllUserController::class, 'checkoutAllUsers']
+        )->name('checkoutallusers.checkoutallusers');
 
+        Route::post(
+            '/register/manual',
+            [AuthController::class, 'registerManual']
+        )->name('auth.registerManual');
     });
     
     Route::post('/checkin-manual', [ManualCheckinController::class, 'manualCheckin'])->name('checkin.manual');  

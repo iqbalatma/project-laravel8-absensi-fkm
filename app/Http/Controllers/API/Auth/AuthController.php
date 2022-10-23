@@ -6,6 +6,7 @@ use App\Exceptions\InvalidRegistrationCredential;
 use App\Exceptions\UnauthorizedException;
 use App\Http\Controllers\API\ApiController;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterManualRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Services\RegistrationService;
 use Exception;
@@ -73,6 +74,26 @@ class AuthController extends ApiController
         ],JsonResponse::HTTP_OK);
     }
 
+
+    /**
+     * Description : use for register new user with registraition credential
+     * 
+     * @param RegisterManualRequest $request for validation rule
+     * @param string $registrationCredential for validate is register is allowed
+     * @return JsonResponse for response api
+     */
+    public function registerManual(RegisterManualRequest $request):JsonResponse
+    {
+        $registeredUser = $this->registrationService->registerManual($request->validated());
+
+
+        return $this->apiResponse([
+            'success' => true,
+            'name' => "Registration",
+            'message' => "Registration user successfully",
+            'result' => $registeredUser
+        ],JsonResponse::HTTP_OK);
+    }
 
     /**
      * Description : use for logout current user by token

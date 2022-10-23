@@ -60,6 +60,22 @@ class RegistrationService {
   }
 
 
+  public function registerManual(array $requestedData)
+  {
+    $requestedData['password'] = Hash::make($requestedData['password']);
+    $requestedData['personal_token'] = Str::random(16);
+
+    $user = User::create($requestedData);
+    $token = Auth::login($user);
+
+    return [
+      'user'=>$user,
+      'authorization'=>[
+        'token'=>$token,
+        'type'=> 'bearer'
+    ]];
+  }
+
   /**
    * Description : Use to check is token valid or not
    * 
