@@ -79,6 +79,16 @@ Route::middleware(['auth:api'])->group(function () {
             '/register/manual',
             [AuthController::class, 'registerManual']
         )->name('auth.registerManual');
+
+        Route::prefix('registration-credentials')
+            ->controller(RegistrationCredentialController::class)->group(function () {
+                Route::post('/', 'store');
+                Route::get('/{id}', 'show');
+                Route::get('/', 'index');
+                Route::patch('/{id}', 'update');
+                Route::delete('/{id}', 'destroy');
+                Route::get('/token/{token}', 'showByToken');
+            });
     });
 
     /** not admin access required */
@@ -109,15 +119,7 @@ Route::middleware(['auth:api'])->group(function () {
         [ManualRegistrationController::class, 'manualRegistration']
     )->name('register.manual');    
 
-    Route::prefix('registration-credentials')
-        ->controller(RegistrationCredentialController::class)->group(function () {
-            Route::post('/', 'store');
-            Route::get('/{id}', 'show');
-            Route::get('/', 'index');
-            Route::patch('/{id}', 'update');
-            Route::delete('/{id}', 'destroy');
-            Route::get('/token/{token}', 'showByToken');
-        });
+
 
     Route::prefix('checkin')
         ->controller(CheckinStatusController::class)->group(function () {

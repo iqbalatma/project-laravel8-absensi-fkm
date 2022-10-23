@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\EmptyDataException;
 use App\Models\RegistrationCredential;
+use App\Repositories\RegistrationCredentialRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -65,12 +66,12 @@ class RegistrationCredentialService
    * @param array $requestedData to arleady validated
    * @return RegistrationCredential Eloquent instance
    */
-  public function store(array $requestedData): object
+  public function store(array $requestedData):object
   {
     $requestedData['is_active'] = 1;
     $requestedData['token'] = Str::random(8);
 
-    return  RegistrationCredential::create($requestedData);
+    return (new RegistrationCredentialRepository())->addNewRegistrationCredential($requestedData);
   }
 
 

@@ -38,26 +38,6 @@ class RegistrationCredentialController extends ApiController
             JsonResponse::HTTP_OK);
     }
 
-
-    /**
-     * Description : to add new registration credential
-     * 
-     * @param RegistrationCredentialService $service or execute logic
-     * @param RegistrationCredentialStoreRequest $request for validate request
-     * @return JsonResponse for response api
-     */
-    public function store(RegistrationCredentialService $service, RegistrationCredentialStoreRequest $request): JsonResponse
-    {
-        $storedData = $service->store($request->validated());
-        
-        return $this->responseWithResource(
-            new RegistrationCredentialResource($storedData), 
-            $this->responseName, 
-            $this->responseMessage['store'],
-            JsonResponse::HTTP_CREATED);
-    }
-
-
     /**
      * Description : use to get registration credential by id
      * 
@@ -65,7 +45,7 @@ class RegistrationCredentialController extends ApiController
      * @param int $id of registration credential
      * @return JsonResponse for user
      */
-    public function show(RegistrationCredentialService $service,int $id):JsonResponse
+    public function show(RegistrationCredentialService $service, int $id):JsonResponse
     {
         $data = $service->showById($id);
                 
@@ -77,10 +57,10 @@ class RegistrationCredentialController extends ApiController
     }
 
     /**
-     * Description : use to get registration credential by id
+     * Description : use to get registration credential by token
      * 
      * @param RegistrationCredentialService $service for execute logic
-     * @param int $id of registration credential
+     * @param string $token of registration credential
      * @return JsonResponse for user
      */
     public function showByToken(RegistrationCredentialService $service, string $token):JsonResponse
@@ -91,7 +71,30 @@ class RegistrationCredentialController extends ApiController
             new RegistrationCredentialResource($data),
             $this->responseName,
             $this->responseMessage['show'],
-            JsonResponse::HTTP_OK);
+            JsonResponse::HTTP_OK
+        );
+    }
+
+
+    /**
+     * Description : to add new registration credential
+     * 
+     * @param RegistrationCredentialService $service or execute logic
+     * @param RegistrationCredentialStoreRequest $request for validate request
+     * @return JsonResponse for response api
+     */
+    public function store(
+        RegistrationCredentialService $service,
+        RegistrationCredentialStoreRequest $request
+    ): JsonResponse
+    {
+        $storedData = $service->store($request->validated());
+        
+        return $this->responseWithResource(
+            new RegistrationCredentialResource($storedData),
+            $this->responseName,
+            $this->responseMessage['store'],
+            JsonResponse::HTTP_CREATED);
     }
 
 
@@ -103,7 +106,11 @@ class RegistrationCredentialController extends ApiController
      * @param int $id of the credential update request
      * @return JsonResponse for the user response
      */
-    public function update(RegistrationCredentialService $service, RegistrationCredentialUpdateRequest $request, int $id): JsonResponse
+    public function update(
+        RegistrationCredentialService $service,
+        RegistrationCredentialUpdateRequest $request,
+        int $id
+    ): JsonResponse
     {
         $updated = $service->update($id, $request->validated());
 
@@ -111,7 +118,8 @@ class RegistrationCredentialController extends ApiController
             new RegistrationCredentialResource($updated),
             $this->responseName,
             $this->responseMessage['update'],
-            JsonResponse::HTTP_OK);
+            JsonResponse::HTTP_OK
+        );
     }
 
 
