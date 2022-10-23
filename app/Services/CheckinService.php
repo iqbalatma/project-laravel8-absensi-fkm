@@ -6,6 +6,7 @@ use App\Http\Status;
 use App\Models\CheckinStatus;
 use App\Models\CongressDay;
 use App\Models\User;
+use App\Repositories\CheckinRepository;
 
 class CheckinService{
 
@@ -61,19 +62,28 @@ class CheckinService{
       return Status::EMTPY_DATA;
     }
 
+
     $dataUser = $this->getDataUser();
+    $roleId = $dataUser->role_id;
     $requestedData['user_id']= $dataUser->id;
     $requestedData['checkin_status'] = true;
     $requestedData['congress_day_id'] = $this->getDataCongressDay()->id;
+
+    //check limit
+    
+   
 
     $checkinStatus = CheckinStatus::where([
       'user_id' => $dataUser->id,
       'congress_day_id' => $this->getDataCongressDay()->id
     ])->first();
 
-    
+    $isCheckinAllowed =$this->isCheckinAllowed($this->getDataCongressDay()->id, $dataUser->organization_id);
     
     if (empty($checkinStatus)) { //for the user that not checkin yet
+      if(!$isCheckinAllowed && $roleId == 3){
+        return Status::REACH_THE_LIMIT;
+      }
       CheckinStatus::create($requestedData);
       return Status::CHECKIN_SUCCESS;
     } else {
@@ -83,6 +93,9 @@ class CheckinService{
           $checkinStatus->save();
           return Status::CHECKOUT_SUCCESS;
       }else{ //for checkin user that status is checkout
+          if(!$isCheckinAllowed && $roleId == 3){
+            return Status::REACH_THE_LIMIT;
+          }
           $checkinStatus->checkin_status = 1;
           $checkinStatus->last_checkin_time = now();
           $checkinStatus->save();
@@ -91,9 +104,20 @@ class CheckinService{
     }
   }
 
+  public function isCheckinAllowed(int $congressDateId, int $organizationId):bool
+  {
+    $numberOfCheckin = (new CheckinRepository())->getCheckinOrganizationParticipantNumber($congressDateId, $organizationId);
+    if($numberOfCheckin>=2){
+      return false;
+    }
+
+    return true;
+  }
+
   /**
    * Description : use for checkin the user
    * 
+   * @deprecated
    * @param string $personalToken of the checkin user
    * @param array $requestedData of checkin user
    * @return string status of checkin

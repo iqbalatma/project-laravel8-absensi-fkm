@@ -7,7 +7,9 @@ use App\Http\Requests\CheckinByCongressDateRequest;
 use App\Http\Requests\CheckinStatusStoreRequest;
 use App\Http\Resources\CheckinStatusResourceCollection;
 use App\Http\Status;
+use App\Models\CheckinStatus;
 use App\Models\User;
+use App\Repositories\CheckinRepository;
 use App\Services\CheckinService;
 use Illuminate\Http\JsonResponse;
 
@@ -69,11 +71,16 @@ class CheckinStatusController extends ApiController
     {
         $checkinStatus = $service->checkinByCongressDate($personalToken, $request->validated());
         if ($checkinStatus == Status::INVALID_TOKEN)
-            throw new RequestErrorException("Your personal token is invalid", JsonResponse::HTTP_NOT_FOUND);
+            throw new RequestErrorException("Your personal token is invalid", JsonResponse::HTTP_FORBIDDEN);
 
 
         if ($checkinStatus == Status::EMTPY_DATA)
             throw new RequestErrorException("Congress day does not exists", JsonResponse::HTTP_NOT_FOUND);
+
+        if ($checkinStatus == Status::REACH_THE_LIMIT)
+            throw new RequestErrorException("Checkin as participan has reach out the limit", JsonResponse::HTTP_FORBIDDEN);
+
+
 
         #NOTES INI HARUS DIPERBAIKI JANGAN SIMPAN DISINI !
         $user = User::with('organization')->where('personal_token', $personalToken)->first();

@@ -11,9 +11,7 @@ use App\Services\RegistrationService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthController extends ApiController
 {
@@ -32,7 +30,7 @@ class AuthController extends ApiController
      */
     public function login(LoginRequest $request):JsonResponse
     {
-        $token = JWTAuth::claims(['tes'=> 'tok'])->attempt($request->validated());
+        $token = JWTAuth::attempt($request->validated());
         if (!$token) {
             throw new UnauthorizedException('Invalid username or password');
         }
