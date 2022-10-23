@@ -19,17 +19,23 @@ class OrganizierNotificationService{
 
 
   /**
-   * Description : use to get data by id
+   * Description : use to get latest notification
    * 
-   * @param int $id of asset that want to get
    * @return object of eloquent
    */
-  public function getLatestData()
+  public function getLatestData():object
   {
     return (new OrganizierNotificationRepository())->getLatestNotification();
   }
 
-  public function store(array $requestedData)
+
+  /**
+   * Description : use to add new notification
+   * 
+   * @param array $requestedData to store new notification
+   * @return object of eloquent
+   */
+  public function store(array $requestedData):object
   {
     return (new OrganizierNotificationRepository())->storeNewNotification($requestedData);
   }

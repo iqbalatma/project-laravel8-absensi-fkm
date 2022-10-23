@@ -13,10 +13,6 @@ class AssetController extends ApiController
     private array $responseMessage = [
         'index' => 'Get all assets successfully',
         'show' => 'Get asset successfully',
-        // 'store' => 'Store organization successfully',
-        // 'update' => 'Update organization successfully',
-        // 'destroy' => 'Delete organization successfully',
-        // 'destroy_failed' => 'Delete congress day failed, the data is not exists',
     ];
 
 
