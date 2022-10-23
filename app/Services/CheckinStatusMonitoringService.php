@@ -21,9 +21,9 @@ class CheckinStatusMonitoringService{
     $data =[
       'all_organization_active'           => $active->unique('user.organization_id')->count(),
       'all_active'                        => $active->count(),
-      'all_active_participant'            => $active->where('user.role_id', 3)->count(),
-      'all_active_guest'                  => $active->where('user.role_id', 4)->count(),
-      'all_active_alumni'                 => $active->where('user.role_id', 5)->count(),
+      'all_active_participant'            => $active->where('checkin_role', 'participant')->count(),
+      'all_active_guest'                  => $active->where('checkin_role', 'guest')->count(),
+      'all_active_alumni'                 => $active->where('checkin_role', 'alumni')->count(),
       'all_registered'                    => User::whereNotIn('role_id',[1,2])->get()->count(),
       'all_user_have_checked_in'          => $dataCheckinStatus->count(),
       'all_active_guest_non_organization' => $dataCheckinStatus->where('user.organization_id', null)->count(),

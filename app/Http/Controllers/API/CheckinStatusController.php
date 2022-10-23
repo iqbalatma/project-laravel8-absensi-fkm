@@ -69,6 +69,17 @@ class CheckinStatusController extends ApiController
      */
     public function checkinByCongressDate(CheckinService $service, CheckinByCongressDateRequest $request, string $personalToken): JsonResponse
     {
+        // $user = User::where('personal_token', $personalToken)->first();
+        // $organizationId = $user->organization_id;
+        // $data = CheckinStatus::whereHas('user',function ($query) use($organizationId){
+        //     return $query->where(['organization_id'=> $organizationId,'role_id'=>3]);
+        //    })->where(['congress_day_id'=> 1])->get();
+
+           
+        // // $data = (new CheckinRepository())->getCheckinOrganizationParticipantNumber(1,10);
+
+        // return response()->json(['data'=> $user->role]);
+
         $checkinStatus = $service->checkinByCongressDate($personalToken, $request->validated());
         if ($checkinStatus == Status::INVALID_TOKEN)
             throw new RequestErrorException("Your personal token is invalid", JsonResponse::HTTP_FORBIDDEN);

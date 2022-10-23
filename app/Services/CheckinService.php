@@ -64,6 +64,8 @@ class CheckinService{
 
 
     $dataUser = $this->getDataUser();
+    $roleName = $dataUser->role->name;
+    $requestedData['checkin_role'] = $roleName;
     $requestedData['user_id']= $dataUser->id;
     $requestedData['checkin_status'] = true;
     $requestedData['congress_day_id'] = $this->getDataCongressDay()->id;
@@ -85,7 +87,7 @@ class CheckinService{
     
     if (empty($checkinStatus)) { //for the user that not checkin yet
       if(!$isCheckinAllowed && $dataUser->role_id == 3){
-        return Status::REACH_THE_LIMIT;
+        $requestedData['checkin_role'] = 'guest';
       }
       CheckinStatus::create($requestedData);
       return Status::CHECKIN_SUCCESS;
@@ -97,7 +99,9 @@ class CheckinService{
           return Status::CHECKOUT_SUCCESS;
       }else{ //for checkin user that status is checkout
           if(!$isCheckinAllowed && $dataUser->role_id == 3){
-            return Status::REACH_THE_LIMIT;
+            $checkinStatus->checkin_role = 'guest';
+          }else{
+            $checkinStatus->checkin_role = 'participant';
           }
           $checkinStatus->checkin_status = 1;
           $checkinStatus->last_checkin_time = now();
