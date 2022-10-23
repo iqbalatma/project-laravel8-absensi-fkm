@@ -54,21 +54,6 @@ Route::prefix('notifications')
             });
 
 Route::middleware(['auth:api'])->group(function () {
-    Route::prefix('download')
-        ->controller(DocumentDownloadController::class)->group(function () {
-            Route::get('/{id}', 'download');
-            Route::get('/congress-draft', 'congressDraft');
-            Route::get('/manual-book', 'manualBook');
-        });
-
-    Route::prefix('assets')
-        ->name('assets')
-        ->controller(AssetController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/{id}', 'show')->name('show');
-            Route::get('/download/{id}', 'download')->name('download');
-        });
-        
     Route::middleware(['role:admin,superadmin'])->group(function (){
         Route::prefix('organizations')
             ->name('organizations.')
@@ -95,10 +80,34 @@ Route::middleware(['auth:api'])->group(function () {
             [AuthController::class, 'registerManual']
         )->name('auth.registerManual');
     });
-    
-    Route::post('/checkin-manual', [ManualCheckinController::class, 'manualCheckin'])->name('checkin.manual');  
 
-    Route::post('/register-manual', [ManualRegistrationController::class, 'manualRegistration'])->name('register.manual');    
+    /** not admin access required */
+
+    Route::prefix('download')
+        ->controller(DocumentDownloadController::class)->group(function () {
+            Route::get('/{id}', 'download');
+            Route::get('/congress-draft', 'congressDraft');
+            Route::get('/manual-book', 'manualBook');
+        });
+
+    Route::prefix('assets')
+        ->name('assets')
+        ->controller(AssetController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/{id}', 'show')->name('show');
+            Route::get('/download/{id}', 'download')->name('download');
+        });
+
+    
+    Route::post(
+        '/checkin-manual',
+        [ManualCheckinController::class, 'manualCheckin']
+    )->name('checkin.manual');  
+
+    Route::post(
+        '/register-manual',
+        [ManualRegistrationController::class, 'manualRegistration']
+    )->name('register.manual');    
 
     Route::prefix('registration-credentials')
         ->controller(RegistrationCredentialController::class)->group(function () {
