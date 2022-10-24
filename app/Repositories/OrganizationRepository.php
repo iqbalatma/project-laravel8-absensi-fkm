@@ -17,7 +17,7 @@ class OrganizationRepository{
    */
   public function getAllOrganization():?object
   {
-    return Organization::paginate($this->defaultPerPage);
+    return Organization::all();
   }
 
   /**
