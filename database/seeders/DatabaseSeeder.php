@@ -17,11 +17,11 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             OrganizationSeeder::class,
             UserSeeder::class,
-            CongressDaySeeder::class,
-            RegistrationCredentialSeeder::class,
-            CheckinStatusSeeder::class,
+            // CongressDaySeeder::class,
+            // RegistrationCredentialSeeder::class,
+            // CheckinStatusSeeder::class,
             AssetSeeder::class,
-            OrganizierNotificationSeeder::class
+            // OrganizierNotificationSeeder::class
         ]);
     }
 }

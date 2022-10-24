@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Exceptions\EmptyDataException;
 use App\Models\RegistrationCredential;
 use App\Repositories\RegistrationCredentialRepository;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 
