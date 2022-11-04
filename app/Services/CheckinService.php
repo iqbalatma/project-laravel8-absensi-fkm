@@ -114,7 +114,7 @@ class CheckinService{
   public function isCheckinAllowed(int $congressDateId, int $organizationId):bool
   {
     $numberOfCheckin = (new CheckinRepository())->getCheckinOrganizationParticipantNumber($congressDateId, $organizationId);
-    if($numberOfCheckin>=2){
+    if($numberOfCheckin>=5){
       return false;
     }
 

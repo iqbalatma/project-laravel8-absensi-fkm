@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\API\AssetController;
 use App\Http\Controllers\API\Auth\AuthController;
-use App\Http\Controllers\API\CheckinController;
 use App\Http\Controllers\API\CheckinStatusController;
 use App\Http\Controllers\API\CheckinStatusMonitoringController;
 use App\Http\Controllers\API\CheckoutAllUserController;
@@ -32,26 +31,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Route::post('/register/{token}', [App\Http\Controllers\API\AuthController::class, 'register']);
-// Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
 
 
 
-Route::prefix('organizations')
-            ->name('organizations.')
-            ->controller(OrganizationController::class)
-            ->group(function (){
-                Route::get('/', 'index')->name('index');
-                Route::get('/{id}', 'show')->name('show');
-            });
 
-Route::prefix('notifications')
-            ->name('notifications.')
-            ->controller(OrganizierNotificationController::class)
-            ->group(function (){
-                Route::get('/', 'index')->name('index');
-                Route::get('/latest', 'latest')->name('latest');
-            });
 
 Route::middleware(['auth:api'])->group(function () {
     Route::middleware(['role:admin,superadmin'])->group(function (){
@@ -91,24 +74,7 @@ Route::middleware(['auth:api'])->group(function () {
             });
     });
 
-    /** not admin access required */
-
-    Route::prefix('download')
-        ->controller(DocumentDownloadController::class)->group(function () {
-            Route::get('/{id}', 'download');
-            Route::get('/congress-draft', 'congressDraft');
-            Route::get('/manual-book', 'manualBook');
-        });
-
-    Route::prefix('assets')
-        ->name('assets')
-        ->controller(AssetController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/{id}', 'show')->name('show');
-            Route::get('/download/{id}', 'download')->name('download');
-        });
-
-    
+    /** not admin access required */    
     Route::post(
         '/checkin-manual',
         [ManualCheckinController::class, 'manualCheckin']
@@ -119,19 +85,19 @@ Route::middleware(['auth:api'])->group(function () {
         [ManualRegistrationController::class, 'manualRegistration']
     )->name('register.manual');    
 
-
-
     Route::prefix('checkin')
         ->controller(CheckinStatusController::class)->group(function () {
             // Route::post('/{personal_token}', 'checkin');
             Route::post('/congress-date/{personal_token}', 'checkinByCongressDate');
             Route::get('/', 'index');
         });
+
     Route::prefix('checkin')
         ->controller(CheckinStatusMonitoringController::class)->group(function () {
             Route::get('/monitoring', 'getSummary');
             Route::get('/latest', 'getLatest');
         });
+
     Route::prefix('congress-day')
         ->controller(CongressDayController::class)->group(function () {
             Route::post('/', 'store');
@@ -140,8 +106,6 @@ Route::middleware(['auth:api'])->group(function () {
             Route::patch('/{id}', 'update');
             Route::delete('/{id}', 'destroy');
         });
-
-    
 });
 
 Route::middleware(['auth:api', 'role:superadmin'])->group(function () {
@@ -152,6 +116,42 @@ Route::middleware(['auth:api', 'role:superadmin'])->group(function () {
         Route::patch('/{id}', 'update');
     });
 });
+
+
+
+/**
+ * ROUTE FOR GUEST (No logged in required)
+ */
+Route::prefix('download')
+        ->controller(DocumentDownloadController::class)->group(function () {
+            Route::get('/{id}', 'download');
+            Route::get('/congress-draft', 'congressDraft');
+            Route::get('/manual-book', 'manualBook');
+        });
+
+Route::prefix('assets')
+    ->name('assets')
+    ->controller(AssetController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/{id}', 'show')->name('show');
+        Route::get('/download/{id}', 'download')->name('download');
+    });
+
+Route::prefix('organizations')
+        ->name('organizations.')
+        ->controller(OrganizationController::class)
+        ->group(function (){
+            Route::get('/', 'index')->name('index');
+            Route::get('/{id}', 'show')->name('show');
+        });
+
+Route::prefix('notifications')
+        ->name('notifications.')
+        ->controller(OrganizierNotificationController::class)
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/latest', 'latest')->name('latest');
+        });
 
 Route::controller(AuthController::class)->group(function (){
     Route::post('/register/{registration_credential}', 'register');
