@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Traits;
 
@@ -9,7 +9,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Validation\ValidationException;
 
-trait ApiResponseTrait {
+trait ApiResponseTrait
+{
 
 
 
@@ -215,24 +216,24 @@ trait ApiResponseTrait {
      * PEMBATAS
      */
 
-   
+
     /**
      * Success Format Response API
-     * 
+     *
      * name    [message]
      * success [boolean]
      * message [string]
      * data    [object]
-     * 
+     *
      */
 
     /**
      * Failed Format Response API
-     * 
+     *
      * success [boolean]
      * message [string]
      * error_code [int]
-     * 
+     *
      */
 
 
@@ -243,15 +244,17 @@ trait ApiResponseTrait {
      * @param array $headers
      * @return JsonResponse
      */
-    protected function responseWithResource(JsonResource $resource, string $name = null , string $message = null, int $statusCode = 200, array $headers = []):JsonResponse
+    protected function responseWithResource(JsonResource $resource, string $name = null, string $message = null, int $statusCode = 200, array $headers = []): JsonResponse
     {
         return $this->apiResponse(
             [
                 'success' => true,
-                'name' => $name,
+                'name'    => $name,
                 'message' => $message,
-                'result' => $resource->response()->getData(),
-            ], $statusCode, $headers
+                'result'  => $resource->response()->getData(),
+            ],
+            $statusCode,
+            $headers
         );
     }
 
@@ -262,15 +265,17 @@ trait ApiResponseTrait {
      * @param array $headers
      * @return JsonResponse
      */
-    protected function responseWithResourceCollection(ResourceCollection $resourceCollection,string $name= null, string $message = null, $statusCode = 200, $headers = [])
+    protected function responseWithResourceCollection(ResourceCollection $resourceCollection, string $name = null, string $message = null, $statusCode = 200, $headers = [])
     {
         return $this->apiResponse(
             [
                 'success' => true,
-                'name' => $name,
+                'name'    => $name,
                 'message' => $message,
-                'result' => $resourceCollection->response()->getData()
-            ], $statusCode, $headers
+                'result'  => $resourceCollection->response()->getData()
+            ],
+            $statusCode,
+            $headers
         );
     }
 
@@ -283,35 +288,35 @@ trait ApiResponseTrait {
      *
      * @return JsonResponse
      */
-    protected function apiResponse($data = [], $statusCode = 200, $headers = []):JsonResponse
+    protected function apiResponse($data = [], $statusCode = 200, $headers = []): JsonResponse
     {
         $result = $this->parseGivenData($data, $statusCode, $headers);
 
         return response()->json(
-           $result['content'],
-           $result['statusCode'],
-           $result['headers']
+            $result['content'],
+            $result['statusCode'],
+            $result['headers']
         );
     }
 
     /**
      * Description : Used for parsing data success or failed
-     * 
+     *
      * @param array $data
      * @param int $statusCode
      * @param array $headers
      * @return array
      */
-    public function parseGivenData(array $data = [],int $statusCode = 200, array $headers = []):array
+    public function parseGivenData(array $data = [], int $statusCode = 200, array $headers = []): array
     {
         $responseStructure = [
             'success' => $data['success'],
-            'name' => $data['name']??null,
+            'name'    => $data['name'] ?? null,
             'message' => $data['message'] ?? null,
         ];
 
-        if(isset($data['result'])){
-           $responseStructure['result'] = $data['result'] ?? null;
+        if (isset($data['result'])) {
+            $responseStructure['result'] = $data['result'] ?? null;
         }
 
         if (isset($data['errors'])) {
@@ -335,15 +340,15 @@ trait ApiResponseTrait {
         if (
             isset($data['exception']) &&
             ($data['exception'] instanceof Error ||
-             $data['exception'] instanceof Exception)
-            ) {
+                $data['exception'] instanceof Exception)
+        ) {
             if (config('app.env') !== 'production') {
                 $responseStructure['exception'] = [
                     'message' => $data['exception']->getMessage(),
-                    'file' => $data['exception']->getFile(),
-                    'line' => $data['exception']->getLine(),
-                    'code' => $data['exception']->getCode(),
-                    'trace' => $data['exception']->getTrace(),
+                    'file'    => $data['exception']->getFile(),
+                    'line'    => $data['exception']->getLine(),
+                    'code'    => $data['exception']->getCode(),
+                    'trace'   => $data['exception']->getTrace(),
                 ];
             }
 
@@ -351,10 +356,10 @@ trait ApiResponseTrait {
                 $statusCode = 500;
             }
         }
-        
-        return ["content" => $responseStructure, "statusCode" => $statusCode, "headers" => $headers];
+
+        return ["content"    => $responseStructure, "statusCode" => $statusCode, "headers"    => $headers];
     }
-    
+
 }
 
 ?>
