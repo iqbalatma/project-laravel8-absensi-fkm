@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Organizations;
+namespace App\Http\Requests\CongressDays;
 
 use App\Http\Requests\FormRequestAPI;
 
-class UpdateOrganizationRequest extends FormRequestAPI
+class StoreCongressDayRequest extends FormRequestAPI
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,8 @@ class UpdateOrganizationRequest extends FormRequestAPI
     public function rules()
     {
         return [
-            "name" => "max:128",
-            "shortname" => "max:32|unique:organizations,shortname",
-            "link_instagram" => "max:128",
-            "link_website" => "max:128",
+            "location" => "max:64",
+            "h_day" => "required"
         ];
     }
 }
