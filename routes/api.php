@@ -32,8 +32,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::prefix("v1")
+Route::prefix("/v1")
     ->group(function () {
+        Route::controller(App\Http\Controllers\API\v1\OrganizationController::class)
+            ->prefix("/organizations")
+            ->name("organizations.")
+            ->group(
+                function () {
+                    Route::get("/", "index")->name("index");
+                    Route::get("/{id}", "show")->name("show");
+                    Route::post("/", "store")->name("store");
+                    Route::put("/{id}", "update")->name("update");
+                    Route::delete("/{id}", "destroy")->name("destroy");
+                }
+            );
     });
 
 
