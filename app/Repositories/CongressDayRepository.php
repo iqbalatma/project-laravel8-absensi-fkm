@@ -1,14 +1,14 @@
-<?php 
+<?php
 
 namespace App\Repositories;
 
 use App\Models\CongressDay;
 
-class CongressDayRepository{
-
-  public function getCongressDayByDate(string $date)
-  {
-    return CongressDay::whereDate('h_day','=', $date)->first();
-  }
- 
+class CongressDayRepository extends BaseRepository
+{
+    protected  $model;
+    public function __construct()
+    {
+        $this->model = new CongressDay();
+    }
 }

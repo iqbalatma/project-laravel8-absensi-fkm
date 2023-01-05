@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             OrganizationSeeder::class,
             UserSeeder::class,
-            // CongressDaySeeder::class,
+            CongressDaySeeder::class,
             // RegistrationCredentialSeeder::class,
             // CheckinStatusSeeder::class,
             AssetSeeder::class,

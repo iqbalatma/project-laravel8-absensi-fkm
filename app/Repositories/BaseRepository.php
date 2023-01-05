@@ -38,13 +38,13 @@ abstract class BaseRepository implements IRepository
         return $this->model
             ->create($requestedData);
     }
-    public function updateDataById(int $id, array $requestedData): object
+    public function updateDataById(int $id, array $requestedData, array $columns = ["*"]): object
     {
         $this->model
             ->where("id", $id)
             ->update($requestedData);
 
-        return $this->model->find($id);
+        return $this->model->find($id, $columns);
     }
     public function deleteDataById(int $id): int
     {
