@@ -13,6 +13,7 @@ use App\Http\Controllers\API\OrganizationController;
 use App\Http\Controllers\API\OrganizierNotificationController;
 use App\Http\Controllers\API\RegistrationCredentialController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\v1\Auth\AuthController as AuthAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,31 +35,43 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix("/v1")
     ->group(function () {
-        Route::controller(App\Http\Controllers\API\v1\OrganizationController::class)
-            ->prefix("/organizations")
-            ->name("organizations.")
+        Route::controller(AuthAuthController::class)
             ->group(
                 function () {
-                    Route::get("/", "index")->name("index");
-                    Route::get("/{id}", "show")->name("show");
-                    Route::post("/", "store")->name("store");
-                    Route::put("/{id}", "update")->name("update");
-                    Route::delete("/{id}", "destroy")->name("destroy");
+                    Route::post("/login", "authenticate")->name("login");
+                    Route::post("/logout", "logout")->name("logout");
                 }
             );
 
-        Route::controller(App\Http\Controllers\API\v1\CongressDayController::class)
-            ->prefix("/congress-days")
-            ->name("congress.days.")
-            ->group(
-                function () {
-                    Route::get("/", "index")->name("index");
-                    Route::get("/{id}", "show")->name("show");
-                    Route::post("/", "store")->name("store");
-                    Route::put("/{id}", "update")->name("update");
-                    Route::delete("/{id}", "destroy")->name("destroy");
-                }
-            );
+        Route::middleware("auth:api")->group(
+            function () {
+                Route::controller(App\Http\Controllers\API\v1\OrganizationController::class)
+                    ->prefix("/organizations")
+                    ->name("organizations.")
+                    ->group(
+                        function () {
+                            Route::get("/", "index")->name("index");
+                            Route::get("/{id}", "show")->name("show");
+                            Route::post("/", "store")->name("store");
+                            Route::put("/{id}", "update")->name("update");
+                            Route::delete("/{id}", "destroy")->name("destroy");
+                        }
+                    );
+
+                Route::controller(App\Http\Controllers\API\v1\CongressDayController::class)
+                    ->prefix("/congress-days")
+                    ->name("congress.days.")
+                    ->group(
+                        function () {
+                            Route::get("/", "index")->name("index");
+                            Route::get("/{id}", "show")->name("show");
+                            Route::post("/", "store")->name("store");
+                            Route::put("/{id}", "update")->name("update");
+                            Route::delete("/{id}", "destroy")->name("destroy");
+                        }
+                    );
+            }
+        );
     });
 
 

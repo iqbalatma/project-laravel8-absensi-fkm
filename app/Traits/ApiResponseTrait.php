@@ -83,7 +83,7 @@ trait ApiResponseTrait
     private function parseGivenData(array $data = [], int $statusCode = 200, array $headers = []): array
     {
         $responseStructure = [
-            'success' => $data['success'],
+            'success' => $data['success'] ?? null,
             'name'    => $data['name'] ?? null,
             'message' => $data['message'] ?? null,
         ];
@@ -101,7 +101,7 @@ trait ApiResponseTrait
         }
 
         /** when response failed */
-        if ($data['success'] === false) {
+        if (isset($data['success']) && $data['success'] === false) {
             if (isset($data['error_code'])) {
                 $responseStructure['error_code'] = $data['error_code'];
             } else {
