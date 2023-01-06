@@ -10,6 +10,7 @@ use App\Http\Controllers\API\ManualCheckinController;
 use App\Http\Controllers\API\ManualRegistrationController;
 use App\Http\Controllers\API\OrganizierNotificationController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\v1\AssetController as V1AssetController;
 use App\Http\Controllers\API\v1\Auth\AuthController as AuthAuthController;
 use App\Http\Controllers\API\v1\Auth\RegistrationController;
 use App\Http\Controllers\API\v1\CongressDayController;
@@ -46,6 +47,19 @@ Route::prefix("/v1")
 
         Route::middleware("auth:api")->group(
             function () {
+                Route::controller(V1AssetController::class)
+                    ->prefix("/assets")
+                    ->name("assets.")
+                    ->group(
+                        function () {
+                            Route::get("/", "index")->name("index");
+                            Route::get("/{id}", "show")->name("show");
+                            Route::post("/", "store")->name("store");
+                            Route::put("/{id}", "update")->name("update");
+                            Route::delete("/{id}", "destroy")->name("destroy");
+                        }
+                    );
+
                 Route::controller(OrganizationController::class)
                     ->prefix("/organizations")
                     ->name("organizations.")
