@@ -8,20 +8,19 @@ use Illuminate\Http\Request;
 
 class EmptyDataException extends Exception
 {
-    public $data;
-    public function __construct($param)
+    public string $message;
+    public function __construct(string $message = "The data you requested not found")
     {
-        $this->data = $param;
+        $this->message = $message;
     }
     public function render(Request $request): JsonResponse
     {
         return response()->json([
             'success'   => false,
             'name' => 'Empty Data Exception',
-            'message' => 'The data you requested not found',
+            'message' => $this->message,
             'error_code' => 404,
             'error' => true,
-            'tes' => $this->data
         ])->setStatusCode(404);
     }
 }
