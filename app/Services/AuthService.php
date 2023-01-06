@@ -38,7 +38,7 @@ class AuthService extends BaseService
 
 
         return [
-            "success" => "true",
+            "success" => true,
             "name" => "Authentication",
             "message" => "Authentication successfully",
             "payload" => [
@@ -49,5 +49,19 @@ class AuthService extends BaseService
                 ]
             ]
         ];
+    }
+
+    public function logout(): array
+    {
+        if (Auth::user()) {
+            Auth::logout();
+            return [
+                'success' => true,
+                'name'    => "Logout",
+                'message' => "Logout user successfully",
+            ];
+        };
+
+        throw new UnauthorizedException("Your token is invalid, please login to get new token");
     }
 }
