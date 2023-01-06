@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Exceptions\EmptyDataException;
 use App\Repositories\OrganizationRepository;
 
-class OrganizationService
+class OrganizationService extends BaseService
 {
     private const ORGANIZATION_SELECT_COLUMN = [
         "id",
@@ -15,14 +15,26 @@ class OrganizationService
         "link_website",
         "created_at",
     ];
+
+    protected $repository;
+
+    public function __construct()
+    {
+        $this->repository = new OrganizationRepository();
+    }
     /**
      * Description : use to get all data organization
      *
      * @return object of eloquent model
      */
-    public function getAllData(): ?object
+    public function getAllData(): object
     {
-        return (new OrganizationRepository())->getAllData(self::ORGANIZATION_SELECT_COLUMN);
+        $data = $this->repository->getAllData(self::ORGANIZATION_SELECT_COLUMN);
+        if (empty($data)) {
+            throw new EmptyDataException();
+        }
+
+        return $data;
     }
 
 
@@ -32,9 +44,9 @@ class OrganizationService
      * @param int $id of organization
      * @return object of eloquent model
      */
-    public function getDataById(int $id): ?object
+    public function getDataById(int $id): object
     {
-        $data = (new OrganizationRepository())->getDataById($id, self::ORGANIZATION_SELECT_COLUMN);
+        $data = $this->repository->getDataById($id, self::ORGANIZATION_SELECT_COLUMN);
         if (empty($data)) {
             throw new EmptyDataException();
         }
@@ -50,7 +62,7 @@ class OrganizationService
      */
     public function addNewData(array $requestedData): object
     {
-        return (new OrganizationRepository())->addNewData($requestedData);
+        return $this->repository->addNewData($requestedData);
     }
 
 
@@ -63,13 +75,8 @@ class OrganizationService
      */
     public function updateDataById(int $id, array $requestedData): object
     {
-        $updated = (new OrganizationRepository())->updateDataById($id, $requestedData);
-
-        if (!$updated) {
-            throw new EmptyDataException();
-        }
-
-        return $updated;
+        $this->checkData($id);
+        return $this->repository->updateDataById($id, $requestedData);
     }
 
 
@@ -81,8 +88,7 @@ class OrganizationService
      */
     public function deleteDataById(int $id): bool
     {
-        $deleted = (new OrganizationRepository())->deleteDataById($id);
-
-        return $deleted;
+        $this->checkData($id);
+        return $this->repository->deleteDataById($id);
     }
 }

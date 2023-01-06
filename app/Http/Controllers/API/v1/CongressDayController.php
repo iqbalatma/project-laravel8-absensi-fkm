@@ -16,7 +16,7 @@ class CongressDayController extends ApiController
     private array $responseMessage = [
         'index' => 'Get list data congress day successfully',
         'show' => 'Get single congress day successfully',
-        'store' => 'Store new congress day successfully',
+        'store' => 'Add new congress day successfully',
         'update' => 'Update congress day successfully',
         'destroy' => 'Delete congress day successfully',
     ];
