@@ -10,7 +10,14 @@ use Illuminate\Support\Str;
 
 class RegistrationCredentialService extends BaseService
 {
-
+    private const REGISTRATION_CREDENTIAL_SELECT_COLUMN = [
+        "id",
+        "role_id",
+        "organization_id",
+        "limit",
+        "token",
+        "is_active",
+    ];
     protected  $repository;
     public function __construct()
     {
@@ -23,7 +30,7 @@ class RegistrationCredentialService extends BaseService
      */
     public function getAllData(): object
     {
-        $data = $this->repository->getAllData();
+        $data = $this->repository->getAllData(self::REGISTRATION_CREDENTIAL_SELECT_COLUMN);
         if ($data->count() == 0) {
             throw new EmptyDataException();
         }
@@ -40,7 +47,7 @@ class RegistrationCredentialService extends BaseService
      */
     public function getDataById(int $id): object
     {
-        $data = $this->repository->getDataById($id);
+        $data = $this->repository->getDataById($id, self::REGISTRATION_CREDENTIAL_SELECT_COLUMN);
         if (empty($data)) throw new EmptyDataException();
         return $data;
     }
@@ -53,7 +60,7 @@ class RegistrationCredentialService extends BaseService
      */
     public function getDataByToken(string $token): object
     {
-        $data = $this->repository->getDataByToken($token);
+        $data = $this->repository->getDataByToken($token, self::REGISTRATION_CREDENTIAL_SELECT_COLUMN);
 
         if (empty($data)) throw new EmptyDataException();
 
@@ -97,7 +104,7 @@ class RegistrationCredentialService extends BaseService
      * @param int $id of registration credential
      * @return bool if delete is success or not
      */
-    public function deleteDataById(int $id): bool
+    public function deleteDataById(int $id): int
     {
         $this->checkData($id);
         return $this->repository->deleteDataById($id);

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\RegistrationCredentials;
 
 use App\Http\Requests\FormRequestAPI;
 use Illuminate\Foundation\Http\FormRequest;
 
-class AuthenticationRequest extends FormRequestAPI
+class StoreRegistrationCredentialRequest extends FormRequestAPI
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,9 @@ class AuthenticationRequest extends FormRequestAPI
     public function rules()
     {
         return [
-            "email" => "required",
-            "password" => "required"
+            "role_id" => "numeric|required",
+            "organization_id" => "numeric|required",
+            "limit" => "required|numeric",
         ];
     }
 }
