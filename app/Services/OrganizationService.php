@@ -30,7 +30,7 @@ class OrganizationService extends BaseService
     public function getAllData(): object
     {
         $data = $this->repository->getAllData(self::ORGANIZATION_SELECT_COLUMN);
-        if (empty($data)) {
+        if ($data->count() == 0) {
             throw new EmptyDataException();
         }
 

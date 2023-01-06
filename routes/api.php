@@ -5,15 +5,15 @@ use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\CheckinStatusController;
 use App\Http\Controllers\API\CheckinStatusMonitoringController;
 use App\Http\Controllers\API\CheckoutAllUserController;
-use App\Http\Controllers\API\CongressDayController;
 use App\Http\Controllers\API\DocumentDownloadController;
 use App\Http\Controllers\API\ManualCheckinController;
 use App\Http\Controllers\API\ManualRegistrationController;
-use App\Http\Controllers\API\OrganizationController;
 use App\Http\Controllers\API\OrganizierNotificationController;
-use App\Http\Controllers\API\RegistrationCredentialController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\v1\Auth\AuthController as AuthAuthController;
+use App\Http\Controllers\API\v1\CongressDayController;
+use App\Http\Controllers\API\v1\OrganizationController;
+use App\Http\Controllers\API\v1\RegistrationCredentialController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -45,7 +45,7 @@ Route::prefix("/v1")
 
         Route::middleware("auth:api")->group(
             function () {
-                Route::controller(App\Http\Controllers\API\v1\OrganizationController::class)
+                Route::controller(OrganizationController::class)
                     ->prefix("/organizations")
                     ->name("organizations.")
                     ->group(
@@ -58,13 +58,27 @@ Route::prefix("/v1")
                         }
                     );
 
-                Route::controller(App\Http\Controllers\API\v1\CongressDayController::class)
+                Route::controller(CongressDayController::class)
                     ->prefix("/congress-days")
                     ->name("congress.days.")
                     ->group(
                         function () {
                             Route::get("/", "index")->name("index");
                             Route::get("/{id}", "show")->name("show");
+                            Route::post("/", "store")->name("store");
+                            Route::put("/{id}", "update")->name("update");
+                            Route::delete("/{id}", "destroy")->name("destroy");
+                        }
+                    );
+
+                Route::controller(RegistrationCredentialController::class)
+                    ->prefix("/registration-credentials")
+                    ->name("registration.credentials.")
+                    ->group(
+                        function () {
+                            Route::get("/", "index")->name("index");
+                            Route::get("/{id}", "show")->name("show");
+                            Route::get("/token/{token}", "showByToken")->name("showByToken");
                             Route::post("/", "store")->name("store");
                             Route::put("/{id}", "update")->name("update");
                             Route::delete("/{id}", "destroy")->name("destroy");
@@ -80,14 +94,6 @@ Route::prefix("/v1")
 
 Route::middleware(['auth:api'])->group(function () {
     Route::middleware(['role:admin,superadmin'])->group(function () {
-        Route::prefix('organizations')
-            ->name('organizations.')
-            ->controller(OrganizationController::class)
-            ->group(function () {
-                Route::patch('/{id}', 'update')->name('update');
-                Route::post('/', 'store')->name('store');
-                Route::delete('/{id}', 'destroy')->name('destroy');
-            });
 
         Route::post(
             '/notifications',
@@ -103,16 +109,6 @@ Route::middleware(['auth:api'])->group(function () {
             '/register/manual',
             [AuthController::class, 'registerManual']
         )->name('auth.registerManual');
-
-        Route::prefix('registration-credentials')
-            ->controller(RegistrationCredentialController::class)->group(function () {
-                Route::post('/', 'store');
-                Route::get('/{id}', 'show');
-                Route::get('/', 'index');
-                Route::patch('/{id}', 'update');
-                Route::delete('/{id}', 'destroy');
-                Route::get('/token/{token}', 'showByToken');
-            });
     });
 
     /** not admin access required */
@@ -137,15 +133,6 @@ Route::middleware(['auth:api'])->group(function () {
         ->controller(CheckinStatusMonitoringController::class)->group(function () {
             Route::get('/monitoring', 'getSummary');
             Route::get('/latest', 'getLatest');
-        });
-
-    Route::prefix('congress-day')
-        ->controller(CongressDayController::class)->group(function () {
-            Route::post('/', 'store');
-            Route::get('/{id}', 'show');
-            Route::get('/', 'index');
-            Route::patch('/{id}', 'update');
-            Route::delete('/{id}', 'destroy');
         });
 });
 
@@ -201,5 +188,3 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/refresh', 'refresh');
     Route::post('/me', 'me');
 });
-
-Route::get('registration-credentials/token/{token}', [RegistrationCredentialController::class, 'showByToken']);
