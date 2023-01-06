@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Organizations;
 
+use App\Exceptions\EmptyDataException;
 use App\Http\Requests\FormRequestAPI;
+use Illuminate\Validation\Rule;
 
 class UpdateOrganizationRequest extends FormRequestAPI
 {
@@ -23,9 +25,10 @@ class UpdateOrganizationRequest extends FormRequestAPI
      */
     public function rules()
     {
+
         return [
             "name" => "max:128",
-            "shortname" => "max:32|unique:organizations,shortname",
+            "shortname" => ["max:32", Rule::unique("organizations")->ignore($this->id)],
             "link_instagram" => "max:128",
             "link_website" => "max:128",
         ];

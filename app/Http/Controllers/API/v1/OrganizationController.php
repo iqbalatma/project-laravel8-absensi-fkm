@@ -11,11 +11,11 @@ use Illuminate\Http\JsonResponse;
 
 class OrganizationController extends ApiController
 {
-    private string $responseName = 'Oganization';
+    private string $responseName = 'Organizations';
     private array $responseMessage = [
-        'index' => 'Get all organization successfully',
+        'index' => 'Get list organization successfully',
         'show' => 'Get organization successfully',
-        'store' => 'Store organization successfully',
+        'store' => 'Add new organization successfully',
         'update' => 'Update organization successfully',
         'destroy' => 'Delete organization successfully',
         'destroy_failed' => 'Delete congress day failed, the data is not exists',
@@ -48,7 +48,7 @@ class OrganizationController extends ApiController
         return $this->responseWithResource(
             new OrganizationResource($stored),
             $this->responseName,
-            $this->responseMessage["update"],
+            $this->responseMessage["store"],
             JsonResponse::HTTP_CREATED
         );
     }

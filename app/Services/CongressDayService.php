@@ -3,15 +3,20 @@
 namespace App\Services;
 
 use App\Exceptions\EmptyDataException;
-use App\Models\CongressDay;
 use App\Repositories\CongressDayRepository;
-use Illuminate\Support\Facades\DB;
 
-class CongressDayService
+class CongressDayService extends BaseService
 {
     private const CONGRESS_DAY_SELECT_COLUMN = [
         "id", "location", "h_day",
     ];
+
+    protected  $repository;
+
+    public function __construct()
+    {
+        $this->repository = new CongressDayRepository();
+    }
     /**
      * Description : use to get list data of congress day
      *
@@ -19,7 +24,11 @@ class CongressDayService
      */
     public function getAllData(): object
     {
-        return (new CongressDayRepository())->getAllData(self::CONGRESS_DAY_SELECT_COLUMN);
+        $data = $this->repository->getAllData(self::CONGRESS_DAY_SELECT_COLUMN);
+        if ($data->count() == 0) {
+            throw new EmptyDataException();
+        }
+        return $data;
     }
 
 
@@ -29,9 +38,9 @@ class CongressDayService
      * @param int $id of congress day
      * @return object
      */
-    public function getDataById(int $id): object
+    public function getDataById(int $id): ?object
     {
-        $data = (new CongressDayRepository())->getDataById($id, self::CONGRESS_DAY_SELECT_COLUMN);
+        $data = $this->repository->getDataById($id, self::CONGRESS_DAY_SELECT_COLUMN);
         if (empty($data)) {
             throw new EmptyDataException();
         }
@@ -48,7 +57,7 @@ class CongressDayService
      */
     public function addNewData(array $requestedData): object
     {
-        return (new CongressDayRepository())->addNewData($requestedData);
+        return $this->repository->addNewData($requestedData);
     }
 
 
@@ -58,15 +67,10 @@ class CongressDayService
      * @param int $id of congress day
      * @param array $reuqestedData that already validated
      */
-    public function updateDataById(int $id, array $requestedData)
+    public function updateDataById(int $id, array $requestedData): ?object
     {
-        $updated = (new CongressDayRepository())->updateDataById($id, $requestedData, self::CONGRESS_DAY_SELECT_COLUMN);
-
-        if (!$updated) {
-            throw new EmptyDataException();
-        }
-
-        return $updated;
+        $this->checkData($id);
+        return $this->repository->updateDataById($id, $requestedData, self::CONGRESS_DAY_SELECT_COLUMN);
     }
 
 
@@ -78,6 +82,7 @@ class CongressDayService
      */
     public function deleteDataById(int $id): bool
     {
-        return (new CongressDayRepository())->deleteDataById($id);
+        $this->checkData($id);
+        return $this->repository->deleteDataById($id);
     }
 }
