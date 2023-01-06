@@ -7,7 +7,6 @@ use App\Repositories\AssetRepository;
 
 class AssetService extends BaseService
 {
-
     protected $repository;
     public function __construct()
     {
@@ -54,11 +53,10 @@ class AssetService extends BaseService
     public function downloadById(int $id): array
     {
         $data = $this->getDataById($id);
-        $filename = $data->filename;
 
         return [
-            'path' => storage_path("app/public/document/$filename"),
-            'filename' => $filename
+            'path' => storage_path("app/public/document/$data->filename"),
+            'filename' => $data->filename
         ];
     }
 }

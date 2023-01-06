@@ -17,7 +17,7 @@ class AssetController extends ApiController
         'show' => 'Get singe asset successfully',
     ];
 
-    public function index(AssetService $service)
+    public function index(AssetService $service): JsonResponse
     {
         return $this->responseWithResourceCollection(
             new AssetResourceCollection($service->getAllData()),
@@ -27,7 +27,7 @@ class AssetController extends ApiController
         );
     }
 
-    public function show(AssetService $service, int $id)
+    public function show(AssetService $service, int $id): JsonResponse
     {
         return $this->responseWithResource(
             new AssetResource($service->getDataById($id)),
@@ -35,5 +35,19 @@ class AssetController extends ApiController
             $this->responseMessage["show"],
             JsonResponse::HTTP_OK
         );
+    }
+
+    public function download(AssetService $service, int $id)
+    {
+        $headers = [
+            'Content-Type' => 'application/pdf',
+        ];
+
+        list(
+            'path' => $path,
+            'filename' => $filename
+        ) = $service->downloadById($id);
+
+        return response()->download($path, $filename, $headers);
     }
 }
