@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class EmptyDataException extends Exception
 {
-    public string $message;
+    public  $message;
     public function __construct(string $message = "The data you requested not found")
     {
         $this->message = $message;

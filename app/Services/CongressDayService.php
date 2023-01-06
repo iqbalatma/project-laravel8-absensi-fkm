@@ -41,7 +41,7 @@ class CongressDayService extends BaseService
     public function getDataById(int $id): ?object
     {
         $data = $this->repository->getDataById($id, self::CONGRESS_DAY_SELECT_COLUMN);
-        if (empty($data)) {
+        if ($data->count() == 0) {
             throw new EmptyDataException();
         }
 
