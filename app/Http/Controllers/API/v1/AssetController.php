@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\Controller;
 use App\Http\Resources\Assets\AssetResource;
 use App\Http\Resources\Assets\AssetResourceCollection;
 use App\Services\AssetService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class AssetController extends ApiController
 {
