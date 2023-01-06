@@ -9,8 +9,9 @@ use Illuminate\Http\Request;
 class UnauthorizedException extends Exception
 {
     protected $message;
-    
-    public function __construct($message ='You are unauthorized to do this request', $code = 403) {
+
+    public function __construct($message = 'You are unauthorized to do this request', $code = 401)
+    {
         $this->message = $message;
         $this->code = $code;
     }
@@ -20,7 +21,7 @@ class UnauthorizedException extends Exception
             'success'   => false,
             'name'      => 'Unauthorized',
             'message'   => $this->message,
-            'error_code'=> $this->code,
+            'error_code' => $this->code,
             'error' => true,
         ])->setStatusCode($this->code);
     }

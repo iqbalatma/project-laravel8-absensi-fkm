@@ -13,6 +13,7 @@ use App\Http\Controllers\API\OrganizationController;
 use App\Http\Controllers\API\OrganizierNotificationController;
 use App\Http\Controllers\API\RegistrationCredentialController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\v1\Auth\AuthController as AuthAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix("/v1")
     ->group(function () {
+        Route::controller(AuthAuthController::class)
+            ->prefix("/auth")
+            ->name("auth.")
+            ->group(
+                function () {
+                    Route::post("/login", "authenticate")->name("login");
+                }
+            );
+
+
         Route::controller(App\Http\Controllers\API\v1\OrganizationController::class)
             ->prefix("/organizations")
             ->name("organizations.")
