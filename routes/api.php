@@ -11,6 +11,7 @@ use App\Http\Controllers\API\ManualRegistrationController;
 use App\Http\Controllers\API\OrganizierNotificationController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\v1\Auth\AuthController as AuthAuthController;
+use App\Http\Controllers\API\v1\Auth\RegistrationController;
 use App\Http\Controllers\API\v1\CongressDayController;
 use App\Http\Controllers\API\v1\OrganizationController;
 use App\Http\Controllers\API\v1\RegistrationCredentialController;
@@ -84,6 +85,14 @@ Route::prefix("/v1")
                             Route::delete("/{id}", "destroy")->name("destroy");
                         }
                     );
+
+                Route::controller(RegistrationController::class)
+                    ->prefix("/registration")
+                    ->name("registration.")
+                    ->group(function () {
+                        Route::post("/credential/{credential}", "registrationWithCredential")->name("registrationWithCredential");
+                        Route::post("/", "registration")->name("registration");
+                    });
             }
         );
     });
