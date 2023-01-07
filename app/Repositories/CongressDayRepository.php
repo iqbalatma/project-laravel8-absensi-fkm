@@ -11,4 +11,12 @@ class CongressDayRepository extends BaseRepository
     {
         $this->model = new CongressDay();
     }
+
+    public function getDataByHDay(string $hDay, array $columns = ["*"])
+    {
+        return $this->model
+            ->select($columns)
+            ->whereDate("h_day", "=", $hDay)
+            ->first();
+    }
 }

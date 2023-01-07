@@ -11,4 +11,12 @@ class UserRepository extends BaseRepository
     {
         $this->model = new User();
     }
+
+    public function getDataByPersonalToken(string $personalToken, array $columns = ["*"]): ?object
+    {
+        return $this->model
+            ->select($columns)
+            ->where("personal_token", $personalToken)
+            ->first();
+    }
 }
