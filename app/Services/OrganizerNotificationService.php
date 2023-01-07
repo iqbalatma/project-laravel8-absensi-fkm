@@ -52,7 +52,7 @@ class OrganizerNotificationService extends BaseService
      * @param array $requestedData to store new notification
      * @return object of eloquent
      */
-    public function store(array $requestedData): object
+    public function addNewData(array $requestedData): object
     {
         return $this->repository->addNewData($requestedData);
     }
