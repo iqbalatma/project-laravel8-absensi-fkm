@@ -10,6 +10,7 @@ use App\Http\Controllers\API\ManualCheckinController;
 use App\Http\Controllers\API\ManualRegistrationController;
 use App\Http\Controllers\API\OrganizierNotificationController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\v1\AssetController as V1AssetController;
 use App\Http\Controllers\API\v1\Auth\AuthController as AuthAuthController;
 use App\Http\Controllers\API\v1\Auth\RegistrationController;
 use App\Http\Controllers\API\v1\CongressDayController;
@@ -46,6 +47,17 @@ Route::prefix("/v1")
 
         Route::middleware("auth:api")->group(
             function () {
+                Route::controller(V1AssetController::class)
+                    ->prefix("/assets")
+                    ->name("assets.")
+                    ->group(
+                        function () {
+                            Route::get("/", "index")->name("index");
+                            Route::get("/{id}", "show")->name("show");
+                            Route::get("/download/{id}", "download")->name("download");
+                        }
+                    );
+
                 Route::controller(OrganizationController::class)
                     ->prefix("/organizations")
                     ->name("organizations.")
@@ -174,13 +186,6 @@ Route::prefix('assets')
         Route::get('/download/{id}', 'download')->name('download');
     });
 
-Route::prefix('organizations')
-    ->name('organizations.')
-    ->controller(OrganizationController::class)
-    ->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/{id}', 'show')->name('show');
-    });
 
 Route::prefix('notifications')
     ->name('notifications.')
@@ -189,11 +194,3 @@ Route::prefix('notifications')
         Route::get('/', 'index')->name('index');
         Route::get('/latest', 'latest')->name('latest');
     });
-
-Route::controller(AuthController::class)->group(function () {
-    Route::post('/register/{registration_credential}', 'register');
-    Route::post('/login', 'login')->name('auth.login');
-    Route::post('/logout', 'logout');
-    Route::post('/refresh', 'refresh');
-    Route::post('/me', 'me');
-});
