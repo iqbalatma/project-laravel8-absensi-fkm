@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\OrganizierNotification;
+use App\Models\OrganizerNotification;
 use Illuminate\Database\Seeder;
 
 class OrganizierNotificationSeeder extends Seeder
@@ -14,6 +14,6 @@ class OrganizierNotificationSeeder extends Seeder
      */
     public function run()
     {
-        OrganizierNotification::create(['message'=> "Selamat datang peserta kongress"]);
+        OrganizerNotification::factory()->count(100)->create();
     }
 }

@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             RegistrationCredentialSeeder::class,
             // CheckinStatusSeeder::class,
             AssetSeeder::class,
-            // OrganizierNotificationSeeder::class
+            OrganizierNotificationSeeder::class
         ]);
     }
 }

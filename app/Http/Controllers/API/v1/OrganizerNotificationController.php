@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrganizerNotification\OrganizerNotificationResourceCollection;
-use App\Services\OrganizierNotificationService;
+use App\Services\OrganizerNotificationService;
 use Illuminate\Http\JsonResponse;
 
 class OrganizerNotificationController extends Controller
@@ -16,7 +16,7 @@ class OrganizerNotificationController extends Controller
         'store' => 'Add new organizier notification successfully',
     ];
 
-    public function index(OrganizierNotificationService $service): JsonResponse
+    public function index(OrganizerNotificationService $service): JsonResponse
     {
         $data = $service->getAllData();
         return $this->responseWithResourceCollection(
