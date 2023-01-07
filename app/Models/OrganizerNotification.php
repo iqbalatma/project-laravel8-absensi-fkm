@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OrganizierNotification extends Model
+class OrganizerNotification extends Model
 {
     use HasFactory;
 
-    protected $table = "organizier_notifications";
+    protected $table = "organizer_notifications";
 
     protected $fillable = ['message'];
 }

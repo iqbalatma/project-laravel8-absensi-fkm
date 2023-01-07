@@ -15,6 +15,7 @@ use App\Http\Controllers\API\v1\Auth\AuthController as AuthAuthController;
 use App\Http\Controllers\API\v1\Auth\RegistrationController;
 use App\Http\Controllers\API\v1\CongressDayController;
 use App\Http\Controllers\API\v1\OrganizationController;
+use App\Http\Controllers\API\v1\OrganizerNotificationController;
 use App\Http\Controllers\API\v1\RegistrationCredentialController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -104,6 +105,16 @@ Route::prefix("/v1")
                     ->group(function () {
                         Route::post("/credential/{credential}", "registrationWithCredential")->name("registrationWithCredential");
                         Route::post("/", "registration")->name("registration");
+                    });
+
+
+                Route::controller(OrganizerNotificationController::class)
+                    ->prefix("/organizer-notifications")
+                    ->name("organizer.notifications.")
+                    ->group(function () {
+                        Route::get("/", "index")->name("index");
+                        Route::get("/latest", "latest")->name("latest");
+                        Route::post("/", "store")->name("store");
                     });
             }
         );

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\OrganizerNotifications;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\FormRequestAPI;
 
-class OrganizierNotificationStoreRequest extends FormRequest
+class StoreOrganizerNotificationRequest extends FormRequestAPI
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class OrganizierNotificationStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            "message" => "required|max:100"
+            "message" => "required"
         ];
     }
 }
