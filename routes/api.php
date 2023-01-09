@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\API\AssetController;
 use App\Http\Controllers\API\Auth\AuthController;
-use App\Http\Controllers\API\CheckinStatusController;
 use App\Http\Controllers\API\CheckinStatusMonitoringController;
 use App\Http\Controllers\API\DocumentDownloadController;
 use App\Http\Controllers\API\ManualCheckinController;
@@ -13,6 +12,7 @@ use App\Http\Controllers\API\v1\AssetController as V1AssetController;
 use App\Http\Controllers\API\v1\Auth\AuthController as AuthAuthController;
 use App\Http\Controllers\API\v1\Auth\RegistrationController;
 use App\Http\Controllers\API\v1\CheckinController;
+use App\Http\Controllers\API\v1\CheckinStatusController;
 use App\Http\Controllers\API\v1\CheckoutAllUserController;
 use App\Http\Controllers\API\v1\CongressDayController;
 use App\Http\Controllers\API\v1\OrganizationController;
@@ -136,6 +136,14 @@ Route::prefix("/v1")
                             Route::post("/", "checkoutAllUser");
                         }
                     );
+                Route::controller(CheckinStatusController::class)
+                    ->prefix("/checkin-statuses")
+                    ->name("checkin.statuses.")
+                    ->group(
+                        function () {
+                            Route::get("/", "index")->name("index");
+                        }
+                    );
             }
         );
     });
@@ -171,12 +179,6 @@ Route::middleware(['auth:api'])->group(function () {
         [ManualRegistrationController::class, 'manualRegistration']
     )->name('register.manual');
 
-    Route::prefix('checkin')
-        ->controller(CheckinStatusController::class)->group(function () {
-            // Route::post('/{personal_token}', 'checkin');
-            Route::post('/congress-date/{personal_token}', 'checkinByCongressDate');
-            Route::get('/', 'index');
-        });
 
     Route::prefix('checkin')
         ->controller(CheckinStatusMonitoringController::class)->group(function () {

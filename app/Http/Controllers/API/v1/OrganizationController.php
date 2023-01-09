@@ -28,7 +28,7 @@ class OrganizationController extends ApiController
     public function index(OrganizationService $service): JsonResponse
     {
         return $this->responseWithResourceCollection(
-            new OrganizationResourceCollection($service->getAllData()),
+            new OrganizationResourceCollection($service->getAllDataPaginated()),
             $this->responseName,
             $this->responseMessage['index'],
             JsonResponse::HTTP_OK

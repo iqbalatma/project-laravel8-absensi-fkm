@@ -22,9 +22,9 @@ class CongressDayService extends BaseService
      *
      * @return object
      */
-    public function getAllData(): object
+    public function getAllDataPaginated(): object
     {
-        $data = $this->repository->getAllData(self::CONGRESS_DAY_SELECT_COLUMN);
+        $data = $this->repository->getAllDataPaginated(self::CONGRESS_DAY_SELECT_COLUMN);
         if ($data->count() == 0) {
             throw new EmptyDataException();
         }

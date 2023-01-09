@@ -27,9 +27,9 @@ class OrganizationService extends BaseService
      *
      * @return object of eloquent model
      */
-    public function getAllData(): object
+    public function getAllDataPaginated(): object
     {
-        $data = $this->repository->getAllData(self::ORGANIZATION_SELECT_COLUMN);
+        $data = $this->repository->getAllDataPaginated(self::ORGANIZATION_SELECT_COLUMN);
         if ($data->count() == 0) {
             throw new EmptyDataException();
         }

@@ -31,7 +31,7 @@ class RegistrationCredentialController extends ApiController
     public function index(RegistrationCredentialService $service): JsonResponse
     {
         return $this->responseWithResourceCollection(
-            new RegistrationCredentialResourceCollection($service->getAllData()),
+            new RegistrationCredentialResourceCollection($service->getAllDataPaginated()),
             $this->responseName,
             $this->responseMessage["index"],
             JsonResponse::HTTP_OK

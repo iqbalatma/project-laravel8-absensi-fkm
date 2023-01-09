@@ -28,7 +28,7 @@ class CongressDayController extends ApiController
     public function index(CongressDayService $service): JsonResponse
     {
         return $this->responseWithResourceCollection(
-            new CongressDayResourceCollection($service->getAllData()),
+            new CongressDayResourceCollection($service->getAllDataPaginated()),
             $this->responseName,
             $this->responseMessage["index"],
             JsonResponse::HTTP_OK
