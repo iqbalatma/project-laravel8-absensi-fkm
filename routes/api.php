@@ -123,6 +123,7 @@ Route::prefix("/v1")
                     ->name("checkin.")
                     ->group(
                         function () {
+                            Route::post("/manual", "checkinManual")->name("checkinManual");
                             Route::post("/{personalToken}", "checkin")->name("checkin");
                         }
                     );
