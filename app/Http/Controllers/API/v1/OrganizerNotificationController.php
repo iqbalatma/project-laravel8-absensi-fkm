@@ -19,7 +19,7 @@ class OrganizerNotificationController extends ApiController
 
     public function index(OrganizerNotificationService $service): JsonResponse
     {
-        $data = $service->getAllData();
+        $data = $service->getAllDataPaginated();
         return $this->responseWithResourceCollection(
             new OrganizerNotificationResourceCollection($data),
             $this->responseName,

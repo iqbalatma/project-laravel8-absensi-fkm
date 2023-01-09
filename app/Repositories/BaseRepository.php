@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 interface IRepository
 {
+    public function getAllDataPaginated(array $columns = ["*"], int $perPage): ?object;
     public function getAllData(array $columns = ["*"]): ?object;
     public function getDataById(int $id, array $columns = ["*"]): ?object;
     public function addNewData(array $requestedData): object;
@@ -17,11 +18,17 @@ abstract class BaseRepository implements IRepository
     protected const DEFAULT_PER_PAGE = 5;
     protected  $model;
 
-    public function getAllData(array $columns = ["*"], int $perPage = self::DEFAULT_PER_PAGE): ?object
+    public function getAllDataPaginated(array $columns = ["*"], int $perPage = self::DEFAULT_PER_PAGE): ?object
     {
         return $this->model
             ->select($columns)
             ->paginate($perPage);
+    }
+    public function getAllData(array $columns = ["*"]): ?object
+    {
+        return $this->model
+            ->select($columns)
+            ->get();
     }
     public function getDataById(int $id, array $columns = ["*"]): ?object
     {

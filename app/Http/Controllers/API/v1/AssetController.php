@@ -18,7 +18,7 @@ class AssetController extends ApiController
     public function index(AssetService $service): JsonResponse
     {
         return $this->responseWithResourceCollection(
-            new AssetResourceCollection($service->getAllData()),
+            new AssetResourceCollection($service->getAllDataPaginated()),
             $this->responseName,
             $this->responseMessage["index"],
             JsonResponse::HTTP_OK

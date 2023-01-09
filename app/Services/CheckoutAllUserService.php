@@ -3,11 +3,9 @@
 namespace App\Services;
 
 use App\Exceptions\EmptyDataException;
-use App\Models\CheckinStatus;
 use App\Repositories\AssetRepository;
 use App\Repositories\CheckinStatusRepository;
 use App\Repositories\CongressDayRepository;
-use App\Repositories\OrganizierNotificationRepository;
 
 class CheckoutAllUserService extends BaseService
 {

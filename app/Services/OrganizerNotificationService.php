@@ -20,9 +20,9 @@ class OrganizerNotificationService extends BaseService
      *
      * @return object of eloquent
      */
-    public function getAllData(): object
+    public function getAllDataPaginated(): object
     {
-        $data = $this->repository->getAllData();
+        $data = $this->repository->getAllDataPaginated();
         if ($data->count() == 0) {
             throw new EmptyDataException();
         }
