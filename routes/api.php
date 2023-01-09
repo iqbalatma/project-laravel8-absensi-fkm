@@ -13,6 +13,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\v1\AssetController as V1AssetController;
 use App\Http\Controllers\API\v1\Auth\AuthController as AuthAuthController;
 use App\Http\Controllers\API\v1\Auth\RegistrationController;
+use App\Http\Controllers\API\v1\CheckinController;
 use App\Http\Controllers\API\v1\CongressDayController;
 use App\Http\Controllers\API\v1\OrganizationController;
 use App\Http\Controllers\API\v1\OrganizerNotificationController;
@@ -116,6 +117,16 @@ Route::prefix("/v1")
                         Route::get("/latest", "latest")->name("latest");
                         Route::post("/", "store")->name("store");
                     });
+
+                Route::controller(CheckinController::class)
+                    ->prefix("/checkin")
+                    ->name("checkin.")
+                    ->group(
+                        function () {
+                            Route::post("/manual", "checkinManual")->name("checkinManual");
+                            Route::post("/{personalToken}", "checkin")->name("checkin");
+                        }
+                    );
             }
         );
     });

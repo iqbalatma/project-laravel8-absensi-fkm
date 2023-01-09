@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Checkin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CheckinByCongressDateRequest extends FormRequest
+class ManualCheckinRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,8 @@ class CheckinByCongressDateRequest extends FormRequest
     public function rules()
     {
         return [
-            'congress_date' => "required"
+            "user_id" => "numeric|required",
+            "congress_day_id" => "numeric|required"
         ];
     }
 }
