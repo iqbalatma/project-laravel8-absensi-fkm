@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\CheckinStatuses;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class AssetResourceCollection extends ResourceCollection
+class CheckinStatusResourceCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.

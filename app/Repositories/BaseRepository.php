@@ -2,8 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\EmptyDataException;
+
 interface IRepository
 {
+    public function searchColumn(): object;
     public function getAllDataPaginated(array $columns = ["*"], int $perPage): ?object;
     public function getAllData(array $columns = ["*"]): ?object;
     public function getDataById(int $id, array $columns = ["*"]): ?object;
@@ -17,6 +20,21 @@ abstract class BaseRepository implements IRepository
 {
     protected const DEFAULT_PER_PAGE = 5;
     protected  $model;
+
+    public function searchColumn(array $searchableColumn = []): object
+    {
+        $queryParams = request()->query()["search"];
+        ["columns" => $columns, "values" => $values, "operators" => $operators] = $queryParams;
+
+        for ($i = 0; $i < count($columns); $i++) {
+            if (isset($columns[$i]) && isset($values[$i]) && isset($searchableColumn[$columns[$i]])) {
+                $this->model = $this->model->where($searchableColumn[$columns[$i]], $operators[$i] ?? "=", $values[$i]);
+            }
+        }
+
+
+        return $this;
+    }
 
     public function getAllDataPaginated(array $columns = ["*"], int $perPage = self::DEFAULT_PER_PAGE): ?object
     {
