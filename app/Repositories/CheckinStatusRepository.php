@@ -23,7 +23,7 @@ class CheckinStatusRepository extends BaseRepository
             ->select($columns)
             ->join(Table::USER, Table::USER . ".id", Table::CHECKIN_STATUS . ".user_id")
             ->join(Table::ORGANIZATION, Table::ORGANIZATION . ".id", Table::USER . ".organization_id")
-            ->get();
+            ->paginate($perPage);
     }
 
     public function checkoutAllUser(int $congressDayId)
