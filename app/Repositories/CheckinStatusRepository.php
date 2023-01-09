@@ -15,7 +15,7 @@ class CheckinStatusRepository extends BaseRepository
 
     public function checkoutAllUser(int $congressDayId)
     {
-        return CheckinStatus::where('congress_day_id', $congressDayId)->update(['checkin_status' => 0]);
+        return $this->model->where("congress_day_id", $congressDayId)->update(["checkin_status" => false]);
     }
 
     public function getDataByUserIdAndCongressDateId(int $userId, int $congressDateId, array $columns = ["*"])

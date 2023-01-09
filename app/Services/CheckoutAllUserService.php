@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace App\Services;
 
 use App\Exceptions\EmptyDataException;
@@ -8,20 +9,18 @@ use App\Repositories\CheckinStatusRepository;
 use App\Repositories\CongressDayRepository;
 use App\Repositories\OrganizierNotificationRepository;
 
-class CheckoutAllUserService{
-  
-  public function checkoutAllUserByDate(array $requestedData)
-  {
-    $congressDay = (new CongressDayRepository())->getCongressDayByDate($requestedData['congress_date']);
+class CheckoutAllUserService extends BaseService
+{
+    public function checkoutAllUserByDate(array $requestedData)
+    {
+        $congressDay = (new CongressDayRepository())->getDataByHDay($requestedData['congress_date']);
 
-    if(empty($congressDay)){
-      throw new EmptyDataException();
+        if (empty($congressDay)) {
+            throw new EmptyDataException();
+        }
+
+        $congressDayId = $congressDay->id;
+
+        return (new CheckinStatusRepository())->checkoutAllUser($congressDayId);
     }
-
-    $congressDayId = $congressDay->id;
-
-    return (new CheckinStatusRepository())->checkoutAllUser($congressDayId);
-  }
-  
 }
-?>

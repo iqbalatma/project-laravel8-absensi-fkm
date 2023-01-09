@@ -4,7 +4,6 @@ use App\Http\Controllers\API\AssetController;
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\CheckinStatusController;
 use App\Http\Controllers\API\CheckinStatusMonitoringController;
-use App\Http\Controllers\API\CheckoutAllUserController;
 use App\Http\Controllers\API\DocumentDownloadController;
 use App\Http\Controllers\API\ManualCheckinController;
 use App\Http\Controllers\API\ManualRegistrationController;
@@ -14,6 +13,7 @@ use App\Http\Controllers\API\v1\AssetController as V1AssetController;
 use App\Http\Controllers\API\v1\Auth\AuthController as AuthAuthController;
 use App\Http\Controllers\API\v1\Auth\RegistrationController;
 use App\Http\Controllers\API\v1\CheckinController;
+use App\Http\Controllers\API\v1\CheckoutAllUserController;
 use App\Http\Controllers\API\v1\CongressDayController;
 use App\Http\Controllers\API\v1\OrganizationController;
 use App\Http\Controllers\API\v1\OrganizerNotificationController;
@@ -127,6 +127,15 @@ Route::prefix("/v1")
                             Route::post("/{personalToken}", "checkin")->name("checkin");
                         }
                     );
+
+                Route::controller(CheckoutAllUserController::class)
+                    ->prefix("/checkout-all-users")
+                    ->name("checkout.all.users.")
+                    ->group(
+                        function () {
+                            Route::post("/", "checkoutAllUser");
+                        }
+                    );
             }
         );
     });
@@ -143,10 +152,7 @@ Route::middleware(['auth:api'])->group(function () {
             [OrganizierNotificationController::class, 'store']
         )->name('notifications.store');
 
-        Route::post(
-            '/checkout-all-users',
-            [CheckoutAllUserController::class, 'checkoutAllUsers']
-        )->name('checkoutallusers.checkoutallusers');
+
 
         Route::post(
             '/register/manual',
