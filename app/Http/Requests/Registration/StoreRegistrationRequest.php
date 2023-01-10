@@ -27,8 +27,8 @@ class StoreRegistrationRequest extends FormRequestAPI
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string',
-            'generation' => 'required|string',
+            'password' => 'required|string|confirmed',
+            'generation' => 'required|numeric',
             'phone_number' => 'string',
             'organization_id' => 'numeric',
             'student_id' => 'required|numeric',
