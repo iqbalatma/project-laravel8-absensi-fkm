@@ -39,4 +39,11 @@ class UserRepository extends BaseRepository
             ->where("personal_token", $personalToken)
             ->first();
     }
+
+    public function changeActiveStatusById(int $id, bool $status = true): int
+    {
+        return $this->model
+            ->where("id", $id)
+            ->update(["is_active" => $status]);
+    }
 }

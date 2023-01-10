@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\UserManagement\StoreUserRequest;
+use App\Http\Requests\UserManagement\UpdateUserRequest;
 use App\Http\Resources\UserManagement\UserManagementResource;
 use App\Http\Resources\UserManagement\UserManagementResourceCollection;
 use App\Services\UserManagementService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class UserManagementController extends ApiController
 {
@@ -19,7 +18,8 @@ class UserManagementController extends ApiController
         'show' => 'Get user by id successfully',
         'store' => 'Add new user successfully',
         'update' => 'Update user successfully',
-        'destroy' => 'Delete user successfully',
+        'changeStatusActiveSuccess' => 'Change status active user successfully',
+        'changeStatusActiveFailed' => 'Change status active user failed',
     ];
 
     /**
@@ -73,11 +73,40 @@ class UserManagementController extends ApiController
         );
     }
 
-    public function update()
+    /**
+     * Update data user by id
+     *
+     * @param UserManagementService $service
+     * @param UpdateUserRequest $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(UserManagementService $service, UpdateUserRequest $request, int $id): JsonResponse
     {
+        return $this->responseWithResource(
+            new UserManagementResource($service->updateDataById($id, $request->validated())),
+            $this->responseName,
+            $this->responseMessage["update"],
+            JsonResponse::HTTP_OK
+        );
     }
 
-    public function deactive()
+    public function changeActiveStatus(UserManagementService $service, int $id): JsonResponse
     {
+        $deactivated = $service->changeActiveStatus($id);
+        if ($deactivated) {
+            $response = [
+                "success" => true,
+                "name" => $this->responseName,
+                "message" => $this->responseMessage["changeStatusActiveSuccess"]
+            ];
+        } else {
+            $response = [
+                "success" => true,
+                "name" => $this->responseName,
+                "message" => $this->responseMessage["changeStatusActiveFailed"]
+            ];
+        }
+        return $this->apiResponse($response, JsonResponse::HTTP_OK);
     }
 }

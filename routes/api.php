@@ -165,6 +165,8 @@ Route::prefix("/v1")
                             Route::get("/", "index")->name("index");
                             Route::get("/{id}", "show")->name("show");
                             Route::post("/", "store")->name("store");
+                            Route::post("/change-status/{id}", "changeActiveStatus")->name("change.active.status");
+                            Route::put("/{id}", "update")->name("update");
                         }
                     );
             }

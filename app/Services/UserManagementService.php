@@ -94,15 +94,13 @@ class UserManagementService extends BaseService
     }
 
 
-    /**
-     * Description : use to delete the organization by id
-     *
-     * @param int $id of the organization that want to delete
-     * @return bool of status delete organization
-     */
-    public function deleteDataById(int $id): bool
+    public function changeActiveStatus(int $id): int
     {
         $this->checkData($id);
-        return $this->repository->deleteDataById($id);
+        $status = true;
+        if ($this->getData()->is_active) {
+            $status = false;
+        };
+        return $this->repository->changeActiveStatusById($id, $status);
     }
 }
