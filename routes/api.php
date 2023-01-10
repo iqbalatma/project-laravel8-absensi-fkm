@@ -19,6 +19,7 @@ use App\Http\Controllers\API\v1\MonitoringController;
 use App\Http\Controllers\API\v1\OrganizationController;
 use App\Http\Controllers\API\v1\OrganizerNotificationController;
 use App\Http\Controllers\API\v1\RegistrationCredentialController;
+use App\Http\Controllers\API\v1\UserManagementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -153,6 +154,19 @@ Route::prefix("/v1")
                     ->group(
                         function () {
                             Route::get("/", "index")->name("index");
+                        }
+                    );
+
+                Route::controller(UserManagementController::class)
+                    ->prefix("/users")
+                    ->name("users.")
+                    ->group(
+                        function () {
+                            Route::get("/", "index")->name("index");
+                            Route::get("/{id}", "show")->name("show");
+                            Route::post("/", "store")->name("store");
+                            Route::post("/change-status/{id}", "changeActiveStatus")->name("change.active.status");
+                            Route::put("/{id}", "update")->name("update");
                         }
                     );
             }
