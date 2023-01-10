@@ -15,6 +15,7 @@ use App\Http\Controllers\API\v1\CheckinController;
 use App\Http\Controllers\API\v1\CheckinStatusController;
 use App\Http\Controllers\API\v1\CheckoutAllUserController;
 use App\Http\Controllers\API\v1\CongressDayController;
+use App\Http\Controllers\API\v1\MonitoringController;
 use App\Http\Controllers\API\v1\OrganizationController;
 use App\Http\Controllers\API\v1\OrganizerNotificationController;
 use App\Http\Controllers\API\v1\RegistrationCredentialController;
@@ -139,6 +140,16 @@ Route::prefix("/v1")
                 Route::controller(CheckinStatusController::class)
                     ->prefix("/checkin-statuses")
                     ->name("checkin.statuses.")
+                    ->group(
+                        function () {
+                            Route::get("/", "index")->name("index");
+                            Route::get("/latest", "latest")->name("latest");
+                        }
+                    );
+
+                Route::controller(MonitoringController::class)
+                    ->prefix("/monitoring")
+                    ->name("monitoring.")
                     ->group(
                         function () {
                             Route::get("/", "index")->name("index");

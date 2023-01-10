@@ -26,6 +26,14 @@ class CheckinStatusRepository extends BaseRepository
             ->paginate($perPage);
     }
 
+    public function getAllDataMonitoring(): ?object
+    {
+        return $this->model->whereHas('user', function ($q) {
+            $q->whereNotIn('role_id', [1, 2]);
+        })->with('user')->get();
+    }
+
+
     public function checkoutAllUser(int $congressDayId)
     {
         return $this->model->where("congress_day_id", $congressDayId)->update(["checkin_status" => false]);

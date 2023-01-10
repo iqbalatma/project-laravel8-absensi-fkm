@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserResourceCollection;
@@ -20,38 +19,40 @@ class UserController extends ApiController
 
     /**
      * Description : use to get list user
-     * 
+     *
      * @param UserService $service for execute logic
      * @param Request $request for get request data
      * @return JsonResponse for api response
      */
-    public function index(UserService $service, Request $request):JsonResponse
+    public function index(UserService $service, Request $request): JsonResponse
     {
         $totalPerPage = request()->get('total_per_page') ?? null;
-        $data = $service->getAll($request->only('role_id','generation','organization_id', 'full'), $totalPerPage);
+        $data = $service->getAll($request->only('role_id', 'generation', 'organization_id', 'full'), $totalPerPage);
         return $this->responseWithResource(
             new UserResourceCollection($data),
             $this->responseName,
             $this->responseMessage['index'],
-            200);
+            200
+        );
     }
 
 
     /**
      * Description : use to get detail data user by id
-     * 
+     *
      * @param UserService $service for execute logic
      * @param int $id of user
      * @return JsonResponse for api response
      */
-    public function show(UserService $service, int $id):JsonResponse
+    public function show(UserService $service, int $id): JsonResponse
     {
         $data = $service->show($id);
         return $this->responseWithResource(
             new UserResource($data),
             $this->responseName,
             $this->responseMessage['show'],
-            200);
+            200
+        );
     }
 
 
@@ -59,9 +60,9 @@ class UserController extends ApiController
     /**
      * !PENDING
      */
-    public function update(UserService $service,UserUpdateRequest $request, int $id):JsonResponse
+    public function update(UserService $service, UserUpdateRequest $request, int $id): JsonResponse
     {
         $updated = $service->update($id, $request->validated());
-        return response()->json(['data'=>$updated]);
+        return response()->json(['data' => $updated]);
     }
 }
