@@ -6,6 +6,8 @@ use App\Exceptions\EmptyDataException;
 use App\Repositories\OrganizationRepository;
 use App\Repositories\UserRepository;
 use App\Statics\Table;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserManagementService extends BaseService
 {
@@ -71,14 +73,17 @@ class UserManagementService extends BaseService
      */
     public function addNewData(array $requestedData): object
     {
+        $requestedData["password"] = Hash::make($requestedData["password"]);
+        $requestedData["personal_token"] = Str::random(16);
+
         return $this->repository->addNewData($requestedData);
     }
 
 
     /**
-     * Description : use to update organization by id
+     * Description : use to update user by id
      *
-     * @param int $id of organization
+     * @param int $id of user
      * @param array $requestedData that want to update
      * @return object of eloquent model
      */

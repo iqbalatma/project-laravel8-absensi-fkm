@@ -164,6 +164,7 @@ Route::prefix("/v1")
                         function () {
                             Route::get("/", "index")->name("index");
                             Route::get("/{id}", "show")->name("show");
+                            Route::post("/", "store")->name("store");
                         }
                     );
             }
