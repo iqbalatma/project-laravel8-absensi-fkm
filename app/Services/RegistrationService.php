@@ -23,12 +23,7 @@ class RegistrationService extends BaseService
     }
     public function registrationWithCredential(string $credential, array $requestedData): object
     {
-        $regCred = $this->regCredsRepo->getDataByToken($credential);
-        if ($regCred && $regCred->is_active) {
-            $regCred->decrement("limit", 1);
-            return $this->repository->addNewData($requestedData);
-        } else {
-            throw new UnauthorizedException();
-        }
+        $this->regCredsRepo->decreaseLimitByToken($credential);
+        return $this->repository->addNewData($requestedData);
     }
 }

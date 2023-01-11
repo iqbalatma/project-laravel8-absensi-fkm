@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Registration;
 
+use App\Exceptions\UnauthorizedException;
 use App\Http\Requests\FormRequestAPI;
+use App\Repositories\RegistrationCredentialRepository;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRegistrationRequest extends FormRequestAPI
@@ -14,6 +16,11 @@ class StoreRegistrationRequest extends FormRequestAPI
      */
     public function authorize()
     {
+        $regCred = $this->route("credential");
+        if (!(new RegistrationCredentialRepository())->getDataByToken($regCred)) {
+            throw new UnauthorizedException();
+        }
+
         return true;
     }
 
