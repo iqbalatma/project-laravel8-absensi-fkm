@@ -41,19 +41,15 @@ Route::group(
             }
         );
 
+        Route::post(
+            "registration/credential/{credential}",
+            [RegistrationController::class, "registrationWithCredential"]
+        )->name("registration.with.credential");
+
+
+
         Route::middleware("auth:api")->group(
             function () {
-                Route::controller(AssetController::class)
-                    ->prefix("/assets")
-                    ->name("assets.")
-                    ->group(
-                        function () {
-                            Route::get("/", "index")->name("index");
-                            Route::get("/{id}", "show")->name("show");
-                            Route::get("/download/{id}", "download")->name("download");
-                        }
-                    );
-
                 Route::controller(OrganizationController::class)
                     ->prefix("/organizations")
                     ->name("organizations.")
@@ -66,6 +62,19 @@ Route::group(
                             Route::delete("/{id}", "destroy")->name("destroy");
                         }
                     );
+
+                Route::controller(AssetController::class)
+                    ->prefix("/assets")
+                    ->name("assets.")
+                    ->group(
+                        function () {
+                            Route::get("/", "index")->name("index");
+                            Route::get("/{id}", "show")->name("show");
+                            Route::get("/download/{id}", "download")->name("download");
+                        }
+                    );
+
+
 
                 Route::controller(CongressDayController::class)
                     ->prefix("/congress-days")
@@ -94,13 +103,7 @@ Route::group(
                         }
                     );
 
-                Route::controller(RegistrationController::class)
-                    ->prefix("/registration")
-                    ->name("registration.")
-                    ->group(function () {
-                        Route::post("/credential/{credential}", "registrationWithCredential")->name("registrationWithCredential");
-                        Route::post("/", "registration")->name("registration");
-                    });
+
 
 
                 Route::controller(OrganizerNotificationController::class)
