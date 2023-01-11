@@ -50,18 +50,28 @@ Route::group(
 
         Route::middleware("auth:api")->group(
             function () {
-                Route::controller(OrganizationController::class)
-                    ->prefix("/organizations")
-                    ->name("organizations.")
-                    ->group(
-                        function () {
-                            Route::get("/", "index")->name("index");
-                            Route::get("/{id}", "show")->name("show");
-                            Route::post("/", "store")->name("store");
-                            Route::put("/{id}", "update")->name("update");
-                            Route::delete("/{id}", "destroy")->name("destroy");
-                        }
-                    );
+
+                Route::group(
+                    [
+                        "middleware" =>  "role:admin,superadmin"
+                    ],
+                    function () {
+                        Route::group(
+                            [
+                                "controller" => OrganizationController::class,
+                                "prefix" => "/organizations",
+                                "as" => "organization.",
+                            ],
+                            function () {
+                                Route::get("/", "index")->name("index")->withoutMiddleware("role:admin,superadmin");
+                                Route::get("/{id}", "show")->name("show")->withoutMiddleware("role:admin,superadmin");;
+                                Route::post("/", "store")->name("store");
+                                Route::put("/{id}", "update")->name("update");
+                                Route::delete("/{id}", "destroy")->name("destroy");
+                            }
+                        );
+                    }
+                );
 
                 Route::controller(AssetController::class)
                     ->prefix("/assets")
