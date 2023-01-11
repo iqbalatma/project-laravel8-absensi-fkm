@@ -6,6 +6,7 @@ use App\Exceptions\EmptyDataException;
 use App\Repositories\UserRepository;
 use App\Statics\Table;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class MyProfileService extends BaseService
 {
@@ -42,6 +43,8 @@ class MyProfileService extends BaseService
     public function updateDataById(array $requestedData)
     {
         $this->checkData(Auth::id());
+        $requestedData["password"] = Hash::make($requestedData["new_password"]);
+        unset($requestedData["new_password"]);
         return $this->repository->updateDataById(Auth::id(), $requestedData);
     }
 }

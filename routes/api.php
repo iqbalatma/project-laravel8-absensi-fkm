@@ -180,6 +180,7 @@ Route::group(
                     ],
                     function () {
                         Route::get("/", "show")->name("show");
+                        Route::put("/", "update")->name("update");
                     }
                 );
             }

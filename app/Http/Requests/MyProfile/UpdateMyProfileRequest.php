@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\MyProfile;
 
+use App\Exceptions\UnauthorizedException;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UpdateMyProfileRequest extends FormRequest
 {
@@ -13,7 +16,10 @@ class UpdateMyProfileRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        if (!Hash::check($this->password, Auth::user()->password)) {
+            throw new UnauthorizedException();
+        }
+        return true;
     }
 
     /**
@@ -24,7 +30,11 @@ class UpdateMyProfileRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "name" => "",
+            "student_id" => "numeric",
+            "generation" => "numeric",
+            "phone_number" => "",
+            "new_password" => "confirmed",
         ];
     }
 }
