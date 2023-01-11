@@ -14,7 +14,7 @@ class CheckoutAllUserController extends ApiController
         "checkoutFaield" =>    "Checkout all users failed",
     ];
 
-    public function checkoutAllUser(CheckoutAllUserService $service, CheckoutAllUserRequest $request): JsonResponse
+    public function __invoke(CheckoutAllUserService $service, CheckoutAllUserRequest $request): JsonResponse
     {
         $data = $service->checkoutAllUserByDate($request->validated());
 

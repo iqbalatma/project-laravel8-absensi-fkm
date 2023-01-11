@@ -15,12 +15,16 @@ class RegistrationCredentialRepository extends BaseRepository
         $this->model = new RegistrationCredential();
     }
 
-
     public function getDataByToken(string $token, array $columns = ["*"])
     {
         return $this->model
             ->select($columns)
             ->where("token", $token)
             ->first();
+    }
+
+    public function decreaseLimitByToken(string $token, int $value = 1)
+    {
+        return $this->model->where("token", $token)->decrement("limit", $value);
     }
 }

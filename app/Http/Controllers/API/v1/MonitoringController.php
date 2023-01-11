@@ -12,7 +12,7 @@ class MonitoringController extends ApiController
     private array $responseMessage = [
         "index" => "Get all data monitoring successfully",
     ];
-    public function index(MonitoringService $service): JsonResponse
+    public function __invoke(MonitoringService $service): JsonResponse
     {
         $data = $service->getAllData();
         return $this->responseWithResource(
