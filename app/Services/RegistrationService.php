@@ -17,10 +17,6 @@ class RegistrationService extends BaseService
         $this->regCredsRepo = new RegistrationCredentialRepository();
     }
 
-    public function registration(array $requestedData): object
-    {
-        return $this->repository->addNewData($requestedData);
-    }
     public function registrationWithCredential(string $credential, array $requestedData): object
     {
         $this->regCredsRepo->decreaseLimitByToken($credential);
