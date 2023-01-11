@@ -25,6 +25,7 @@ class RegistrationService extends BaseService
     {
         $regCred = $this->regCredsRepo->getDataByToken($credential);
         if ($regCred && $regCred->is_active) {
+            $regCred->decrement("limit", 1);
             return $this->repository->addNewData($requestedData);
         } else {
             throw new UnauthorizedException();

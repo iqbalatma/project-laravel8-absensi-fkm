@@ -15,7 +15,14 @@ class RegistrationController extends ApiController
         "registrationWithCredential" => "Registration with credential successfully",
     ];
 
-
+    /**
+     * Registration user with credential
+     *
+     * @param RegistrationService $service
+     * @param StoreRegistrationRequest $request
+     * @param string $credential
+     * @return JsonResponse
+     */
     public function registrationWithCredential(RegistrationService $service, StoreRegistrationRequest $request, string $credential)
     {
         return $this->responseWithResource(
