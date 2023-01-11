@@ -1,15 +1,7 @@
 <?php
 
-use App\Http\Controllers\API\AssetController;
-use App\Http\Controllers\API\Auth\AuthController;
-use App\Http\Controllers\API\CheckinStatusMonitoringController;
-use App\Http\Controllers\API\DocumentDownloadController;
-use App\Http\Controllers\API\ManualCheckinController;
-use App\Http\Controllers\API\ManualRegistrationController;
-use App\Http\Controllers\API\OrganizierNotificationController;
-use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\API\v1\AssetController as V1AssetController;
-use App\Http\Controllers\API\v1\Auth\AuthController as AuthAuthController;
+use App\Http\Controllers\API\v1\AssetController;
+use App\Http\Controllers\API\v1\Auth\AuthController;
 use App\Http\Controllers\API\v1\Auth\RegistrationController;
 use App\Http\Controllers\API\v1\CheckinController;
 use App\Http\Controllers\API\v1\CheckinStatusController;
@@ -35,24 +27,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::group(
+    ["prefix" => "/v1"],
+    function () {
 
-
-Route::prefix("/v1")
-    ->group(function () {
-        Route::controller(AuthAuthController::class)
-            ->group(
-                function () {
-                    Route::post("/login", "authenticate")->name("login");
-                    Route::post("/logout", "logout")->name("logout");
-                }
-            );
+        Route::group(
+            ["controller" => AuthController::class],
+            function () {
+                Route::post("/login", "authenticate")->name("login");
+                Route::post("/refresh", "refresh")->name("refresh");
+                Route::post("/refresh", "refresh")->name("refresh");
+                Route::post("/logout", "logout")->name("logout");
+            }
+        );
 
         Route::middleware("auth:api")->group(
             function () {
-                Route::controller(V1AssetController::class)
+                Route::controller(AssetController::class)
                     ->prefix("/assets")
                     ->name("assets.")
                     ->group(
@@ -181,4 +172,8 @@ Route::prefix("/v1")
                     );
             }
         );
-    });
+    }
+);
+
+
+    // Route::group([])
