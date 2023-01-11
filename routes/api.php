@@ -13,7 +13,6 @@ use App\Http\Controllers\API\v1\OrganizationController;
 use App\Http\Controllers\API\v1\OrganizerNotificationController;
 use App\Http\Controllers\API\v1\RegistrationCredentialController;
 use App\Http\Controllers\API\v1\UserManagementController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,19 +40,14 @@ Route::group(
             }
         );
 
-        Route::post(
-            "registration/credential/{credential}",
-            [RegistrationController::class, "registrationWithCredential"]
-        )->name("registration.with.credential");
-
-
+        Route::post("registration/credential/{credential}", RegistrationController::class)->name("registration.with.credential");
 
         Route::middleware("auth:api")->group(
             function () {
-
                 Route::group(
                     ["middleware" =>  "role:admin,superadmin"],
                     function () {
+                        // ORGANIZATION
                         Route::group(
                             [
                                 "controller" => OrganizationController::class,
@@ -69,11 +63,13 @@ Route::group(
                             }
                         );
 
+
+                        // CONGRESS DAY
                         Route::group(
                             [
                                 "controller" => CongressDayController::class,
                                 "prefix" => "/congress-days",
-                                "name" => "congress.days."
+                                "as" => "congress.days."
                             ],
                             function () {
                                 Route::get("/", "index")->name("index")->withoutMiddleware("role:admin,superadmin");
@@ -83,112 +79,110 @@ Route::group(
                                 Route::delete("/{id}", "destroy")->name("destroy");
                             }
                         );
+
+
+                        // REGISTRATION CREDENTIAL
+                        Route::group(
+                            [
+                                "controller" => RegistrationCredentialController::class,
+                                "prefix" => "/registration-credentials",
+                                "as" => "registration.credentials."
+                            ],
+                            function () {
+                                Route::get("/", "index")->name("index");
+                                Route::get("/{id}", "show")->name("show");
+                                Route::get("/token/{token}", "showByToken")->name("showByToken");
+                                Route::post("/", "store")->name("store");
+                                Route::put("/{id}", "update")->name("update");
+                                Route::delete("/{id}", "destroy")->name("destroy");
+                            }
+                        );
+
+                        // CHECKIN
+                        Route::group(
+                            [
+                                "controller" => CheckinController::class,
+                                "prefix" => "/checkin",
+                                "as" => "checkin."
+                            ],
+                            function () {
+                                Route::post("/manual", "checkinManual")->name("manual");
+                                Route::post("/{personalToken}", "checkin")->name("personal.token");
+                            }
+                        );
+
+                        Route::post("/checkout-all-users", CheckoutAllUserController::class)->name("checkout.all.users");
+
+                        // CHECKIN STATUS
+                        Route::group(
+                            [
+                                "controller" => CheckinStatusController::class,
+                                "prefix" => "/checkin-statuses",
+                                "as" => "checkin.statuses."
+                            ],
+                            function () {
+                                Route::get("/", "index")->name("index");
+                                Route::get("/latest", "latest")->name("latest");
+                            }
+                        );
+
+                        Route::get("/monitoring", MonitoringController::class)->name("monitoring");
+
+                        // USER MANAGEMENT
+                        Route::group(
+                            [
+                                "controller" => UserManagementController::class,
+                                "prefix" => "/users",
+                                "as" => "users."
+                            ],
+                            function () {
+                                Route::get("/", "index")->name("index");
+                                Route::get("/{id}", "show")->name("show");
+                                Route::post("/", "store")->name("store");
+                                Route::post("/change-status/{id}", "changeActiveStatus")->name("change.active.status");
+                                Route::put("/{id}", "update")->name("update");
+                            }
+                        );
                     }
                 );
 
-                Route::controller(AssetController::class)
-                    ->prefix("/assets")
-                    ->name("assets.")
-                    ->group(
-                        function () {
-                            Route::get("/", "index")->name("index");
-                            Route::get("/{id}", "show")->name("show");
-                            Route::get("/download/{id}", "download")->name("download");
-                        }
-                    );
-
-
-
-
-
-                Route::controller(RegistrationCredentialController::class)
-                    ->prefix("/registration-credentials")
-                    ->name("registration.credentials.")
-                    ->group(
-                        function () {
-                            Route::get("/", "index")->name("index");
-                            Route::get("/{id}", "show")->name("show");
-                            Route::get("/token/{token}", "showByToken")->name("showByToken");
-                            Route::post("/", "store")->name("store");
-                            Route::put("/{id}", "update")->name("update");
-                            Route::delete("/{id}", "destroy")->name("destroy");
-                        }
-                    );
-
-
-
-
-                Route::controller(OrganizerNotificationController::class)
-                    ->prefix("/organizer-notifications")
-                    ->name("organizer.notifications.")
-                    ->group(function () {
+                // ASSET
+                Route::group(
+                    [
+                        "controller" => AssetController::class,
+                        "prefix" => "/assets",
+                        "as" => "assets."
+                    ],
+                    function () {
                         Route::get("/", "index")->name("index");
-                        Route::get("/latest", "latest")->name("latest");
-                        Route::post("/", "store")->name("store");
-                    });
+                        Route::get("/{id}", "show")->name("show");
+                        Route::get("/download/{id}", "download")->name("download");
+                    }
+                );
 
-                Route::controller(CheckinController::class)
-                    ->prefix("/checkin")
-                    ->name("checkin.")
-                    ->group(
-                        function () {
-                            Route::post("/manual", "checkinManual")->name("checkinManual");
-                            Route::post("/{personalToken}", "checkin")->name("checkin");
-                        }
-                    );
+                // ORGANIZER NOTIFICATION
+                Route::group([
+                    "controller" => OrganizerNotificationController::class,
+                    "prefix" => "/organizer-notifications",
+                    "as" => "organizer.notifications."
+                ], function () {
+                    Route::get("/", "index")->name("index");
+                    Route::get("/latest", "latest")->name("latest");
+                    Route::post("/", "store")->name("store")->middleware("role:admin,superadmin");
+                });
 
-                Route::controller(CheckoutAllUserController::class)
-                    ->prefix("/checkout-all-users")
-                    ->name("checkout.all.users.")
-                    ->group(
-                        function () {
-                            Route::post("/", "checkoutAllUser");
-                        }
-                    );
-                Route::controller(CheckinStatusController::class)
-                    ->prefix("/checkin-statuses")
-                    ->name("checkin.statuses.")
-                    ->group(
-                        function () {
-                            Route::get("/", "index")->name("index");
-                            Route::get("/latest", "latest")->name("latest");
-                        }
-                    );
-
-                Route::controller(MonitoringController::class)
-                    ->prefix("/monitoring")
-                    ->name("monitoring.")
-                    ->group(
-                        function () {
-                            Route::get("/", "index")->name("index");
-                        }
-                    );
-
-                Route::controller(UserManagementController::class)
-                    ->prefix("/users")
-                    ->name("users.")
-                    ->group(
-                        function () {
-                            Route::get("/", "index")->name("index");
-                            Route::get("/{id}", "show")->name("show");
-                            Route::post("/", "store")->name("store");
-                            Route::post("/change-status/{id}", "changeActiveStatus")->name("change.active.status");
-                            Route::put("/{id}", "update")->name("update");
-                        }
-                    );
-
-                Route::controller(MyProfileController::class)
-                    ->prefix("/my-profile")
-                    ->name("my.profile.")
-                    ->group(
-                        function () {
-                            Route::get("/", "show")->name("show");
-                        }
-                    );
+                // MY PROFILE
+                Route::group(
+                    [
+                        "controller" => MyProfileController::class,
+                        "prefix" => "/my-profile",
+                        "as" => "my.profile"
+                    ],
+                    function () {
+                        Route::get("/", "show")->name("show");
+                    }
+                );
             }
         );
     }
 );
-
-
-    // Route::group([])
