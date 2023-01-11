@@ -16,6 +16,7 @@ use App\Http\Controllers\API\v1\CheckinStatusController;
 use App\Http\Controllers\API\v1\CheckoutAllUserController;
 use App\Http\Controllers\API\v1\CongressDayController;
 use App\Http\Controllers\API\v1\MonitoringController;
+use App\Http\Controllers\API\v1\MyProfileController;
 use App\Http\Controllers\API\v1\OrganizationController;
 use App\Http\Controllers\API\v1\OrganizerNotificationController;
 use App\Http\Controllers\API\v1\RegistrationCredentialController;
@@ -169,83 +170,15 @@ Route::prefix("/v1")
                             Route::put("/{id}", "update")->name("update");
                         }
                     );
+
+                Route::controller(MyProfileController::class)
+                    ->prefix("/my-profile")
+                    ->name("my.profile.")
+                    ->group(
+                        function () {
+                            Route::get("/", "show")->name("show");
+                        }
+                    );
             }
         );
-    });
-
-
-
-
-
-Route::middleware(['auth:api'])->group(function () {
-    Route::middleware(['role:admin,superadmin'])->group(function () {
-
-        Route::post(
-            '/notifications',
-            [OrganizierNotificationController::class, 'store']
-        )->name('notifications.store');
-
-
-
-        Route::post(
-            '/register/manual',
-            [AuthController::class, 'registerManual']
-        )->name('auth.registerManual');
-    });
-
-    /** not admin access required */
-    Route::post(
-        '/checkin-manual',
-        [ManualCheckinController::class, 'manualCheckin']
-    )->name('checkin.manual');
-
-    Route::post(
-        '/register-manual',
-        [ManualRegistrationController::class, 'manualRegistration']
-    )->name('register.manual');
-
-
-    Route::prefix('checkin')
-        ->controller(CheckinStatusMonitoringController::class)->group(function () {
-            Route::get('/monitoring', 'getSummary');
-            Route::get('/latest', 'getLatest');
-        });
-});
-
-Route::middleware(['auth:api', 'role:superadmin'])->group(function () {
-    Route::prefix('users')
-        ->controller(UserController::class)->group(function () {
-            Route::get('/', 'index');
-            Route::get('/{id}', 'show');
-            Route::patch('/{id}', 'update');
-        });
-});
-
-
-
-/**
- * ROUTE FOR GUEST (No logged in required)
- */
-Route::prefix('download')
-    ->controller(DocumentDownloadController::class)->group(function () {
-        Route::get('/{id}', 'download');
-        Route::get('/congress-draft', 'congressDraft');
-        Route::get('/manual-book', 'manualBook');
-    });
-
-Route::prefix('assets')
-    ->name('assets')
-    ->controller(AssetController::class)->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/{id}', 'show')->name('show');
-        Route::get('/download/{id}', 'download')->name('download');
-    });
-
-
-Route::prefix('notifications')
-    ->name('notifications.')
-    ->controller(OrganizierNotificationController::class)
-    ->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/latest', 'latest')->name('latest');
     });
