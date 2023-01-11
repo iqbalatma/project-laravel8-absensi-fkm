@@ -52,9 +52,7 @@ Route::group(
             function () {
 
                 Route::group(
-                    [
-                        "middleware" =>  "role:admin,superadmin"
-                    ],
+                    ["middleware" =>  "role:admin,superadmin"],
                     function () {
                         Route::group(
                             [
@@ -65,6 +63,21 @@ Route::group(
                             function () {
                                 Route::get("/", "index")->name("index")->withoutMiddleware("role:admin,superadmin");
                                 Route::get("/{id}", "show")->name("show")->withoutMiddleware("role:admin,superadmin");;
+                                Route::post("/", "store")->name("store");
+                                Route::put("/{id}", "update")->name("update");
+                                Route::delete("/{id}", "destroy")->name("destroy");
+                            }
+                        );
+
+                        Route::group(
+                            [
+                                "controller" => CongressDayController::class,
+                                "prefix" => "/congress-days",
+                                "name" => "congress.days."
+                            ],
+                            function () {
+                                Route::get("/", "index")->name("index")->withoutMiddleware("role:admin,superadmin");
+                                Route::get("/{id}", "show")->name("show")->withoutMiddleware("role:admin,superadmin");
                                 Route::post("/", "store")->name("store");
                                 Route::put("/{id}", "update")->name("update");
                                 Route::delete("/{id}", "destroy")->name("destroy");
@@ -86,18 +99,7 @@ Route::group(
 
 
 
-                Route::controller(CongressDayController::class)
-                    ->prefix("/congress-days")
-                    ->name("congress.days.")
-                    ->group(
-                        function () {
-                            Route::get("/", "index")->name("index");
-                            Route::get("/{id}", "show")->name("show");
-                            Route::post("/", "store")->name("store");
-                            Route::put("/{id}", "update")->name("update");
-                            Route::delete("/{id}", "destroy")->name("destroy");
-                        }
-                    );
+
 
                 Route::controller(RegistrationCredentialController::class)
                     ->prefix("/registration-credentials")
