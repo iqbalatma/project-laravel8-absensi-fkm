@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Carbon\Carbon;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Config;
@@ -42,6 +43,10 @@ class AuthServiceProvider extends ServiceProvider
             );
 
             return $frontendUrl . '?verify_url=' . urlencode($verifyUrl);
+        });
+
+        ResetPassword::createUrlUsing(function ($user, string $token) {
+            return config("app.frontend_url") . "reset-password?token=$token&email=" . $user->getEmailForPasswordReset();
         });
     }
 }
