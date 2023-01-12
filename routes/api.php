@@ -4,6 +4,7 @@ use App\Http\Controllers\API\v1\AssetController;
 use App\Http\Controllers\API\v1\Auth\AuthController;
 use App\Http\Controllers\API\v1\Auth\RegistrationController;
 use App\Http\Controllers\API\v1\Auth\ResetPasswordController;
+use App\Http\Controllers\API\v1\Auth\VerifyEmailController;
 use App\Http\Controllers\API\v1\CheckinController;
 use App\Http\Controllers\API\v1\CheckinStatusController;
 use App\Http\Controllers\API\v1\CheckoutAllUserController;
@@ -37,6 +38,16 @@ use Illuminate\Support\Facades\Route;
 Route::group(
     ["prefix" => "/v1"],
     function () {
+        // AUTH
+        Route::group(
+            ["controller" => AuthController::class],
+            function () {
+                Route::post("/login", "authenticate")->name("login");
+                Route::post("/refresh", "refresh")->name("refresh");
+                Route::post("/refresh", "refresh")->name("refresh");
+                Route::post("/logout", "logout")->name("logout");
+            }
+        );
 
         // RESET PASSWORD
         Route::group(
@@ -52,46 +63,16 @@ Route::group(
         );
 
 
-        Route::group(
-            ["controller" => AuthController::class],
-            function () {
-                Route::post("/login", "authenticate")->name("login");
-                Route::post("/refresh", "refresh")->name("refresh");
-                Route::post("/refresh", "refresh")->name("refresh");
-                Route::post("/logout", "logout")->name("logout");
-            }
-        );
-
-
 
         Route::post("registration/credential/{credential}", RegistrationController::class)->name("registration.with.credential");
 
         Route::middleware("auth:api")->group(
             function () {
-                Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request): JsonResponse {
-                    $request->fulfill();
-
-                    return response()->json([
-                        "success" => true,
-                        "name" => "Email verification",
-                        "message" => "Email verification successfully"
-                    ], JsonResponse::HTTP_OK);
-                })->middleware(['signed'])->name('verification.verify');
-
-                Route::post('/email/verification-notification', function (Request $request) {
-                    $request->user()->sendEmailVerificationNotification();
-
-                    return response()->json([
-                        "success" => true,
-                        "name" => "Email verification",
-                        "message" => "Resend email verification successfully",
-                    ], JsonResponse::HTTP_OK);
-                })->middleware(['throttle:6,1'])->name('verification.send');
-
-
-
+                // ADMIN AND SUPERADMIN GROUPING
                 Route::group(
-                    ["middleware" =>  "role:admin,superadmin"],
+                    [
+                        "middleware" =>  "role:admin,superadmin"
+                    ],
                     function () {
                         // ORGANIZATION
                         Route::group(
@@ -192,6 +173,21 @@ Route::group(
                     }
                 );
 
+
+                // VERIFY EMAIL
+                Route::group(
+                    [
+                        "controller" => VerifyEmailController::class,
+                        "prefix" => "email",
+                        "as" => "verification."
+                    ],
+                    function () {
+                        Route::post('/verification-notification', "resend")->middleware(['throttle:6,1'])->name('resend');
+                        Route::get('/verify/{id}/{hash}', "verify")->middleware(['signed'])->name('verify');
+                    }
+                );
+
+
                 // ASSET
                 Route::group(
                     [
@@ -207,15 +203,18 @@ Route::group(
                 );
 
                 // ORGANIZER NOTIFICATION
-                Route::group([
-                    "controller" => OrganizerNotificationController::class,
-                    "prefix" => "/organizer-notifications",
-                    "as" => "organizer.notifications."
-                ], function () {
-                    Route::get("/", "index")->name("index");
-                    Route::get("/latest", "latest")->name("latest");
-                    Route::post("/", "store")->name("store")->middleware("role:admin,superadmin");
-                });
+                Route::group(
+                    [
+                        "controller" => OrganizerNotificationController::class,
+                        "prefix" => "/organizer-notifications",
+                        "as" => "organizer.notifications."
+                    ],
+                    function () {
+                        Route::get("/", "index")->name("index");
+                        Route::get("/latest", "latest")->name("latest");
+                        Route::post("/", "store")->name("store")->middleware("role:admin,superadmin");
+                    }
+                );
 
                 // MY PROFILE
                 Route::group(
