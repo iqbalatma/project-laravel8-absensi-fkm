@@ -6,6 +6,7 @@ use App\Exceptions\EmptyDataException;
 use App\Repositories\OrganizationRepository;
 use App\Repositories\UserRepository;
 use App\Statics\Table;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -76,7 +77,9 @@ class UserManagementService extends BaseService
         $requestedData["password"] = Hash::make($requestedData["password"]);
         $requestedData["personal_token"] = Str::random(16);
 
-        return $this->repository->addNewData($requestedData);
+        $user = $this->repository->addNewData($requestedData);
+        event(new Registered($user));
+        return $user;
     }
 
 

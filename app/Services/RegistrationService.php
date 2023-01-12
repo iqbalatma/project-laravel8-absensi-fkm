@@ -5,6 +5,9 @@ namespace App\Services;
 use App\Exceptions\UnauthorizedException;
 use App\Repositories\RegistrationCredentialRepository;
 use App\Repositories\UserRepository;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class RegistrationService extends BaseService
 {
@@ -19,7 +22,11 @@ class RegistrationService extends BaseService
 
     public function registrationWithCredential(string $credential, array $requestedData): object
     {
+        $requestedData["password"] = Hash::make($requestedData["password"]);
+        $requestedData["personal_token"] = Str::random(16);
         $this->regCredsRepo->decreaseLimitByToken($credential);
-        return $this->repository->addNewData($requestedData);
+        $user = $this->repository->addNewData($requestedData);
+        event(new Registered($user));
+        return $user;
     }
 }

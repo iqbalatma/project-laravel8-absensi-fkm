@@ -13,6 +13,9 @@ use App\Http\Controllers\API\v1\OrganizationController;
 use App\Http\Controllers\API\v1\OrganizerNotificationController;
 use App\Http\Controllers\API\v1\RegistrationCredentialController;
 use App\Http\Controllers\API\v1\UserManagementController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,9 +29,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+
 Route::group(
     ["prefix" => "/v1"],
     function () {
+
+
 
         Route::group(
             ["controller" => AuthController::class],
@@ -44,6 +51,27 @@ Route::group(
 
         Route::middleware("auth:api")->group(
             function () {
+                Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request): JsonResponse {
+                    $request->fulfill();
+
+                    return response()->json([
+                        "success" => true,
+                        "name" => "Email verification",
+                        "message" => "Email verification successfully"
+                    ], JsonResponse::HTTP_OK);
+                })->middleware(['signed'])->name('verification.verify');
+
+                Route::post('/email/verification-notification', function (Request $request) {
+                    $request->user()->sendEmailVerificationNotification();
+
+                    return response()->json([
+                        "success" => true,
+                        "name" => "Email verification",
+                        "message" => "Resend email verification successfully",
+                    ], JsonResponse::HTTP_OK);
+                })->middleware(['throttle:6,1'])->name('verification.send');
+
+
                 Route::group(
                     ["middleware" =>  "role:admin,superadmin"],
                     function () {

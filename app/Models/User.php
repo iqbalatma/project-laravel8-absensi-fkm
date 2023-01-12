@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use App\Notifications\VerifyEmailQueued;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -79,8 +81,19 @@ class User extends Authenticatable implements JWTSubject
             "id" => $this->id,
             "email" => $this->email,
             "student_id" => $this->student_id,
-            "organization_name" => $this->organization->name,
-            "role_name" => $this->role->name,
+            "organization_name" => $this->organization->name ?? "",
+            "role_name" => $this->role->name ?? "",
         ];
+    }
+
+    /**
+     * Send the queued email verification notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmailQueued);
     }
 }
