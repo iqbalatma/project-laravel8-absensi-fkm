@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Registration;
+namespace App\Http\Requests\Auth;
 
 use App\Exceptions\UnauthorizedException;
 use App\Http\Requests\FormRequestAPI;
 use App\Repositories\RegistrationCredentialRepository;
-use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRegistrationRequest extends FormRequestAPI
 {

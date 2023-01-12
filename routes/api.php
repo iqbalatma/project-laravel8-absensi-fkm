@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\v1\AssetController;
 use App\Http\Controllers\API\v1\Auth\AuthController;
 use App\Http\Controllers\API\v1\Auth\RegistrationController;
+use App\Http\Controllers\API\v1\Auth\ResetPasswordController;
 use App\Http\Controllers\API\v1\CheckinController;
 use App\Http\Controllers\API\v1\CheckinStatusController;
 use App\Http\Controllers\API\v1\CheckoutAllUserController;
@@ -36,26 +37,19 @@ use Illuminate\Support\Facades\Route;
 Route::group(
     ["prefix" => "/v1"],
     function () {
-        Route::post('/forgot-password', function (Request $request) {
-            $request->validate(['email' => 'required|email']);
 
-            $status = Password::sendResetLink(
-                $request->only('email')
-            );
-
-            if ($status === Password::RESET_LINK_SENT) {
-                return response()->json([
-                    "success" => true,
-                    "name" => "Forgot Password",
-                    "message" => "Reset password requested",
-                ], JsonResponse::HTTP_OK);
+        // RESET PASSWORD
+        Route::group(
+            [
+                "controller" => ResetPasswordController::class,
+                "middleware" => "guest",
+                "as" => "password.",
+            ],
+            function () {
+                Route::post('/forgot-password', "requestResetLink")->name('email');
+                Route::post('/reset-password', "resetPassword")->name('update');
             }
-            return response()->json([
-                "success" => false,
-                "name" => "Forgot Password",
-                "message" => "Something went wrong",
-            ], JsonResponse::HTTP_OK);
-        })->middleware('guest')->name('password.email');
+        );
 
 
         Route::group(
@@ -68,39 +62,7 @@ Route::group(
             }
         );
 
-        Route::post('/reset-password', function (Request $request) {
-            $request->validate([
-                'token' => 'required',
-                'email' => 'required|email',
-                'password' => 'required|min:8|confirmed',
-            ]);
 
-            $status = Password::reset(
-                $request->only('email', 'password', 'password_confirmation', 'token'),
-                function ($user, $password) {
-                    $user->forceFill([
-                        'password' => Hash::make($password)
-                    ])->setRememberToken(Str::random(60));
-
-                    $user->save();
-
-                    event(new PasswordReset($user));
-                }
-            );
-
-            if ($status === Password::PASSWORD_RESET) {
-                return response()->json([
-                    "success" => true,
-                    "name" => "Forgot Password",
-                    "message" => "Reset password successfully",
-                ], JsonResponse::HTTP_OK);
-            }
-            return response()->json([
-                "success" => false,
-                "name" => "Forgot Password",
-                "message" => "Something went wrong",
-            ], JsonResponse::HTTP_OK);
-        })->middleware('guest')->name('password.update');
 
         Route::post("registration/credential/{credential}", RegistrationController::class)->name("registration.with.credential");
 
